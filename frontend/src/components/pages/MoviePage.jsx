@@ -2192,10 +2192,15 @@ const MoviePage = () => {
     }
   };
   const handlePlayClick = () => {
-    // Don't set any streaming URL, just scroll to the section with your existing Watch Now button
     const watchSection = document.getElementById("Server2");
     if (watchSection) {
-      watchSection.scrollIntoView({ behavior: "smooth" });
+      // Add a small delay to ensure DOM is ready
+      setTimeout(() => {
+        // Scroll to element with offset to account for headers
+        const yOffset = -200; // Adjust this value as needed
+        const y = watchSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({top: y, behavior: 'smooth'});
+      }, 100);
     }
   };
   // Return main component
