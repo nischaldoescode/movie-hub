@@ -62,6 +62,7 @@ const TvShowPage = () => {
   const playerRef = useRef(null);
   const topRef = useRef(null);
   const seasonDropdownRef = useRef(null);
+  const [showEpisodes, setShowEpisodes] = useState(true);
 
   // Universal protection system that works across all servers
   // Enhanced useEffect for protection system that targets specific classes/patterns
@@ -2262,7 +2263,7 @@ const TvShowPage = () => {
       // Add a small delay to ensure DOM is ready
       setTimeout(() => {
         // Scroll to element with offset to account for headers
-        const yOffset = -210; // Adjust this value as needed
+        const yOffset = -200; // Adjust this value as needed
         const y = watchSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({top: y, behavior: 'smooth'});
       }, 100);
@@ -2390,7 +2391,7 @@ const TvShowPage = () => {
             </div>
 
             {/* Season Selection - Dropdown */}
-            <div className="mb-6 bg-gray-800 rounded-lg p-4">
+            <div className="mb-6 bg-gray-800 rounded-lg p-4" id="episodes-section">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-base font-medium flex items-center">
                   <Calendar size={16} className="mr-2" />
@@ -2431,23 +2432,32 @@ const TvShowPage = () => {
                 </div>
               </div>
 
-              {/* Episodes List - Compact Horizontal */}
+              {/* Episodes List with Dropdown */}
               <div>
-                <h3 className="text-base font-medium mb-3 flex items-center">
-                  <Film size={16} className="mr-2" />
-                  Episodes
-                </h3>
+                <button 
+                  onClick={() => setShowEpisodes(!showEpisodes)}
+                  className="w-full flex items-center justify-between bg-gray-700 hover:bg-gray-600 p-3 rounded-md mb-3 transition-colors"
+                >
+                  <h3 className="text-base font-medium flex items-center">
+                    <Film size={16} className="mr-2" />
+                    Episodes
+                  </h3>
+                  <ChevronDown 
+                    size={18} 
+                    className={`transition-transform ${showEpisodes ? "rotate-180" : ""}`} 
+                  />
+                </button>
 
-                {!seasonDetails && (
+                {!seasonDetails && showEpisodes && (
                   <div className="flex justify-center p-4">
                     <LoaderIcon className="animate-spin h-6 w-6 text-blue-500" />
                   </div>
                 )}
 
-                {seasonDetails &&
+                {showEpisodes && seasonDetails &&
                 seasonDetails.episodes &&
                 seasonDetails.episodes.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-4">
                     {seasonDetails.episodes.map((episode) => (
                       <button
                         key={episode.id}
@@ -2477,7 +2487,7 @@ const TvShowPage = () => {
                     ))}
                   </div>
                 ) : (
-                  seasonDetails && (
+                  showEpisodes && seasonDetails && (
                     <div className="bg-gray-700 p-3 rounded-md text-center">
                       <p className="text-gray-400 text-sm">
                         No episodes available.
@@ -2496,228 +2506,250 @@ const TvShowPage = () => {
               </p>
             </div>
 
-            <MovieCast cast={tvShow.credits?.cast} />
+            {/* Moved Show Info and Genres to appear above cast on mobile but stay right on desktop */}
+            <div className="block lg:hidden">
+              {/* Show Info */}
+              <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                <h3 className="text-base font-medium mb-3">Show Information</h3>
 
-            {/* Cast Section */}
+                <div className="space-y-2 text-sm">
+                  {tvShow.first_air_date && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">First aired:</span>
+                      <span>
+                        {new Date(tvShow.first_air_date).toLocaleDateString()}
+                      </span>
+                    </div>
+                  )}
 
-                        {/* Enhanced Security Info - Improved layout and colors
-            <div className="bg-gray-800 rounded-lg overflow-hidden mb-6">
-              <div className="bg-blue-900/40 p-4 border-b border-blue-800">
-                <h2 className="text-lg font-bold text-blue-200 mb-2 flex items-center">
-                  <ShieldCheck className="mr-2 text-blue-400" size={20} />
-                  For PC/Laptop Users: Get a Seamless Viewing Experience
-                </h2>
-                <p className="text-blue-100">
-                  Although we've tried our hardest to prevent or minimize popup
-                  ads, our servers depend on some advertisements to operate. For
-                  the best experience, we recommend installing the uBlock Origin
-                  extension.
-                </p>
+                  {tvShow.status && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Status:</span>
+                      <span>{tvShow.status}</span>
+                    </div>
+                  )}
+
+                  {tvShow.number_of_seasons && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Seasons:</span>
+                      <span>{tvShow.number_of_seasons}</span>
+                    </div>
+                  )}
+
+                  {tvShow.number_of_episodes && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Episodes:</span>
+                      <span>{tvShow.number_of_episodes}</span>
+                    </div>
+                  )}
+
+                  {tvShow.networks && tvShow.networks.length > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Network:</span>
+                      <span>{tvShow.networks.map((n) => n.name).join(", ")}</span>
+                    </div>
+                  )}
+
+                  {tvShow.original_language && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Language:</span>
+                      <span>{tvShow.original_language.toUpperCase()}</span>
+                    </div>
+                  )}
+                </div>
               </div>
 
-  
-              <div className="p-5">
-                <h3 className="text-xl font-semibold mb-4 text-blue-300 flex items-center">
-                  <Download className="mr-2" size={20} />
-                  Install uBlock Origin
-                </h3>
+              {/* Genres */}
+              {tvShow.genres && tvShow.genres.length > 0 && (
+                <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                  <h3 className="text-base font-medium mb-3 flex items-center">
+                    <List size={16} className="mr-2" />
+                    Genres
+                  </h3>
 
-                <div className="grid md:grid-cols-2 gap-4 mb-6">
-                  <a
-                    href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
-                    target="_blank"
-                    rel="noopener"
-                    className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
-                  >
-                    <Chrome
-                      className="text-blue-400 mr-3 flex-shrink-0"
-                      size={24}
-                    />
-                    <div>
-                      <h4 className="font-medium text-blue-200">
-                        Chrome Web Store
-                      </h4>
-                      <p className="text-sm text-blue-300">
-                        Chrome, Edge, Brave, etc.
-                      </p>
-                    </div>
-                    <ExternalLink size={16} className="ml-auto text-blue-400" />
-                  </a>
+                  <div className="flex flex-wrap gap-2">
+                    {tvShow.genres.map((genre) => (
+                      <span
+                        key={genre.id}
+                        className="px-2 py-1 bg-gray-700 text-gray-300 rounded-full text-xs"
+                      >
+                        {genre.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
 
-                  <a
-                    href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
-                    target="_blank"
-                    rel="noopener"
-                    className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
-                  >
-                    <Globe
-                      className="text-blue-400 mr-3 flex-shrink-0"
-                      size={24}
-                    />
-                    <div>
-                      <h4 className="font-medium text-blue-200">
-                        Firefox Add-ons
-                      </h4>
-                      <p className="text-sm text-blue-300">Firefox browser</p>
-                    </div>
-                    <ExternalLink size={16} className="ml-auto text-blue-400" />
-                  </a>
+            <MovieCast cast={tvShow.credits?.cast} />
+
+            <div className="bg-gray-800 rounded-lg overflow-hidden mb-6 mt-6">
+            <div className="bg-blue-900/40 p-4 border-b border-blue-800">
+              <h2 className="text-lg font-bold text-blue-200 mb-2 flex items-center">
+                <ShieldCheck className="mr-2 text-blue-400" size={20} />
+                For PC/Laptop Users: Get a Seamless Viewing Experience
+              </h2>
+              <p className="text-blue-100">
+                Although we've tried our hardest to prevent or minimize popup
+                ads, our servers depend on some advertisements to operate. For
+                the best experience, we recommend installing the uBlock Origin
+                extension.
+              </p>
+            </div>
+
+            <div className="p-5">
+              <h3 className="text-xl font-semibold mb-4 text-blue-300 flex items-center">
+                <Download className="mr-2" size={20} />
+                Install uBlock Origin
+              </h3>
+
+              <div className="grid md:grid-cols-2 gap-4 mb-6">
+                <a
+                  href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
+                  target="_blank"
+                  rel="noopener"
+                  className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
+                >
+                  <Chrome
+                    className="text-blue-400 mr-3 flex-shrink-0"
+                    size={24}
+                  />
+                  <div>
+                    <h4 className="font-medium text-blue-200">
+                      Chrome Web Store
+                    </h4>
+                    <p className="text-sm text-blue-300">
+                      Chrome, Edge, Brave, etc.
+                    </p>
+                  </div>
+                  <ExternalLink size={16} className="ml-auto text-blue-400" />
+                </a>
+
+                <a
+                  href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
+                  target="_blank"
+                  rel="noopener"
+                  className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
+                >
+                  <Globe
+                    className="text-blue-400 mr-3 flex-shrink-0"
+                    size={24}
+                  />
+                  <div>
+                    <h4 className="font-medium text-blue-200">
+                      Firefox Add-ons
+                    </h4>
+                    <p className="text-sm text-blue-300">Firefox browser</p>
+                  </div>
+                  <ExternalLink size={16} className="ml-auto text-blue-400" />
+                </a>
+              </div>
+
+              <div className="border border-blue-800/50 rounded-lg overflow-hidden bg-blue-900/20 mt-6">
+                <div className="p-4 bg-blue-800/30">
+                  <h3 className="text-lg font-medium text-blue-200 flex items-center">
+                    <HelpCircle size={18} className="mr-2" />
+                    Installation Guides
+                  </h3>
                 </div>
 
-                <div className="border border-blue-800/50 rounded-lg overflow-hidden bg-blue-900/20 mt-6">
-                  <div className="p-4 bg-blue-800/30">
-                    <h3 className="text-lg font-medium text-blue-200 flex items-center">
-                      <HelpCircle size={18} className="mr-2" />
-                      Installation Guides
-                    </h3>
-                  </div>
+                <div className="p-5">
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="font-medium text-blue-300 mb-3">
+                        Chrome / Edge Installation
+                      </h4>
+                      <ol className="list-decimal pl-5 space-y-2 text-blue-100">
+                        <li>
+                          Visit the{" "}
+                          <a
+                            href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
+                            target="_blank"
+                            rel="noopener"
+                            className="text-blue-400 underline"
+                          >
+                            Chrome Web Store
+                          </a>
+                        </li>
+                        <li>Click "Add to Chrome"</li>
+                        <li>
+                          Confirm by clicking "Add extension" in the popup
+                        </li>
+                        <li>
+                          You'll see the uBlock Origin icon appear in your
+                          toolbar
+                        </li>
+                      </ol>
+                    </div>
 
-                  <div className="p-5">
-                    <div className="space-y-6">
+                    <div>
+                      <h4 className="font-medium text-blue-300 mb-3">
+                        Firefox Installation
+                      </h4>
+                      <ol className="list-decimal pl-5 space-y-2 text-blue-100">
+                        <li>
+                          Visit the{" "}
+                          <a
+                            href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
+                            target="_blank"
+                            rel="noopener"
+                            className="text-blue-400 underline"
+                          >
+                            Firefox Add-ons
+                          </a>{" "}
+                          page
+                        </li>
+                        <li>Click "Add to Firefox"</li>
+                        <li>Click "Add" in the confirmation dialog</li>
+                        <li>
+                          The uBlock Origin icon will appear in your browser
+                          toolbar
+                        </li>
+                      </ol>
+                    </div>
 
-                      <div>
-                        <h4 className="font-medium text-blue-300 mb-3">
-                          Chrome / Edge Installation
-                        </h4>
-                        <ol className="list-decimal pl-5 space-y-2 text-blue-100">
-                          <li>
-                            Visit the{" "}
-                            <a
-                              href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
-                              target="_blank"
-                              rel="noopener"
-                              className="text-blue-400 underline"
-                            >
-                              Chrome Web Store
-                            </a>
-                          </li>
-                          <li>Click "Add to Chrome"</li>
-                          <li>
-                            Confirm by clicking "Add extension" in the popup
-                          </li>
-                          <li>
-                            You'll see the uBlock Origin icon appear in your
-                            toolbar
-                          </li>
-                        </ol>
-                      </div>
-
-
-                      <div>
-                        <h4 className="font-medium text-blue-300 mb-3">
-                          Firefox Installation
-                        </h4>
-                        <ol className="list-decimal pl-5 space-y-2 text-blue-100">
-                          <li>
-                            Visit the{" "}
-                            <a
-                              href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
-                              target="_blank"
-                              rel="noopener"
-                              className="text-blue-400 underline"
-                            >
-                              Firefox Add-ons
-                            </a>{" "}
-                            page
-                          </li>
-                          <li>Click "Add to Firefox"</li>
-                          <li>Click "Add" in the confirmation dialog</li>
-                          <li>
-                            The uBlock Origin icon will appear in your browser
-                            toolbar
-                          </li>
-                        </ol>
-                      </div>
-
-
-                      <div>
-                        <h4 className="font-medium text-blue-300 mb-3">
-                          Manual Installation (Advanced)
-                        </h4>
-                        <ol className="list-decimal pl-5 space-y-2 text-blue-100">
-                          <li>
-                            Download the latest release from{" "}
-                            <a
-                              href="https://github.com/gorhill/uBlock/releases"
-                              target="_blank"
-                              rel="noopener"
-                              className="text-blue-400 underline"
-                            >
-                              GitHub
-                            </a>
-                          </li>
-                          <li>Extract the downloaded zip file to a folder</li>
-                          <li>
-                            In your browser, go to the extensions page (e.g.,{" "}
-                            <code className="bg-blue-900/60 px-2 py-1 rounded">
-                              chrome://extensions
-                            </code>
-                            )
-                          </li>
-                          <li>
-                            Enable "Developer mode" using the toggle in the
-                            top-right corner
-                          </li>
-                          <li>
-                            Click "Load unpacked" and select the extracted
-                            folder
-                          </li>
-                        </ol>
-                      </div>
+                    <div>
+                      <h4 className="font-medium text-blue-300 mb-3">
+                        Manual Installation (Advanced)
+                      </h4>
+                      <ol className="list-decimal pl-5 space-y-2 text-blue-100">
+                        <li>
+                          Download the latest release from{" "}
+                          <a
+                            href="https://github.com/gorhill/uBlock/releases"
+                            target="_blank"
+                            rel="noopener"
+                            className="text-blue-400 underline"
+                          >
+                            GitHub
+                          </a>
+                        </li>
+                        <li>Extract the downloaded zip file to a folder</li>
+                        <li>
+                          In your browser, go to the extensions page (e.g.,{" "}
+                          <code className="bg-blue-900/60 px-2 py-1 rounded">
+                            chrome://extensions
+                          </code>
+                          )
+                        </li>
+                        <li>
+                          Enable "Developer mode" using the toggle in the
+                          top-right corner
+                        </li>
+                        <li>
+                          Click "Load unpacked" and select the extracted folder
+                        </li>
+                      </ol>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* Similar TV Shows */}
-            {tvShow.similar &&
-              tvShow.similar.results &&
-              tvShow.similar.results.length > 0 && (
-                <div className="bg-gray-800 rounded-lg p-4 mb-6 mt-4">
-                  <h3 className="text-base font-medium mb-3">
-                    Related TV Shows
-                  </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                    {tvShow.similar.results.slice(0, 8).map((similar) => (
-                      <a
-                        key={similar.id}
-                        href={`/tv/${similar.id}`}
-                        className="block bg-gray-700 rounded-lg overflow-hidden hover:opacity-80 transition-opacity"
-                      >
-                        {similar.poster_path ? (
-                          <img
-                            src={`https://image.tmdb.org/t/p/w300${similar.poster_path}`}
-                            alt={similar.name}
-                            className="w-full h-auto"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="bg-gray-600 w-full pt-[150%] flex items-center justify-center">
-                            <span className="text-gray-400 text-xs">
-                              No Image
-                            </span>
-                          </div>
-                        )}
-                        <div className="p-2">
-                          <h4 className="text-xs font-medium truncate">
-                            {similar.name}
-                          </h4>
-                          {similar.first_air_date && (
-                            <p className="text-gray-400 text-xs">
-                              {similar.first_air_date.split("-")[0]}
-                            </p>
-                          )}
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
+          </div>
           </div>
 
-          {/* Right Column - Additional Info */}
-          <div>
+          {/* Right Column - Additional Info - Only visible on desktop */}
+          <div className="hidden lg:block">
             {/* Show Info */}
             <div className="bg-gray-800 rounded-lg p-4 mb-6">
               <h3 className="text-base font-medium mb-3">Show Information</h3>
@@ -2791,6 +2823,51 @@ const TvShowPage = () => {
             )}
           </div>
         </div>
+
+        {/* Similar TV Shows - Moved to bottom with full width */}
+        {tvShow.similar &&
+          tvShow.similar.results &&
+          tvShow.similar.results.length > 0 && (
+            <div className="bg-gray-800 rounded-lg p-4 mb-6 mt-8 w-full">
+              <h3 className="text-base font-medium mb-3">
+                Related TV Shows
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                {tvShow.similar.results.slice(0, 12).map((similar) => (
+                  <a
+                    key={similar.id}
+                    href={`/tv/${similar.id}`}
+                    className="block bg-gray-700 rounded-lg overflow-hidden hover:opacity-80 transition-opacity"
+                  >
+                    {similar.poster_path ? (
+                      <img
+                        src={`https://image.tmdb.org/t/p/w300${similar.poster_path}`}
+                        alt={similar.name}
+                        className="w-full h-auto"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="bg-gray-600 w-full pt-[150%] flex items-center justify-center">
+                        <span className="text-gray-400 text-xs">
+                          No Image
+                        </span>
+                      </div>
+                    )}
+                    <div className="p-2">
+                      <h4 className="text-xs font-medium truncate">
+                        {similar.name}
+                      </h4>
+                      {similar.first_air_date && (
+                        <p className="text-gray-400 text-xs">
+                          {similar.first_air_date.split("-")[0]}
+                        </p>
+                      )}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
       </div>
     </div>
   );
