@@ -22,4 +22,4 @@ User-agent: AhrefsBot
 Crawl-delay: 10
 
 # Sitemap location
-Sitemap: https://www.moviehub.com/sitemap.xml
+Sitemap: https://moviehub-be2j.onrender.com/sitemap.xml
