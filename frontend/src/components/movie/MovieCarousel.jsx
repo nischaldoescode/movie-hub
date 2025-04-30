@@ -23,10 +23,22 @@ const MovieCarousel = ({ movies }) => {
     return null;
   }
   
-  // Detect if user is on mobile device
+  // Detect if user is on mobile device and adjust carousel height
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768); // Consider devices smaller than 768px as mobile
+      const isMobileView = window.innerWidth < 768; // Consider devices smaller than 768px as mobile
+      setIsMobile(isMobileView);
+      
+      // Adjust carousel height for mobile view
+      if (carouselRef.current) {
+        if (isMobileView) {
+          // Set a fixed height on mobile to ensure full coverage
+          const viewportHeight = window.innerHeight;
+          carouselRef.current.style.height = `${viewportHeight}px`;
+        } else {
+          carouselRef.current.style.height = '100vh';
+        }
+      }
     };
     
     // Initial check
@@ -206,7 +218,8 @@ const MovieCarousel = ({ movies }) => {
       
       <div 
         ref={carouselRef}
-        className="relative h-screen w-full overflow-hidden rounded-md"
+        className="relative h-screen md:h-screen w-full overflow-hidden rounded-md"
+        style={{ minHeight: isMobile ? '100vh' : 'auto' }}
         onMouseEnter={handleMouseEnter} 
         onMouseLeave={handleMouseLeave}
       >
@@ -238,8 +251,30 @@ const MovieCarousel = ({ movies }) => {
               backgroundImage: `url(https://image.tmdb.org/t/p/original${currentMovie.backdrop_path})`,
               filter: `blur(${isMobile ? '0px' : '1px'}) brightness(${isMobile ? '0.95' : '0.85'})`,
               transform: `scale(${isTransitioning ? '1.15' : '1.1'})`,
+              backgroundPosition: 'center center',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              height: '100%',
+              width: '100%',
+              top: '0',
+              left: '0',
+              objectFit: 'cover',
+              objectPosition: 'center'
             }}
-          />
+          >
+            {/* Mobile-specific image overlay to ensure full coverage */}
+            {isMobile && (
+              <img 
+                src={`https://image.tmdb.org/t/p/original${currentMovie.backdrop_path}`}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ 
+                  opacity: 0.6,
+                  filter: 'brightness(0.95)'
+                }}
+              />
+            )}
+          </div>
           
           {/* Enhanced gradient overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-gray-900/20 transition-opacity duration-1000" />
@@ -380,7 +415,7 @@ const MovieCarousel = ({ movies }) => {
                     <img 
                       src={`https://image.tmdb.org/t/p/w500${currentMovie.poster_path}`} 
                       alt={currentMovie.title || currentMovie.name}
-                      className="w-full h-auto"
+                      className="w-full h-auto object-cover"
                       style={{
                         opacity: imagesLoaded[currentIndex] ? 1 : 0,
                         transition: 'opacity 0.5s ease-in-out'
@@ -453,23 +488,6 @@ const MovieCarousel = ({ movies }) => {
           </div>
         </div>
         
-        {/* Indicators - ONLY visible on desktop */}
-        <div className="hidden md:flex absolute bottom-4 inset-x-0 justify-center gap-2">
-          {filteredMovies.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                setIsTransitioning(true);
-                setCurrentIndex(i);
-                setTimeout(() => setIsTransitioning(false), 800);
-              }}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                i === currentIndex ? 'bg-white w-4' : 'bg-white/40'
-              }`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
-        </div>
       </div>
     </div>
   );
