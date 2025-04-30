@@ -102,6 +102,16 @@ const SearchResultsPage = () => {
     }
   };
 
+ useEffect(() => {
+    // This will run once when the component mounts/loads
+    window.onbeforeunload = null;
+    window.scrollTo(0, 0);
+    return () => {
+      // Clean up - ensure it's null when component unmounts
+      window.onbeforeunload = null;
+    };
+  }, []);
+
   // Handle media type filter change
   const handleFilterChange = (filter) => {
     setMediaFilter(filter);
