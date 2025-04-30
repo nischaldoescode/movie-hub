@@ -2257,10 +2257,15 @@ const TvShowPage = () => {
   };
 
   const handlePlayClick = () => {
-    // Scroll to the episodes section
-    const episodesSection = document.getElementById("Sesslc");
-    if (episodesSection) {
-      episodesSection.scrollIntoView({ behavior: "smooth" });
+    const watchSection = document.getElementById("Sesslc");
+    if (watchSection) {
+      // Add a small delay to ensure DOM is ready
+      setTimeout(() => {
+        // Scroll to element with offset to account for headers
+        const yOffset = -210; // Adjust this value as needed
+        const y = watchSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({top: y, behavior: 'smooth'});
+      }, 100);
     }
   };
 
