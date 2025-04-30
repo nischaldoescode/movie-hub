@@ -326,62 +326,67 @@ const MoviePage = () => {
         }, 0);
       }
 
-      if (tagName.toLowerCase() === 'script') {
+      if (tagName.toLowerCase() === "script") {
         // Monitor this script element for suspicious content
         const originalSetAttribute = element.setAttribute;
-        element.setAttribute = function(name, value) {
-          if (name.toLowerCase() === 'src' && (blockedDomainsPattern.test(value) || popupPatterns.test(value))) {
+        element.setAttribute = function (name, value) {
+          if (
+            name.toLowerCase() === "src" &&
+            (blockedDomainsPattern.test(value) || popupPatterns.test(value))
+          ) {
             console.log("Blocked script src attribute:", value);
             blockedActionsRef.current++;
-            setBlockedCount(prev => prev + 1);
+            setBlockedCount((prev) => prev + 1);
             return;
           }
-          
+
           return originalSetAttribute.call(this, name, value);
         };
-        
+
         // Create a setter trap for script content
-        let scriptContent = '';
-        Object.defineProperty(element, 'textContent', {
-          get: function() {
+        let scriptContent = "";
+        Object.defineProperty(element, "textContent", {
+          get: function () {
             return scriptContent;
           },
-          set: function(value) {
+          set: function (value) {
             // Check if content is suspicious before allowing it
-            if (value && (
-              value.includes("adserverDomain") ||
-              value.includes("qqsfafvkgsyto.online") ||
-              value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
-              value.match(/window\['[a-zA-Z0-9]{20,}'\]/)
-            )) {
+            if (
+              value &&
+              (value.includes("adserverDomain") ||
+                value.includes("qqsfafvkgsyto.online") ||
+                value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
+                value.match(/window\['[a-zA-Z0-9]{20,}'\]/))
+            ) {
               console.log("Blocked suspicious script content");
               blockedActionsRef.current++;
-              setBlockedCount(prev => prev + 1);
+              setBlockedCount((prev) => prev + 1);
               // Return silently without setting the content
               return;
             }
             scriptContent = value;
-          }
+          },
         });
-        
+
         // Same for innerHTML which could be used to set script content
-        Object.defineProperty(element, 'innerHTML', {
-          set: function(value) {
+        Object.defineProperty(element, "innerHTML", {
+          set: function (value) {
             // Check if content is suspicious
-            if (value && (
-              value.includes("adserverDomain") ||
-              value.includes("qqsfafvkgsyto.online") ||
-              value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
-              value.match(/window\['[a-zA-Z0-9]{20,}'\]/)
-            )) {
+            if (
+              value &&
+              (value.includes("adserverDomain") ||
+                value.includes("qqsfafvkgsyto.online") ||
+                value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
+                value.match(/window\['[a-zA-Z0-9]{20,}'\]/))
+            ) {
               console.log("Blocked suspicious script innerHTML");
               blockedActionsRef.current++;
-              setBlockedCount(prev => prev + 1);
+              setBlockedCount((prev) => prev + 1);
               return;
             }
             // Use the native innerHTML setter
             HTMLScriptElement.prototype.innerHTML = value;
-          }
+          },
         });
       }
 
@@ -2196,13 +2201,17 @@ const MoviePage = () => {
     if (watchSection) {
       // Add a small delay to ensure DOM is ready
       setTimeout(() => {
-        // Scroll to element with offset to account for headers
-        const yOffset = -200; // Adjust this value as needed
-        const y = watchSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({top: y, behavior: 'smooth'});
+        // Scrolling to element with offset value
+        const yOffset = -200;
+        const y =
+          watchSection.getBoundingClientRect().top +
+          window.pageYOffset +
+          yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
       }, 100);
     }
   };
+
   // Return main component
   if (loading) {
     return <Loader />;
@@ -2262,6 +2271,12 @@ const MoviePage = () => {
                     referrerPolicy="no-referrer"
                     allow="fullscreen"
                     style={{ border: "none" }} // Remove any default border
+                    allow-forms
+                    allow-pointer-lock
+                    allow-popups
+                    allow-same-origin
+                    allow-scripts
+                    allow-top-navigation
                   ></iframe>
 
                   {playerLoading && (
@@ -2355,10 +2370,120 @@ const MoviePage = () => {
               </p>
             </div>
 
+            {/* Mobile-only Movie Information - Will show on mobile, hidden on desktop */}
+            <div className="lg:hidden">
+              {/* Movie Info */}
+              <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                <h3 className="text-base font-medium mb-3">Movie Information</h3>
+
+                <div className="space-y-2 text-sm">
+                  {movie.release_date && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Release Date:</span>
+                      <span>
+                        {new Date(movie.release_date).toLocaleDateString()}
+                      </span>
+                    </div>
+                  )}
+
+                  {movie.runtime && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Runtime:</span>
+                      <span>
+                        {Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m
+                      </span>
+                    </div>
+                  )}
+
+                  {movie.vote_average && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Rating:</span>
+                      <span>{movie.vote_average.toFixed(1)}/10</span>
+                    </div>
+                  )}
+
+                  {movie.budget > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Budget:</span>
+                      <span>${movie.budget.toLocaleString()}</span>
+                    </div>
+                  )}
+
+                  {movie.revenue > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Revenue:</span>
+                      <span>${movie.revenue.toLocaleString()}</span>
+                    </div>
+                  )}
+
+                  {movie.original_language && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Language:</span>
+                      <span>{movie.original_language.toUpperCase()}</span>
+                    </div>
+                  )}
+
+                  {movie.status && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Status:</span>
+                      <span>{movie.status}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Genres - Mobile */}
+              {movie.genres && movie.genres.length > 0 && (
+                <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                  <h3 className="text-base font-medium mb-3">Genres</h3>
+
+                  <div className="flex flex-wrap gap-2">
+                    {movie.genres.map((genre) => (
+                      <span
+                        key={genre.id}
+                        className="px-3 py-1 bg-blue-800/50 text-blue-100 border border-blue-700 rounded-full text-xs"
+                      >
+                        {genre.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Production Companies - Mobile */}
+              {movie.production_companies &&
+                movie.production_companies.length > 0 && (
+                  <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                    <h3 className="text-base font-medium mb-3">Production</h3>
+
+                    <div className="space-y-2 text-sm">
+                      {movie.production_companies.map((company) => (
+                        <div
+                          key={company.id}
+                          className="flex items-center text-gray-300 py-1"
+                        >
+                          {company.logo_path ? (
+                            <img
+                              src={`https://image.tmdb.org/t/p/w92${company.logo_path}`}
+                              alt={company.name}
+                              className="h-5 mr-2 object-contain"
+                            />
+                          ) : (
+                            <Film size={16} className="mr-2 text-gray-400" />
+                          )}
+                          <span className="ml-2">{company.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+            </div>
+
             {/* Movie Cast */}
             <MovieCast cast={movie.credits?.cast} />
-            {/* Enhanced Security Info - Improved layout and colors
-            <div className="bg-gray-800 rounded-lg overflow-hidden mb-6">
+            
+            {/* Enhanced Security Info - Moved inside the Left Column */}
+            <div className="bg-gray-800 rounded-lg overflow-hidden mb-6 mt-6">
               <div className="bg-blue-900/40 p-4 border-b border-blue-800">
                 <h2 className="text-lg font-bold text-blue-200 mb-2 flex items-center">
                   <ShieldCheck className="mr-2 text-blue-400" size={20} />
@@ -2372,7 +2497,6 @@ const MoviePage = () => {
                 </p>
               </div>
 
-  
               <div className="p-5">
                 <h3 className="text-xl font-semibold mb-4 text-blue-300 flex items-center">
                   <Download className="mr-2" size={20} />
@@ -2431,7 +2555,6 @@ const MoviePage = () => {
 
                   <div className="p-5">
                     <div className="space-y-6">
-
                       <div>
                         <h4 className="font-medium text-blue-300 mb-3">
                           Chrome / Edge Installation
@@ -2459,7 +2582,6 @@ const MoviePage = () => {
                         </ol>
                       </div>
 
-
                       <div>
                         <h4 className="font-medium text-blue-300 mb-3">
                           Firefox Installation
@@ -2485,7 +2607,6 @@ const MoviePage = () => {
                           </li>
                         </ol>
                       </div>
-
 
                       <div>
                         <h4 className="font-medium text-blue-300 mb-3">
@@ -2516,8 +2637,7 @@ const MoviePage = () => {
                             top-right corner
                           </li>
                           <li>
-                            Click "Load unpacked" and select the extracted
-                            folder
+                            Click "Load unpacked" and select the extracted folder
                           </li>
                         </ol>
                       </div>
@@ -2525,54 +2645,11 @@ const MoviePage = () => {
                   </div>
                 </div>
               </div>
-            </div> */}
-
-            {/* Similar Movies - Moved below cast */}
-            {movie.similar &&
-              movie.similar.results &&
-              movie.similar.results.length > 0 && (
-                <div className="bg-gray-800 rounded-lg p-4 mt-6">
-                  <h3 className="text-lg font-medium mb-4">Related Movies</h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {movie.similar.results.slice(0, 10).map((similar) => (
-                      <a
-                        key={similar.id}
-                        href={`/movie/${similar.id}`}
-                        className="block bg-gray-700 rounded-lg overflow-hidden hover:opacity-80 transition-opacity"
-                      >
-                        {similar.poster_path ? (
-                          <img
-                            src={`https://image.tmdb.org/t/p/w300${similar.poster_path}`}
-                            alt={similar.title}
-                            className="w-full h-auto"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="bg-gray-600 w-full pt-[150%] flex items-center justify-center">
-                            <span className="text-gray-400 text-xs">
-                              No Image
-                            </span>
-                          </div>
-                        )}
-                        <div className="p-3">
-                          <h4 className="text-sm font-medium truncate">
-                            {similar.title}
-                          </h4>
-                          {similar.release_date && (
-                            <p className="text-gray-400 text-xs mt-1">
-                              {similar.release_date.split("-")[0]}
-                            </p>
-                          )}
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
+            </div>
           </div>
 
-          {/* Right Column - Additional Info */}
-          <div>
+          {/* Right Column - Additional Info - Hidden on mobile */}
+          <div className="hidden lg:block">
             {/* Movie Info */}
             <div className="bg-gray-800 rounded-lg p-4 mb-6">
               <h3 className="text-base font-medium mb-3">Movie Information</h3>
@@ -2654,7 +2731,7 @@ const MoviePage = () => {
                         ) : (
                           <Film size={16} className="mr-2 text-gray-400" />
                         )}
-                        {company.name}
+                        <span className="ml-2">{company.name}</span>
                       </div>
                     ))}
                   </div>
@@ -2680,6 +2757,47 @@ const MoviePage = () => {
             )}
           </div>
         </div>
+        
+        {/* Similar Movies - Outside grid layout, full width */}
+        {movie.similar &&
+          movie.similar.results &&
+          movie.similar.results.length > 0 && (
+            <div className="bg-gray-800 rounded-lg p-4 mt-6">
+              <h3 className="text-lg font-medium mb-4">Related Movies</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {movie.similar.results.slice(0, 10).map((similar) => (
+                  <a
+                    key={similar.id}
+                    href={`/movie/${similar.id}`}
+                    className="block bg-gray-700 rounded-lg overflow-hidden hover:opacity-80 transition-opacity"
+                  >
+                    {similar.poster_path ? (
+                      <img
+                        src={`https://image.tmdb.org/t/p/w300${similar.poster_path}`}
+                        alt={similar.title}
+                        className="w-full h-auto"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="bg-gray-600 w-full pt-[150%] flex items-center justify-center">
+                        <span className="text-gray-400 text-xs">No Image</span>
+                      </div>
+                    )}
+                    <div className="p-3">
+                      <h4 className="text-sm font-medium truncate">
+                        {similar.title}
+                      </h4>
+                      {similar.release_date && (
+                        <p className="text-gray-400 text-xs mt-1">
+                          {similar.release_date.split("-")[0]}
+                        </p>
+                      )}
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
       </div>
     </div>
   );
