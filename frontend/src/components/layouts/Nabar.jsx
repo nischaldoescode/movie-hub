@@ -101,7 +101,7 @@ const Navbar = () => {
         }`}
       >
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between py-5">
             {/* Logo with animation */}
             <Link
               to="/"
