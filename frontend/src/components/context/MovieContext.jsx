@@ -370,9 +370,12 @@ export const MovieProvider = ({ children }) => {
     if (activeServer === "server1") {
       // Server 1 (vidlink.pro)
       if (mediaType === "movie") {
-        return `https://player.vidsrc.co/embed/movie/${id}`;
+        // return `https://player.vidsrc.c/embed/movie/${id}`;
+        return `https://player.embed-api.stream/?${id}&type=movie`;
       } else if (mediaType === "tv" && season && episode) {
-        return `https://player.vidsrc.co/embed/tv/${id}/${season}/${episode}`;
+        // return `https://player.vidsrc.co/embed/tv/${id}/${season}/${episode}`;
+        // https://player.embed-api.stream/?id={tmdbId}&s={season}&e={episode}
+        return `https://player.vidsrc.co/?${id}&s=${season}&e=${episode}`;
       }
     } else {
       // Server 2 (vidsrc.icu)
