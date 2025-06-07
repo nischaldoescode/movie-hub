@@ -64,7 +64,7 @@ const MoviePage = () => {
     let lastClickTime = 0;
     let originalFunctions = {};
     const popupPatterns =
-      /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display/i;
+      /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|duration-150|transition-all|media-controls:flex|video-layout_controls__rRx2z|media-controls:hidden/i;
     const blockedDomainsPattern =
       /doubleclick|adservice|adnxs|adsystem|adsrvr|taboola|outbrain|revcontent|zedo|adroll|rubiconproject|openx|criteo|pubmatic|smartadserver|adtechus|quantserve|mediamath|turn|intellipopup|popcash|custom|effectivemeasure/i;
 
@@ -101,6 +101,9 @@ const MoviePage = () => {
         content.includes("popads-script") ||
         content.includes("videoOverlay") ||
         content.includes("script-custom.js") ||
+        content.includes("video-layout_controls__rRx2z") ||
+        content.includes("transition-all") ||
+        content.includes("copywrite-button") ||
         // Add these new checks
         hasAdServerDomain ||
         hasRandomVarNames ||
@@ -745,10 +748,13 @@ const MoviePage = () => {
                         // Element node
                         // Check classes and IDs
                         if (
-                          node.className &&
+                          (node.className &&
                           typeof node.className === "string" &&
                           (node.className.includes("selectextShadowHost") ||
-                            node.className.includes("IOarzRhPlPOverlay"))
+                            node.className.includes("IOarzRhPlPOverlay"))) ||
+                          (node.id &&
+                          typeof node.id === "string" &&
+                          (node.id.includes("dontfoid")))
                         ) {
                           node.remove();
                           blockedActionsRef.current++;
