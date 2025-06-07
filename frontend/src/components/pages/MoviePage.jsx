@@ -104,6 +104,7 @@ const MoviePage = () => {
         content.includes("video-layout_controls__rRx2z") ||
         content.includes("transition-all") ||
         content.includes("copywrite-button") ||
+        content.includes("gradient-shadow") ||
         // Add these new checks
         hasAdServerDomain ||
         hasRandomVarNames ||
@@ -650,6 +651,8 @@ const MoviePage = () => {
           e.target.className?.includes("closeButton") ||
           e.target.className?.includes("IOarzRhPlPOverlay") ||
           e.target.className?.includes("absolute inset-0") ||
+          e.target.className?.includes("gradient-shadow") ||
+          e.target.id?.includes("dontfoid") ||
           e.target.id?.includes("ad") ||
           e.target.id?.includes("modal") ||
           e.target.id?.includes("closeButton") ||
