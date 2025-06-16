@@ -74,10 +74,10 @@ const TvShowPage = () => {
     let lastClickTime = 0;
     let originalFunctions = {};
     const popupPatterns =
-      /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display/i;
+      /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|osumpdfciiptn|wpnxiswpuyrfn/i;
     const blockedDomainsPattern =
-      /doubleclick|adservice|adnxs|adsystem|adsrvr|taboola|outbrain|revcontent|zedo|adroll|rubiconproject|openx|criteo|pubmatic|smartadserver|adtechus|quantserve|mediamath|turn|intellipopup|popcash|effectivemeasure/i;
-
+      /doubleclick|adservice|adnxs|adsystem|adsrvr|taboola|outbrain|revcontent|zedo|adroll|rubiconproject|openx|criteo|pubmatic|smartadserver|adtechus|quantserve|mediamath|turn|intellipopup|popcash|custom|effectivemeasure|tjwsg|osumpdfciiptn|\.online|wpnxiswpuyrfn|\.icu|adserverDomain/i;
+    
     // Enhanced script blocking function
     const blockScript = (script) => {
       const src = script.src || "";
