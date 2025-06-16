@@ -64,9 +64,9 @@ const MoviePage = () => {
     let lastClickTime = 0;
     let originalFunctions = {};
     const popupPatterns =
-      /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|duration-150|transition-all|media-controls:flex|video-layout_controls__rRx2z|media-controls:hidden/i;
+      /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|osumpdfciiptn|wpnxiswpuyrfn/i;
     const blockedDomainsPattern =
-      /doubleclick|adservice|adnxs|adsystem|adsrvr|taboola|outbrain|revcontent|zedo|adroll|rubiconproject|openx|criteo|pubmatic|smartadserver|adtechus|quantserve|mediamath|turn|intellipopup|popcash|custom|effectivemeasure/i;
+      /doubleclick|adservice|adnxs|adsystem|adsrvr|taboola|outbrain|revcontent|zedo|adroll|rubiconproject|openx|criteo|pubmatic|smartadserver|adtechus|quantserve|mediamath|turn|intellipopup|popcash|custom|effectivemeasure|tjwsg|osumpdfciiptn|\.online|wpnxiswpuyrfn|\.icu|adserverDomain/i;
 
     // Enhanced script blocking function
     const blockScript = (script) => {
