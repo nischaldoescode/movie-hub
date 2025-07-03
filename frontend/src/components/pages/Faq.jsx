@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './styles.css';
+import { Helmet, HelmetProvider } from 'react-helmet-async'; 
 
 const FAQ = () => {
   const [expandedSections, setExpandedSections] = useState({
@@ -17,9 +18,77 @@ const FAQ = () => {
   };
 
   return (
+    <>
+    <HelmetProvider>
+    <title>FAQ - Frequently Asked Questions | Movie Den</title>
+        <meta name="description" content="Find answers to frequently asked questions about Movie Den. Get help with streaming, account issues, movie availability, and technical support for our entertainment platform." />
+        <meta name="keywords" content="Movie Den faq, frequently asked questions, streaming help, Movie Den support, account help, technical support, movie streaming issues, how to use Movie Den, Movie Den guide, streaming questions, movie platform help" />
+        <meta name="author" content="Movie Den" />
+        <meta name="robots" content="index, follow" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="language" content="en" />
+        <meta name="theme-color" content="#1f2937" />
+        <meta name="msapplication-TileColor" content="#1f2937" />
+        <meta name="msapplication-navbutton-color" content="#1f2937" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#1f2937" />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://movieden.space/faq" />
+        
+        {/* Open Graph Tags */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="FAQ - Frequently Asked Questions | Movie Den" />
+        <meta property="og:description" content="Find answers to frequently asked questions about Movie Den. Get help with streaming, account issues, movie availability, and technical support for our entertainment platform." />
+        <meta property="og:url" content="https://movieden.space/faq" />
+        <meta property="og:site_name" content="Movie Den" />
+        <meta property="og:image" content="https://res.cloudinary.com/dd7yplbta/image/upload/v1751558020/image_1_r7k55v.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Movie Den - FAQ" />
+        <meta property="og:locale" content="en_US" />
+        
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="FAQ - Frequently Asked Questions | Movie Den" />
+        <meta name="twitter:description" content="Find answers to frequently asked questions about Movie Den. Get help with streaming, account issues, movie availability, and technical support for our entertainment platform." />
+        <meta name="twitter:image" content="https://res.cloudinary.com/dd7yplbta/image/upload/v1751558020/image_1_r7k55v.png" />
+        <meta name="twitter:image:alt" content="Movie Den - FAQ" />
+        
+        {/* Additional SEO Tags */}
+        <meta name="application-name" content="Movie Den" />
+        <meta name="msapplication-TileImage" content="https://res.cloudinary.com/dd7yplbta/image/upload/v1751558020/image_1_r7k55v.png" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Movie Den" />
+        <meta name="theme-color" content="#1f2937" />
+        
+        {/* Additional Meta Tags for Movie Site */}
+        <meta name="category" content="Entertainment" />
+        <meta name="coverage" content="Worldwide" />
+        <meta name="identifier-URL" content="https://movieden.space/faq" />
+        <meta name="owner" content="Movie Den" />
+        <meta name="url" content="https://movieden.space/faq" />
+        <meta name="directory" content="submission" />
+        <meta name="pagename" content="FAQ - Frequently Asked Questions" />
+        <meta name="subtitle" content="Get Help and Support for Movie Den" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="googlebot" content="index,follow" />
+        <meta name="bingbot" content="index,follow" />
+        
+        {/* Preconnect to external domains */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        
+        {/* DNS Prefetch */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <link rel="dns-prefetch" href="//res.cloudinary.com" />
+        <link rel="dns-prefetch" href="//tmbd.org" />
+        </HelmetProvider>
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
       <h1 className="text-3xl font-bold mb-2 text-center text-purple-400">Frequently Asked Questions</h1>
-      <p className="text-center text-gray-400 mb-12">Get answers to the most common questions about Movie Hub</p>
+      <p className="text-center text-gray-400 mb-12">Get answers to the most common questions about Movie Den</p>
       
       {/* Streaming Questions */}
       <div 
@@ -38,7 +107,7 @@ const FAQ = () => {
             <div className="border-b border-gray-700 pb-4">
               <h4 className="font-medium mb-2">What streaming quality options are available?</h4>
               <p className="text-gray-300">
-                Movie Hub offers streaming in multiple quality options depending on your internet connection speed.
+                Movie Den offers streaming in multiple quality options depending on your internet connection speed.
                 Our adaptive streaming technology automatically adjusts the quality to provide the best experience
                 based on your current connection.
               </p>
@@ -47,7 +116,7 @@ const FAQ = () => {
             <div className="border-b border-gray-700 pb-4">
               <h4 className="font-medium mb-2">How many devices can I stream on simultaneously?</h4>
               <p className="text-gray-300">
-                Movie Hub allows streaming on multiple devices. Please note that excessive concurrent streams 
+                Movie Den allows streaming on multiple devices. Please note that excessive concurrent streams 
                 from the same account may be limited to maintain service quality for all users.
               </p>
             </div>
@@ -87,10 +156,10 @@ const FAQ = () => {
             </div>
             
             <div className="border-b border-gray-700 pb-4">
-              <h4 className="font-medium mb-2">Why was a title removed from Movie Hub?</h4>
+              <h4 className="font-medium mb-2">Why was a title removed from Movie Den?</h4>
               <p className="text-gray-300">
                 Content availability changes due to agreements between content owners and our third-party providers.
-                Movie Hub does not control when content is added or removed, as we do not own or host the videos 
+                Movie Den does not control when content is added or removed, as we do not own or host the videos 
                 displayed on our platform.
               </p>
             </div>
@@ -135,9 +204,9 @@ const FAQ = () => {
             </div>
             
             <div className="border-b border-gray-700 pb-4">
-              <h4 className="font-medium mb-2">Which devices support Movie Hub?</h4>
+              <h4 className="font-medium mb-2">Which devices support Movie Den?</h4>
               <p className="text-gray-300">
-                Movie Hub is available on most modern web browsers, smart TVs, gaming consoles (PlayStation, Xbox), 
+                Movie Den is available on most modern web browsers, smart TVs, gaming consoles (PlayStation, Xbox), 
                 streaming devices (Roku, Apple TV, Chromecast), and mobile devices (iOS and Android).
               </p>
             </div>
@@ -173,9 +242,9 @@ const FAQ = () => {
         {expandedSections.dmca && (
           <div className="mt-4 space-y-4 animate-fadeIn">
             <div className="border-b border-gray-700 pb-4">
-              <h4 className="font-medium mb-2">How does Movie Hub handle copyright claims?</h4>
+              <h4 className="font-medium mb-2">How does Movie Den handle copyright claims?</h4>
               <p className="text-gray-300">
-                Movie Hub respects intellectual property rights and complies with the Digital Millennium Copyright Act (DMCA). 
+                Movie Den respects intellectual property rights and complies with the Digital Millennium Copyright Act (DMCA). 
                 If you believe your copyrighted work has been improperly used on our platform, you can submit a DMCA takedown 
                 notice through our Contact page.
               </p>
@@ -196,7 +265,7 @@ const FAQ = () => {
             </div>
             
             <div>
-              <h4 className="font-medium mb-2">How quickly does Movie Hub respond to takedown notices?</h4>
+              <h4 className="font-medium mb-2">How quickly does Movie Den respond to takedown notices?</h4>
               <p className="text-gray-300">
                 We aim to respond to all properly filed DMCA notices within 1-2 business days. If the claim is valid, 
                 we will promptly remove or disable access to the content in question.
@@ -213,11 +282,12 @@ const FAQ = () => {
         </p>
         <div className="flex justify-center">
           <p className="text-center">
-            Contact us at: <a href="mailto:connect.moviehub@gmail.com" className="text-purple-400 hover:underline">support@moviehub.com</a>
+            Contact us at: <a href="mailto:connect.moviehub@gmail.com" className="text-purple-400 hover:underline">connect.movieden@gmail.com</a>
           </p>
         </div>
       </div>
     </div>
+    </>
   );
 };
 
