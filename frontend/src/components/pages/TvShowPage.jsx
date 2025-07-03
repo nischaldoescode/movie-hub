@@ -4,6 +4,7 @@ import { useMovieContext } from "../context/MovieContext";
 import MovieDetailHero from "../movie/MovieDetailHero";
 import MovieCast from "../movie/MovieCast";
 import Loader from "../ui/Loader";
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 import {
   Play,
   Server,
@@ -2236,6 +2237,18 @@ const TvShowPage = () => {
   }
 
   return (
+        <>
+      <HelmetProvider>
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"></script>
+      <script>
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-QKRDMZMXVJ');
+        `}
+      </script>
+      </HelmetProvider>
     <div ref={topRef} className="min-h-screen bg-gray-900 text-white pb-16">
       {/* Hero Section */}
       <MovieDetailHero
@@ -2821,6 +2834,7 @@ const TvShowPage = () => {
           )}
       </div>
     </div>
+    </>
   );
 };
 
