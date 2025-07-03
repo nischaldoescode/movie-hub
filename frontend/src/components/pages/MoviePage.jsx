@@ -30,6 +30,7 @@ const MoviePage = () => {
     getStreamingUrl,
     handlePlayerLoaded,
     playerLoading,
+    setPlayerLoading,
     activeServer,
     switchServer,
   } = useMovieContext();
@@ -40,22 +41,21 @@ const MoviePage = () => {
   const [streamingUrl, setStreamingUrl] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [playerProtected, setPlayerProtected] = useState(true);
-  const [adOverlayActive, setAdOverlayActive] = useState(false);
   const [securityLevel, setSecurityLevel] = useState("high"); // "high", "medium", "low"
   const [blockedCount, setBlockedCount] = useState(0);
-  const [chromeExpanded, setChromeExpanded] = useState(false);
-  const [edgeExpanded, setEdgeExpanded] = useState(false);
-  const [firefoxExpanded, setFirefoxExpanded] = useState(false);
   const playerRef = useRef(null);
   const iframeRef = useRef(null);
   const playerContainerRef = useRef(null);
   const topRef = useRef(null);
   const overlayShieldRef = useRef(null);
-  const adTimeoutRef = useRef(null);
   const blockedActionsRef = useRef(0);
+  const scrollRestoreRef = useRef(null);
 
-  // Universal protection system that works across all servers
-  // Enhanced useEffect for protection system that targets specific classes/patterns
+  const popupPatterns =
+    /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|osumpdfciiptn|muthwhcjuwela|qtdfxjlbnojnc/i;
+  const blockedDomainsPattern =
+    /doubleclick|adservice|adnxs|adsystem|adsrvr|taboola|outbrain|revcontent|zedo|adroll|rubiconproject|openx|criteo|pubmatic|smartadserver|adtechus|quantserve|mediamath|turn|intellipopup|popcash|custom|effectivemeasure|tjwsg|osumpdfciiptn|\.online|muthwhcjuwela|\.store|qtdfxjlbnojnc|raggedstriking|usrpubtrk|brightadnetwork/i;
+
   useEffect(() => {
     if (!streamingUrl || !playerProtected) return;
 
@@ -63,10 +63,6 @@ const MoviePage = () => {
     let clickCount = 0;
     let lastClickTime = 0;
     let originalFunctions = {};
-    const popupPatterns =
-      /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|osumpdfciiptn|wpnxiswpuyrfn/i;
-    const blockedDomainsPattern =
-      /doubleclick|adservice|adnxs|adsystem|adsrvr|taboola|outbrain|revcontent|zedo|adroll|rubiconproject|openx|criteo|pubmatic|smartadserver|adtechus|quantserve|mediamath|turn|intellipopup|popcash|custom|effectivemeasure|tjwsg|osumpdfciiptn|\.online|wpnxiswpuyrfn|\.icu|adserverDomain/i;
 
     // Enhanced script blocking function
     const blockScript = (script) => {
@@ -89,6 +85,13 @@ const MoviePage = () => {
         content.match(/let [a-zA-Z0-9]{15,}/) ||
         content.match(/const [a-zA-Z0-9]{15,}/);
 
+      const hasBase64Redirection =
+        content.includes("atob(") ||
+        content.includes("decodeBase64") ||
+        content.match(/aHR0cHM6Ly[^\s'"]+/) || // hardcoded base64 strings
+        content.includes("window.open(decodedLink") ||
+        content.includes("loadExternalScripts");
+
       return (
         blockedDomainsPattern.test(src) ||
         popupPatterns.test(src) ||
@@ -106,9 +109,20 @@ const MoviePage = () => {
         content.includes("copywrite-button") ||
         content.includes("gradient-shadow") ||
         content.includes("overscroll-contain") ||
+        content.includes("a") ||
+        content.includes(
+          "aHR0cHM6Ly9yYWdnZWRzdHJpa2luZy5jb20vZGN4a2txMnJ2cD9rZXk9MDZkODRkNDYwZDhhYTQ4NzNkNjI5ZTEzNWZhY2U2ZDY="
+        ) ||
+        content.includes(
+          "aHR0cHM6Ly9yYWdnZWRzdHJpa2luZy5jb20vcmM4djdxd3NnZT9rZXk9OWI5ZmE4Y2JhYjI5NTg3MTczNzI4ZGM2NTMyYWRiYjA="
+        ) ||
+        content.includes(
+          "Ly9yYWdnZWRzdHJpa2luZy5jb20vMjAvZWIvYmEvMjBlYmJhMGEyOGYyNDFhODgwOGUyYTU4OTBlODNlODQuanM="
+        ) ||
         // Add these new checks
         hasAdServerDomain ||
         hasRandomVarNames ||
+        hasBase64Redirection ||
         content.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") || // Block this specific script
         content.match(
           /window\.open|popup|redirect|location\s*=|postMessage|_blank/i
@@ -138,7 +152,6 @@ const MoviePage = () => {
     storeOriginalFunctions();
 
     // Override window.open with robust URL analysis
-    // Enhance the window.open override with stronger checks
     window.open = function (...args) {
       if (!args[0]) return null;
 
@@ -146,7 +159,7 @@ const MoviePage = () => {
 
       // Always block _blank targets
       if (args[1] && args[1].includes("_blank")) {
-        console.log("Blocked _blank target:", url);
+        // console.log("Blocked _blank target:", url);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return null;
@@ -161,14 +174,14 @@ const MoviePage = () => {
         (document.referrer && popupPatterns.test(document.referrer));
 
       if (isBlocked) {
-        console.log("Popup blocked:", url);
+        // console.log("Popup blocked:", url);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return null;
       }
 
       // Block by default for streaming content (cautious approach)
-      console.log("Popup blocked (default protection):", url);
+      // console.log("Popup blocked (default protection):", url);
       blockedActionsRef.current++;
       setBlockedCount((prev) => prev + 1);
       return null;
@@ -209,7 +222,7 @@ const MoviePage = () => {
         callbackStr.includes("popup") ||
         callbackStr.includes("adv")
       ) {
-        console.log("Blocked suspicious timeout");
+        // console.log("Blocked suspicious timeout");
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return 0;
@@ -254,7 +267,7 @@ const MoviePage = () => {
                     blockedDomainsPattern.test(src) ||
                     popupPatterns.test(src)
                   ) {
-                    console.log("Blocked suspicious iframe load:", src);
+                    // console.log("Blocked suspicious iframe load:", src);
                     element.src = "about:blank";
                     blockedActionsRef.current++;
                     setBlockedCount((prev) => prev + 1);
@@ -265,7 +278,7 @@ const MoviePage = () => {
                     if (element.contentWindow) {
                       // Try to hijack the iframe's window.open
                       element.contentWindow.open = function () {
-                        console.log("Iframe popup blocked");
+                        // console.log("Iframe popup blocked");
                         blockedActionsRef.current++;
                         setBlockedCount((prev) => prev + 1);
                         return null;
@@ -288,10 +301,10 @@ const MoviePage = () => {
                           return window.location;
                         },
                         set: function (value) {
-                          console.log(
-                            "Blocked iframe location change to:",
-                            value
-                          );
+                          // console.log(
+                          //   "Blocked iframe location change to:",
+                          //   value
+                          // );
                           blockedActionsRef.current++;
                           setBlockedCount((prev) => prev + 1);
                           return window.location;
@@ -316,7 +329,7 @@ const MoviePage = () => {
                 attr.toLowerCase() === "src" &&
                 (blockedDomainsPattern.test(value) || popupPatterns.test(value))
               ) {
-                console.log("Blocked suspicious iframe src:", value);
+                // console.log("Blocked suspicious iframe src:", value);
                 blockedActionsRef.current++;
                 setBlockedCount((prev) => prev + 1);
                 return;
@@ -324,9 +337,9 @@ const MoviePage = () => {
               return originalSetAttribute.call(this, attr, value);
             };
 
-            console.log("Enhanced iframe security applied");
+            // console.log("Enhanced iframe security applied");
           } catch (e) {
-            console.log("Could not enhance iframe security");
+            // console.log("Could not enhance iframe security");
           }
         }, 0);
       }
@@ -339,7 +352,7 @@ const MoviePage = () => {
             name.toLowerCase() === "src" &&
             (blockedDomainsPattern.test(value) || popupPatterns.test(value))
           ) {
-            console.log("Blocked script src attribute:", value);
+            // console.log("Blocked script src attribute:", value);
             blockedActionsRef.current++;
             setBlockedCount((prev) => prev + 1);
             return;
@@ -363,12 +376,25 @@ const MoviePage = () => {
                 value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
                 value.match(/window\['[a-zA-Z0-9]{20,}'\]/))
             ) {
-              console.log("Blocked suspicious script content");
+              // console.log("Blocked suspicious script content");
               blockedActionsRef.current++;
               setBlockedCount((prev) => prev + 1);
               // Return silently without setting the content
               return;
             }
+            if (
+              value &&
+              (value.includes("decodeBase64") ||
+                value.includes("window.open(decodedLink") ||
+                value.includes("atob(") ||
+                value.match(/aHR0cHM6Ly[^\s'"]+/)) // base64 URL inline
+            ) {
+              // console.log("Blocked Base64/obfuscated ad logic");
+              blockedActionsRef.current++;
+              setBlockedCount((prev) => prev + 1);
+              return;
+            }
+
             scriptContent = value;
           },
         });
@@ -382,13 +408,27 @@ const MoviePage = () => {
               (value.includes("adserverDomain") ||
                 value.includes("qqsfafvkgsyto.online") ||
                 value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
+                value.includes("decodeBase64") ||
                 value.match(/window\['[a-zA-Z0-9]{20,}'\]/))
             ) {
-              console.log("Blocked suspicious script innerHTML");
+              // console.log("Blocked suspicious script innerHTML");
               blockedActionsRef.current++;
               setBlockedCount((prev) => prev + 1);
               return;
             }
+            if (
+              value &&
+              (value.includes("decodeBase64") ||
+                value.includes("window.open(decodedLink") ||
+                value.includes("atob(") ||
+                value.match(/aHR0cHM6Ly[^\s'"]+/)) // base64 URL inline
+            ) {
+              // console.log("Blocked Base64/obfuscated ad logic");
+              blockedActionsRef.current++;
+              setBlockedCount((prev) => prev + 1);
+              return;
+            }
+
             // Use the native innerHTML setter
             HTMLScriptElement.prototype.innerHTML = value;
           },
@@ -406,7 +446,7 @@ const MoviePage = () => {
         // Analyze the iframe before allowing
         const src = child.src || "";
         if (blockedDomainsPattern.test(src) || popupPatterns.test(src)) {
-          console.log("Blocked suspicious iframe append:", src);
+          // console.log("Blocked suspicious iframe append:", src);
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return child; // Return child but don't actually append
@@ -424,10 +464,21 @@ const MoviePage = () => {
           ) ||
           blockedDomainsPattern.test(scriptSrc)
         ) {
-          console.log("Blocked suspicious script append");
+          // console.log("Blocked suspicious script append");
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return child; // Return child but don't actually append
+        }
+        if (
+          scriptContent.includes("decodeBase64") ||
+          scriptContent.includes("loadExternalScripts") ||
+          scriptContent.includes("atob(") ||
+          scriptContent.match(/aHR0cHM6Ly[^\s'"]+/)
+        ) {
+          // console.log("Blocked Base64-redirect script via appendChild");
+          blockedActionsRef.current++;
+          setBlockedCount((prev) => prev + 1);
+          return child;
         }
       }
 
@@ -440,7 +491,7 @@ const MoviePage = () => {
       if (newNode.tagName === "IFRAME" || newNode.tagName === "SCRIPT") {
         const src = newNode.src || "";
         if (blockedDomainsPattern.test(src) || popupPatterns.test(src)) {
-          console.log("Blocked suspicious element insertion:", src);
+          // console.log("Blocked suspicious element insertion:", src);
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return newNode;
@@ -456,7 +507,7 @@ const MoviePage = () => {
         typeof message === "string" ? message : JSON.stringify(message);
 
       if (popupPatterns.test(messageStr)) {
-        console.log("Blocked suspicious postMessage:", targetOrigin);
+        // console.log("Blocked suspicious postMessage:", targetOrigin);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return;
@@ -494,67 +545,6 @@ const MoviePage = () => {
       overlayShieldRef.current = shield;
       playerContainer.appendChild(shield);
 
-      // Enhanced ad overlay blocker with better styling
-      const adOverlay = document.createElement("div");
-      adOverlay.className = "ad-overlay-blocker";
-      adOverlay.style.position = "absolute";
-      adOverlay.style.top = "0";
-      adOverlay.style.left = "0";
-      adOverlay.style.width = "100%";
-      adOverlay.style.height = "100%";
-      adOverlay.style.zIndex = "10000";
-      adOverlay.style.background = "rgba(0,0,0,0.9)";
-      adOverlay.style.display = "none";
-      adOverlay.style.alignItems = "center";
-      adOverlay.style.justifyContent = "center";
-      adOverlay.style.flexDirection = "column";
-      adOverlay.innerHTML = `
-        <div style="display: flex; align-items: center; margin-bottom: 16px;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f59e0b; margin-right: 8px;">
-            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-            <line x1="12" y1="9" x2="12" y2="13"></line>
-            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-          </svg>
-          <div style="color:white; font-size:16px; font-weight:500;">Popup/Ad Blocked</div>
-        </div>
-        <div style="color:#d1d5db; font-size:14px; margin-bottom:16px; max-width:80%; text-align:center;">
-          Our system detected and blocked potentially harmful content from the video player
-        </div>
-        <button style="background:#3b82f6; color:white; border:none; padding:8px 20px; border-radius:4px; cursor:pointer; font-size:14px; font-weight:500; display:flex; align-items:center; justify-content:center;">
-          <span style="margin-right:6px">Continue to Video</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-          </svg>
-        </button>
-      `;
-
-      playerContainer.appendChild(adOverlay);
-
-      // More aggressive ad overlay display with random delay to avoid detection
-      const showAdOverlay = () => {
-        if (!isMounted) return;
-        adOverlay.style.display = "flex";
-        setAdOverlayActive(true);
-
-        // Random timeout to avoid pattern detection
-        const randomDelay = 3000 + Math.random() * 2000;
-        adTimeoutRef.current = setTimeout(() => {
-          if (isMounted) {
-            adOverlay.style.display = "none";
-            setAdOverlayActive(false);
-          }
-        }, randomDelay);
-      };
-
-      const continueButton = adOverlay.querySelector("button");
-      if (continueButton) {
-        continueButton.addEventListener("click", () => {
-          adOverlay.style.display = "none";
-          setAdOverlayActive(false);
-          clearTimeout(adTimeoutRef.current);
-        });
-      }
-
       // Advanced event handler with pattern detection and AI-like filtering
       const handleInteraction = (e) => {
         if (!playerProtected) return true;
@@ -589,7 +579,7 @@ const MoviePage = () => {
             // Use a setTimeout to check if navigation occurred after event handling
             setTimeout(() => {
               if (window.location.href !== currentHref) {
-                console.log("Blocked redirect from player control");
+                // console.log("Blocked redirect from player control");
                 window.history.back(); // Go back if navigation occurred
                 blockedActionsRef.current++;
                 setBlockedCount((prev) => prev + 1);
@@ -613,7 +603,6 @@ const MoviePage = () => {
         if (clickCount > 0 && now - lastClickTime < 500 + Math.random() * 300) {
           e.stopPropagation();
           e.preventDefault();
-          showAdOverlay();
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           clickCount = 0;
@@ -634,6 +623,11 @@ const MoviePage = () => {
         // Enhanced heuristic detection logic
         const isInteractive =
           e.target.tagName === "A" ||
+          e.target.id === "dontfoid" ||
+          e.target.id?.includes("dontfoid") ||
+          (e.target.tagName === "A" &&
+            (e.target.style.display === "none" ||
+              e.target.style.visibility === "hidden")) ||
           e.target.tagName === "BUTTON" ||
           e.target.tagName === "IMG" ||
           e.target.onclick ||
@@ -652,9 +646,6 @@ const MoviePage = () => {
           e.target.className?.includes("closeButton") ||
           e.target.className?.includes("IOarzRhPlPOverlay") ||
           e.target.className?.includes("absolute inset-0") ||
-          e.target.className?.includes("gradient-shadow") ||
-          e.target.className?.includes("overscroll-contain") ||
-          e.target.id?.includes("dontfoid") ||
           e.target.id?.includes("ad") ||
           e.target.id?.includes("modal") ||
           e.target.id?.includes("closeButton") ||
@@ -684,7 +675,6 @@ const MoviePage = () => {
         if (isInteractive || suspiciousText) {
           e.stopPropagation();
           e.preventDefault();
-          showAdOverlay();
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return false;
@@ -705,7 +695,7 @@ const MoviePage = () => {
         (e) => {
           const isLink = e.target.tagName === "A" || e.target.closest("a");
           if (isLink) {
-            console.log("Blocked click on link in player area");
+            // console.log("Blocked click on link in player area");
             e.preventDefault();
             e.stopPropagation();
             blockedActionsRef.current++;
@@ -725,9 +715,6 @@ const MoviePage = () => {
               history.back();
               blockedActionsRef.current++;
               setBlockedCount((prev) => prev + 1);
-
-              // Show the ad overlay
-              showAdOverlay();
             }
           }, 100);
         },
@@ -753,13 +740,10 @@ const MoviePage = () => {
                         // Element node
                         // Check classes and IDs
                         if (
-                          (node.className &&
+                          node.className &&
                           typeof node.className === "string" &&
                           (node.className.includes("selectextShadowHost") ||
-                            node.className.includes("IOarzRhPlPOverlay"))) ||
-                          (node.id &&
-                          typeof node.id === "string" &&
-                          (node.id.includes("dontfoid")))
+                            node.className.includes("IOarzRhPlPOverlay"))
                         ) {
                           node.remove();
                           blockedActionsRef.current++;
@@ -898,23 +882,19 @@ const MoviePage = () => {
                 // Use event listeners to intercept navigation attempts
                 try {
                   frameWindow.addEventListener("beforeunload", function (e) {
-                    console.log("Blocked navigation attempt via beforeunload");
+                    console.log("Detected beforeunload – no prompt triggered"); // Just log or react
+                    // Do NOT set e.returnValue or return anything – this prevents the browser dialog
                     blockedActionsRef.current++;
                     setBlockedCount((prev) => prev + 1);
-
-                    // Cancel the event
-                    e.preventDefault();
-                    e.returnValue = "";
-                    return "";
                   });
 
                   frameWindow.addEventListener("hashchange", function (e) {
                     const newHash = frameWindow.location.hash;
                     if (popupPatterns.test(newHash)) {
-                      console.log(
-                        "Blocked suspicious hash navigation:",
-                        newHash
-                      );
+                      // console.log(
+                      //   "Blocked suspicious hash navigation:",
+                      //   newHash
+                      // );
                       blockedActionsRef.current++;
                       setBlockedCount((prev) => prev + 1);
                       e.preventDefault();
@@ -924,7 +904,7 @@ const MoviePage = () => {
                   // Also try to intercept form submissions which can cause navigation
                   const originalSubmit = HTMLFormElement.prototype.submit;
                   HTMLFormElement.prototype.submit = function () {
-                    console.log("Blocked form submission");
+                    // console.log("Blocked form submission");
                     blockedActionsRef.current++;
                     setBlockedCount((prev) => prev + 1);
                     return false;
@@ -937,7 +917,7 @@ const MoviePage = () => {
                         mutation.addedNodes.forEach((node) => {
                           if (node.tagName === "FORM") {
                             node.addEventListener("submit", function (e) {
-                              console.log("Blocked form submit event");
+                              // console.log("Blocked form submit event");
                               e.preventDefault();
                               blockedActionsRef.current++;
                               setBlockedCount((prev) => prev + 1);
@@ -1053,7 +1033,8 @@ const MoviePage = () => {
                   '[znid], [donto], [style*="z-index:"], [style*="position: absolute"][style*="z-index"], ' +
                     ".selectextShadowHost, .IOarzRhPlPOverlay, #videoOverlay, " +
                     '[class*="selectextShadowHost"], [class*="IOarzRhPlPOverlay"], ' +
-                    '[id="videoOverlay"], [id*="videoOverlay"]'
+                    '[id="videoOverlay"], [id*="videoOverlay"], #dontfoid, [id*="dontfoid"], ' +
+                    'a[style*="display: none"], a[style*="visibility: hidden"], a[style*="left: -1000px"]'
                 );
 
                 if (znidElements && znidElements.length) {
@@ -1372,7 +1353,7 @@ const MoviePage = () => {
                       popupPatterns.test(value) ||
                       blockedDomainsPattern.test(value)
                     ) {
-                      console.log(`Blocked suspicious ${attrName}:`, value);
+                      // console.log(`Blocked suspicious ${attrName}:`, value);
                       target.setAttribute(attrName, "javascript:void(0)");
                       blockedActionsRef.current++;
                       setBlockedCount((prev) => prev + 1);
@@ -1491,7 +1472,7 @@ const MoviePage = () => {
               e.target.dataset.href;
 
             if (suspiciousAttrs) {
-              console.log("Blocked suspicious click on player area element");
+              // console.log("Blocked suspicious click on player area element");
               e.stopPropagation();
               e.preventDefault();
               blockedActionsRef.current++;
@@ -1572,10 +1553,6 @@ const MoviePage = () => {
           if (playerContainer.contains(shield)) {
             playerContainer.removeChild(shield);
           }
-
-          if (playerContainer.contains(adOverlay)) {
-            playerContainer.removeChild(adOverlay);
-          }
         }
 
         if (observer) {
@@ -1587,7 +1564,6 @@ const MoviePage = () => {
           iframeRef.current.removeEventListener("load", enhanceIframe);
         }
 
-        clearTimeout(adTimeoutRef.current);
         clearInterval(scanInterval);
         if (playerControlsProtection && playerControlsProtection.cleanup) {
           playerControlsProtection.cleanup();
@@ -1617,7 +1593,7 @@ const MoviePage = () => {
         /\/\/(bit\.ly|goo\.gl|t\.co|tinyurl\.com)/.test(url);
 
       if (isEvil) {
-        console.log("Blocked navigation attempt:", url);
+        // console.log("Blocked navigation attempt:", url);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return true;
@@ -1626,23 +1602,24 @@ const MoviePage = () => {
       return false;
     };
 
-    // Use beforeunload event
-    // Use beforeunload event
     const handleBeforeUnload = (event) => {
       const activeUrl = document.activeElement?.href || "";
 
-      // Only block unloads if they're malicious
-
-      if (
-        blockNavigation(activeUrl) ||
-        locationChangeAttempts >= maxAllowedChanges
-      ) {
-        event.preventDefault();
-        event.returnValue = "";
-        return "";
+      if (blockNavigation(activeUrl)) {
+        // console.log("Blocked malicious navigation silently:", activeUrl);
+        blockedActionsRef.current++;
+        setBlockedCount((prev) => prev + 1);
+        return; // Don't trigger browser prompt
       }
-      // Otherwise don't block normal navigation
-      return undefined;
+
+      if (locationChangeAttempts >= maxAllowedChanges && activeUrl) {
+        // console.log("Blocked excessive navigation silently:", activeUrl);
+        blockedActionsRef.current++;
+        setBlockedCount((prev) => prev + 1);
+        return;
+      }
+
+      // Allow all other cases including reload
     };
 
     // Use click event capture for deep interception
@@ -1740,7 +1717,7 @@ const MoviePage = () => {
           if (prop === "replace") {
             return function (url) {
               if (blockNavigation(url.toString())) {
-                console.log("Blocked location.replace to:", url);
+                // console.log("Blocked location.replace to:", url);
                 blockedActionsRef.current++;
                 setBlockedCount((prev) => prev + 1);
                 return;
@@ -1770,7 +1747,7 @@ const MoviePage = () => {
         e.preventDefault();
         e.stopPropagation();
         history.pushState(null, "", originalLocation);
-        console.log("Blocked excessive navigation attempts");
+        // console.log("Blocked excessive navigation attempts");
         return false;
       }
     });
@@ -1956,7 +1933,7 @@ const MoviePage = () => {
                   blockedDomainsPattern.test(src) ||
                   popupPatterns.test(src)
                 ) {
-                  console.log("Blocked suspicious nested iframe:", src);
+                  // console.log("Blocked suspicious nested iframe:", src);
                   nestedFrame.src = "about:blank";
                   blockedActionsRef.current++;
                   setBlockedCount((prev) => prev + 1);
@@ -2056,7 +2033,7 @@ const MoviePage = () => {
     window.open = function (...args) {
       const url = args[0]?.toString() || "";
       if (popupPatterns.test(url) || blockedDomainsPattern.test(url)) {
-        console.log("Blocked popup:", url);
+        // console.log("Blocked popup:", url);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return null;
@@ -2120,12 +2097,13 @@ const MoviePage = () => {
   useEffect(() => {
     // This will run once when the component mounts/loads
     window.onbeforeunload = null;
-    window.scrollTo(0, 0);
+    // window.scrollTo(0, 0);
     return () => {
       // Clean up - ensure it's null when component unmounts
       window.onbeforeunload = null;
     };
   }, []);
+
   const handlePlayMovie = () => {
     const url = getStreamingUrl(id, "movie");
     setStreamingUrl(url);
@@ -2141,7 +2119,7 @@ const MoviePage = () => {
           block: "start",
         });
       }
-    }, 100);
+    }, 400);
   };
 
   // Handle iframe events
@@ -2158,55 +2136,23 @@ const MoviePage = () => {
     });
   };
 
-  // Handle server change - without scrolling to top
   const handleServerChange = (server) => {
-    // Store current scroll position
-    const scrollPos = window.scrollY;
+    const scrollPos = window.scrollY; // Step 1: Capture scroll
 
-    // Change server
     switchServer(server);
-
-    // Reset counter
     setBlockedCount(0);
 
-    // If already playing, update the streaming URL
     if (isPlaying) {
-      const url = getStreamingUrl(id, "movie");
+      setPlayerLoading(true);
+
+      // Store scroll to restore later
+      scrollRestoreRef.current = scrollPos;
+
+      const url = getStreamingUrl(id, "movie", null, null, server);
       setStreamingUrl(url);
-
-      // Preserve scroll position after a brief delay
-      setTimeout(() => {
-        window.scrollTo(0, scrollPos);
-      }, 50);
     }
   };
 
-  // Toggle protection
-  const toggleProtection = () => {
-    setPlayerProtected(true); // Always set to true if it's ever called
-    if (overlayShieldRef.current) {
-      overlayShieldRef.current.style.pointerEvents = "auto";
-    }
-  };
-
-  // Change security level
-  const changeSecurityLevel = (level) => {
-    setSecurityLevel("high");
-  };
-
-  // Force close ad overlay (manual option)
-  const closeAdOverlay = () => {
-    setAdOverlayActive(false);
-    const adOverlay = playerContainerRef.current?.querySelector(
-      ".ad-overlay-blocker"
-    );
-    if (adOverlay) {
-      adOverlay.style.display = "none";
-    }
-    if (adTimeoutRef.current) {
-      clearTimeout(adTimeoutRef.current);
-    }
-  };
   const handlePlayClick = () => {
     const watchSection = document.getElementById("Server2");
     if (watchSection) {
@@ -2222,7 +2168,17 @@ const MoviePage = () => {
       }, 100);
     }
   };
+  // Add timeout fallback for iframe loading
+  useEffect(() => {
+    if (playerLoading && streamingUrl) {
+      const timeout = setTimeout(() => {
+        console.log("Iframe load timeout - forcing player loaded");
+        setPlayerLoading(false);
+      }, 8000); // 8 second timeout
 
+      return () => clearTimeout(timeout);
+    }
+  }, [playerLoading, streamingUrl]);
   // Return main component
   if (loading) {
     return <Loader />;
@@ -2281,13 +2237,8 @@ const MoviePage = () => {
                     importance="high"
                     referrerPolicy="no-referrer"
                     allow="fullscreen"
-                    style={{ border: "none" }} // Remove any default border
-                    allow-forms
-                    allow-pointer-lock
-                    allow-popups
-                    allow-same-origin
-                    allow-scripts
-                    allow-top-navigation
+                    style={{ border: "none" }}
+                    key={`${streamingUrl}-${activeServer}`} // Add this to force re-render with new URL
                   ></iframe>
 
                   {playerLoading && (
@@ -2296,17 +2247,6 @@ const MoviePage = () => {
                         <LoaderIcon className="animate-spin h-10 w-10 text-blue-500 mx-auto" />
                         <p className="text-white mt-3">Loading player...</p>
                       </div>
-                    </div>
-                  )}
-
-                  {adOverlayActive && (
-                    <div className="absolute top-3 right-3 z-20">
-                      <button
-                        onClick={closeAdOverlay}
-                        className="bg-gray-800 text-white p-1 rounded-full hover:bg-gray-700"
-                      >
-                        <X size={18} />
-                      </button>
                     </div>
                   )}
                 </div>
@@ -2385,7 +2325,9 @@ const MoviePage = () => {
             <div className="lg:hidden">
               {/* Movie Info */}
               <div className="bg-gray-800 rounded-lg p-4 mb-6">
-                <h3 className="text-base font-medium mb-3">Movie Information</h3>
+                <h3 className="text-base font-medium mb-3">
+                  Movie Information
+                </h3>
 
                 <div className="space-y-2 text-sm">
                   {movie.release_date && (
@@ -2492,7 +2434,7 @@ const MoviePage = () => {
 
             {/* Movie Cast */}
             <MovieCast cast={movie.credits?.cast} />
-            
+
             {/* Enhanced Security Info - Moved inside the Left Column */}
             <div className="bg-gray-800 rounded-lg overflow-hidden mb-6 mt-6">
               <div className="bg-blue-900/40 p-4 border-b border-blue-800">
@@ -2648,7 +2590,8 @@ const MoviePage = () => {
                             top-right corner
                           </li>
                           <li>
-                            Click "Load unpacked" and select the extracted folder
+                            Click "Load unpacked" and select the extracted
+                            folder
                           </li>
                         </ol>
                       </div>
@@ -2768,7 +2711,7 @@ const MoviePage = () => {
             )}
           </div>
         </div>
-        
+
         {/* Similar Movies - Outside grid layout, full width */}
         {movie.similar &&
           movie.similar.results &&
