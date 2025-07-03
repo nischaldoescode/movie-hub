@@ -8,7 +8,8 @@
     "build": "GENERATE_SOURCEMAP=false vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "postinstall": "npm audit fix --force && npm install @latest && npm install --save-dev cross-env"
+    "postinstall": "npm audit fix --force && npm install react@latest react-dom@latest react-router-dom@latest &&
+                    npm install --save-dev tailwindcss@latest vite@latest && npm install --save-dev cross-env"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.2",
