@@ -4,6 +4,7 @@ import { useMovieContext } from "../context/MovieContext";
 import MovieDetailHero from "../movie/MovieDetailHero";
 import MovieCast from "../movie/MovieCast";
 import Loader from "../ui/Loader";
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 import {
   Play,
   Server,
