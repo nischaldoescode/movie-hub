@@ -3,6 +3,9 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 Disallow: /private/
+Disallow: /movie/
+Disallow: /tv/
+Disallow: /404
 
 # Allow Google Images to index images
 User-agent: Googlebot-Image
@@ -22,4 +25,4 @@ User-agent: AhrefsBot
 Crawl-delay: 10
 
 # Sitemap location
-Sitemap: https://moviehub-be2j.onrender.com/sitemap.xml
+Sitemap: https://www.movieden.space/sitemap.xml
