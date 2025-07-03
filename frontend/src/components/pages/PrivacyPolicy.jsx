@@ -1,8 +1,82 @@
 import React from 'react';
 import './styles.css';
-import { Helmet } from 'react-helmet'
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 const PrivacyPolicy = () => {
   return (
+    <>
+    <HelmetProvider>
+    <title>Privacy Policy - Data Protection & User Privacy | Movie Den</title>
+        <meta name="description" content="Read Movie Den's privacy policy to understand how we collect, use, and protect your personal information. Learn about our data practices and your privacy rights." />
+        <meta name="keywords" content="Movie Den privacy policy, data protection, user privacy, personal information, data collection, privacy rights, Movie Den terms, data security, user data, privacy practices, entertainment platform privacy" />
+        <meta name="author" content="Movie Den" />
+        <meta name="robots" content="index, follow" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="language" content="en" />
+        <meta name="revisit-after" content="1 day" />
+        <meta name="distribution" content="global" />
+        <meta name="rating" content="general" />
+        <meta name="copyright" content="Movie Den" />
+        <meta name="theme-color" content="#1f2937" />
+        <meta name="msapplication-TileColor" content="#1f2937" />
+        <meta name="msapplication-navbutton-color" content="#1f2937" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#1f2937" />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://movieden.space/privacypolicy" />
+        
+        {/* Open Graph Tags */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Privacy Policy - Data Protection & User Privacy | Movie Den" />
+        <meta property="og:description" content="Read Movie Den's privacy policy to understand how we collect, use, and protect your personal information. Learn about our data practices and your privacy rights." />
+        <meta property="og:url" content="https://movieden.space/privacypolicy" />
+        <meta property="og:site_name" content="Movie Den" />
+        <meta property="og:image" content="https://res.cloudinary.com/dd7yplbta/image/upload/v1751558020/image_1_r7k55v.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="Movie Den - Privacy Policy" />
+        <meta property="og:locale" content="en_US" />
+        
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Privacy Policy - Data Protection & User Privacy | Movie Den" />
+        <meta name="twitter:description" content="Read Movie Den's privacy policy to understand how we collect, use, and protect your personal information. Learn about our data practices and your privacy rights." />
+        <meta name="twitter:image" content="https://res.cloudinary.com/dd7yplbta/image/upload/v1751558020/image_1_r7k55v.png" />
+        <meta name="twitter:image:alt" content="Movie Den - Privacy Policy" />
+        
+        {/* Additional SEO Tags */}
+        <meta name="application-name" content="Movie Den" />
+        <meta name="msapplication-TileImage" content="https://res.cloudinary.com/dd7yplbta/image/upload/v1751558020/image_1_r7k55v.png" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Movie Den" />
+        <meta name="theme-color" content="#1f2937" />
+        
+        {/* Additional Meta Tags for Movie Site */}
+        <meta name="category" content="Entertainment" />
+        <meta name="coverage" content="Worldwide" />
+        <meta name="identifier-URL" content="https://movieden.space/privacypolicy" />
+        <meta name="owner" content="Movie Den" />
+        <meta name="url" content="https://movieden.space/privacypolicy" />
+        <meta name="directory" content="submission" />
+        <meta name="pagename" content="Privacy Policy - Data Protection & User Privacy" />
+        <meta name="subtitle" content="Your Privacy Rights and Data Protection" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="MobileOptimized" content="320" />
+        <meta name="audience" content="all" />
+        <meta name="googlebot" content="index,follow" />
+        <meta name="bingbot" content="index,follow" />
+        
+        {/* Preconnect to external domains */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        
+        {/* DNS Prefetch */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <link rel="dns-prefetch" href="//res.cloudinary.com" />
+        <link rel="dns-prefetch" href="//tmbd.org" />
+        </HelmetProvider>
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
       <h1 className="text-3xl font-bold mb-8 text-purple-400">Movie Den Privacy Policy</h1>
       
@@ -107,6 +181,7 @@ const PrivacyPolicy = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
