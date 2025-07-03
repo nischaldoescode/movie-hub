@@ -281,7 +281,7 @@ const CollectionPage = () => {
         <meta name="apple-mobile-web-app-status-bar-style" content="#1f2937" />
 
         {/* Canonical URL */}
-        <link rel="canonical" href="https://movieden.space/collections" />
+        <link rel="canonical" href="https://movieden.space/collection" />
 
         {/* Open Graph Tags */}
         <meta property="og:type" content="website" />
@@ -293,7 +293,7 @@ const CollectionPage = () => {
           property="og:description"
           content="Explore our curated movie collections organized by genre, category, and themes. Discover action, drama, comedy, thriller, and more movie collections at Movie Den."
         />
-        <meta property="og:url" content="https://movieden.space/collections" />
+        <meta property="og:url" content="https://movieden.space/collection" />
         <meta property="og:site_name" content="Movie Den" />
         <meta
           property="og:image"
@@ -336,10 +336,10 @@ const CollectionPage = () => {
         <meta name="coverage" content="Worldwide" />
         <meta
           name="identifier-URL"
-          content="https://movieden.space/collections"
+          content="https://movieden.space/collection"
         />
         <meta name="owner" content="Movie Den" />
-        <meta name="url" content="https://movieden.space/collections" />
+        <meta name="url" content="https://movieden.space/collection" />
         <meta
           name="pagename"
           content="Movie Collections - Browse by Genre & Category"
@@ -364,6 +364,15 @@ const CollectionPage = () => {
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
         <link rel="dns-prefetch" href="//tmbd.org" />
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-QKRDMZMXVJ');
+        </script>
       </HelmetProvider>
       <div className="min-h-screen bg-gray-900 text-white">
         <div className="container mx-auto px-4 py-8">
