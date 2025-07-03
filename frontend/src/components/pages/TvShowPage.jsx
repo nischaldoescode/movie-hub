@@ -32,6 +32,7 @@ const TvShowPage = () => {
     getStreamingUrl,
     handlePlayerLoaded,
     playerLoading,
+    setPlayerLoading,
     getTvShowSeasonDetails,
     activeServer,
     switchServer,
@@ -49,22 +50,21 @@ const TvShowPage = () => {
   const [playerProtected, setPlayerProtected] = useState(true);
   const [securityLevel, setSecurityLevel] = useState("high"); // Options: "low", "medium", "high"
   const [blockedCount, setBlockedCount] = useState(0);
-  const [adOverlayActive, setAdOverlayActive] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [chromeExpanded, setChromeExpanded] = useState(false);
-  const [edgeExpanded, setEdgeExpanded] = useState(false);
-  const [firefoxExpanded, setFirefoxExpanded] = useState(false);
   const overlayShieldRef = useRef(null);
   const blockedActionsRef = useRef(0);
-  const adTimeoutRef = useRef(null);
   const playerContainerRef = useRef(null);
   const iframeRef = useRef(null);
   const playerRef = useRef(null);
   const topRef = useRef(null);
   const seasonDropdownRef = useRef(null);
   const [showEpisodes, setShowEpisodes] = useState(true);
+  const scrollRestoreRef = useRef(null);
+  const popupPatterns =
+    /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|osumpdfciiptn|muthwhcjuwela|qtdfxjlbnojnc|trackingwbasecond/i;
+  const blockedDomainsPattern =
+    /doubleclick|adservice|adnxs|adsystem|adsrvr|taboola|outbrain|revcontent|zedo|adroll|rubiconproject|openx|criteo|pubmatic|smartadserver|adtechus|quantserve|mediamath|turn|intellipopup|popcash|custom|effectivemeasure|tjwsg|osumpdfciiptn|\.online|muthwhcjuwela|\.store|qtdfxjlbnojnc|raggedstriking|usrpubtrk|brightadnetwork|trackingwbasecond/i;
 
-  // Universal protection system that works across all servers
   // Enhanced useEffect for protection system that targets specific classes/patterns
   useEffect(() => {
     if (!streamingUrl || !playerProtected) return;
@@ -73,11 +73,7 @@ const TvShowPage = () => {
     let clickCount = 0;
     let lastClickTime = 0;
     let originalFunctions = {};
-    const popupPatterns =
-      /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|osumpdfciiptn|wpnxiswpuyrfn/i;
-    const blockedDomainsPattern =
-      /doubleclick|adservice|adnxs|adsystem|adsrvr|taboola|outbrain|revcontent|zedo|adroll|rubiconproject|openx|criteo|pubmatic|smartadserver|adtechus|quantserve|mediamath|turn|intellipopup|popcash|custom|effectivemeasure|tjwsg|osumpdfciiptn|\.online|wpnxiswpuyrfn|\.icu|adserverDomain/i;
-    
+
     // Enhanced script blocking function
     const blockScript = (script) => {
       const src = script.src || "";
@@ -99,19 +95,44 @@ const TvShowPage = () => {
         content.match(/let [a-zA-Z0-9]{15,}/) ||
         content.match(/const [a-zA-Z0-9]{15,}/);
 
+      const hasBase64Redirection =
+        content.includes("atob(") ||
+        content.includes("decodeBase64") ||
+        content.match(/aHR0cHM6Ly[^\s'"]+/) || // hardcoded base64 strings
+        content.includes("window.open(decodedLink") ||
+        content.includes("loadExternalScripts");
+
       return (
         blockedDomainsPattern.test(src) ||
         popupPatterns.test(src) ||
         src.includes("popcash") ||
         src.includes("intellipopup") ||
+        src.includes("script-custom.js") ||
         content.includes("znid") ||
         content.includes("donto") ||
         content.includes("IOarzRhPlP") ||
         content.includes("popads-script") ||
         content.includes("videoOverlay") ||
+        content.includes("script-custom.js") ||
+        content.includes("video-layout_controls__rRx2z") ||
+        content.includes("transition-all") ||
+        content.includes("copywrite-button") ||
+        content.includes("gradient-shadow") ||
+        content.includes("overscroll-contain") ||
+        content.includes("a") ||
+        content.includes(
+          "aHR0cHM6Ly9yYWdnZWRzdHJpa2luZy5jb20vZGN4a2txMnJ2cD9rZXk9MDZkODRkNDYwZDhhYTQ4NzNkNjI5ZTEzNWZhY2U2ZDY="
+        ) ||
+        content.includes(
+          "aHR0cHM6Ly9yYWdnZWRzdHJpa2luZy5jb20vcmM4djdxd3NnZT9rZXk9OWI5ZmE4Y2JhYjI5NTg3MTczNzI4ZGM2NTMyYWRiYjA="
+        ) ||
+        content.includes(
+          "Ly9yYWdnZWRzdHJpa2luZy5jb20vMjAvZWIvYmEvMjBlYmJhMGEyOGYyNDFhODgwOGUyYTU4OTBlODNlODQuanM="
+        ) ||
         // Add these new checks
         hasAdServerDomain ||
         hasRandomVarNames ||
+        hasBase64Redirection ||
         content.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") || // Block this specific script
         content.match(
           /window\.open|popup|redirect|location\s*=|postMessage|_blank/i
@@ -141,7 +162,6 @@ const TvShowPage = () => {
     storeOriginalFunctions();
 
     // Override window.open with robust URL analysis
-    // Enhance the window.open override with stronger checks
     window.open = function (...args) {
       if (!args[0]) return null;
 
@@ -149,7 +169,7 @@ const TvShowPage = () => {
 
       // Always block _blank targets
       if (args[1] && args[1].includes("_blank")) {
-        console.log("Blocked _blank target:", url);
+        // console.log("Blocked _blank target:", url);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return null;
@@ -164,14 +184,14 @@ const TvShowPage = () => {
         (document.referrer && popupPatterns.test(document.referrer));
 
       if (isBlocked) {
-        console.log("Popup blocked:", url);
+        // console.log("Popup blocked:", url);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return null;
       }
 
       // Block by default for streaming content (cautious approach)
-      console.log("Popup blocked (default protection):", url);
+      // console.log("Popup blocked (default protection):", url);
       blockedActionsRef.current++;
       setBlockedCount((prev) => prev + 1);
       return null;
@@ -212,7 +232,7 @@ const TvShowPage = () => {
         callbackStr.includes("popup") ||
         callbackStr.includes("adv")
       ) {
-        console.log("Blocked suspicious timeout");
+        // console.log("Blocked suspicious timeout");
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return 0;
@@ -257,7 +277,7 @@ const TvShowPage = () => {
                     blockedDomainsPattern.test(src) ||
                     popupPatterns.test(src)
                   ) {
-                    console.log("Blocked suspicious iframe load:", src);
+                    // console.log("Blocked suspicious iframe load:", src);
                     element.src = "about:blank";
                     blockedActionsRef.current++;
                     setBlockedCount((prev) => prev + 1);
@@ -291,10 +311,10 @@ const TvShowPage = () => {
                           return window.location;
                         },
                         set: function (value) {
-                          console.log(
-                            "Blocked iframe location change to:",
-                            value
-                          );
+                          // console.log(
+                          //   "Blocked iframe location change to:",
+                          //   value
+                          // );
                           blockedActionsRef.current++;
                           setBlockedCount((prev) => prev + 1);
                           return window.location;
@@ -319,7 +339,7 @@ const TvShowPage = () => {
                 attr.toLowerCase() === "src" &&
                 (blockedDomainsPattern.test(value) || popupPatterns.test(value))
               ) {
-                console.log("Blocked suspicious iframe src:", value);
+                // console.log("Blocked suspicious iframe src:", value);
                 blockedActionsRef.current++;
                 setBlockedCount((prev) => prev + 1);
                 return;
@@ -327,69 +347,101 @@ const TvShowPage = () => {
               return originalSetAttribute.call(this, attr, value);
             };
 
-            console.log("Enhanced iframe security applied");
+            // console.log("Enhanced iframe security applied");
           } catch (e) {
-            console.log("Could not enhance iframe security");
+            // console.log("Could not enhance iframe security");
           }
         }, 0);
       }
 
-      if (tagName.toLowerCase() === 'script') {
+      if (tagName.toLowerCase() === "script") {
         // Monitor this script element for suspicious content
         const originalSetAttribute = element.setAttribute;
-        element.setAttribute = function(name, value) {
-          if (name.toLowerCase() === 'src' && (blockedDomainsPattern.test(value) || popupPatterns.test(value))) {
-            console.log("Blocked script src attribute:", value);
+        element.setAttribute = function (name, value) {
+          if (
+            name.toLowerCase() === "src" &&
+            (blockedDomainsPattern.test(value) || popupPatterns.test(value))
+          ) {
+            // console.log("Blocked script src attribute:", value);
             blockedActionsRef.current++;
-            setBlockedCount(prev => prev + 1);
+            setBlockedCount((prev) => prev + 1);
             return;
           }
-          
+
           return originalSetAttribute.call(this, name, value);
         };
-        
+
         // Create a setter trap for script content
-        let scriptContent = '';
-        Object.defineProperty(element, 'textContent', {
-          get: function() {
+        let scriptContent = "";
+        Object.defineProperty(element, "textContent", {
+          get: function () {
             return scriptContent;
           },
-          set: function(value) {
+          set: function (value) {
             // Check if content is suspicious before allowing it
-            if (value && (
-              value.includes("adserverDomain") ||
-              value.includes("qqsfafvkgsyto.online") ||
-              value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
-              value.match(/window\['[a-zA-Z0-9]{20,}'\]/)
-            )) {
-              console.log("Blocked suspicious script content");
+            if (
+              value &&
+              (value.includes("adserverDomain") ||
+                value.includes("qqsfafvkgsyto.online") ||
+                value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
+                value.match(/window\['[a-zA-Z0-9]{20,}'\]/))
+            ) {
+              // console.log("Blocked suspicious script content");
               blockedActionsRef.current++;
-              setBlockedCount(prev => prev + 1);
+              setBlockedCount((prev) => prev + 1);
               // Return silently without setting the content
               return;
             }
-            scriptContent = value;
-          }
-        });
-        
-        // Same for innerHTML which could be used to set script content
-        Object.defineProperty(element, 'innerHTML', {
-          set: function(value) {
-            // Check if content is suspicious
-            if (value && (
-              value.includes("adserverDomain") ||
-              value.includes("qqsfafvkgsyto.online") ||
-              value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
-              value.match(/window\['[a-zA-Z0-9]{20,}'\]/)
-            )) {
-              console.log("Blocked suspicious script innerHTML");
+            if (
+              value &&
+              (value.includes("decodeBase64") ||
+                value.includes("window.open(decodedLink") ||
+                value.includes("atob(") ||
+                value.match(/aHR0cHM6Ly[^\s'"]+/)) // base64 URL inline
+            ) {
+              // console.log("Blocked Base64/obfuscated ad logic");
               blockedActionsRef.current++;
-              setBlockedCount(prev => prev + 1);
+              setBlockedCount((prev) => prev + 1);
               return;
             }
+
+            scriptContent = value;
+          },
+        });
+
+        // Same for innerHTML which could be used to set script content
+        Object.defineProperty(element, "innerHTML", {
+          set: function (value) {
+            // Check if content is suspicious
+            if (
+              value &&
+              (value.includes("adserverDomain") ||
+                value.includes("qqsfafvkgsyto.online") ||
+                value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
+                value.includes("decodeBase64") ||
+                value.match(/window\['[a-zA-Z0-9]{20,}'\]/))
+            ) {
+              // console.log("Blocked suspicious script innerHTML");s
+              blockedActionsRef.current++;
+              setBlockedCount((prev) => prev + 1);
+              return;
+            }
+            if (
+              value &&
+              (value.includes("decodeBase64") ||
+                value.includes("window.open(decodedLink") ||
+                value.includes("atob(") ||
+                value.match(/aHR0cHM6Ly[^\s'"]+/)) // base64 URL inline
+            ) {
+              // console.log("Blocked Base64/obfuscated ad logic");
+              blockedActionsRef.current++;
+              setBlockedCount((prev) => prev + 1);
+              return;
+            }
+
             // Use the native innerHTML setter
             HTMLScriptElement.prototype.innerHTML = value;
-          }
+          },
         });
       }
 
@@ -404,7 +456,7 @@ const TvShowPage = () => {
         // Analyze the iframe before allowing
         const src = child.src || "";
         if (blockedDomainsPattern.test(src) || popupPatterns.test(src)) {
-          console.log("Blocked suspicious iframe append:", src);
+          // console.log("Blocked suspicious iframe append:", src);
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return child; // Return child but don't actually append
@@ -422,10 +474,21 @@ const TvShowPage = () => {
           ) ||
           blockedDomainsPattern.test(scriptSrc)
         ) {
-          console.log("Blocked suspicious script append");
+          // console.log("Blocked suspicious script append");
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return child; // Return child but don't actually append
+        }
+        if (
+          scriptContent.includes("decodeBase64") ||
+          scriptContent.includes("loadExternalScripts") ||
+          scriptContent.includes("atob(") ||
+          scriptContent.match(/aHR0cHM6Ly[^\s'"]+/)
+        ) {
+          // console.log("Blocked Base64-redirect script via appendChild");
+          blockedActionsRef.current++;
+          setBlockedCount((prev) => prev + 1);
+          return child;
         }
       }
 
@@ -438,7 +501,7 @@ const TvShowPage = () => {
       if (newNode.tagName === "IFRAME" || newNode.tagName === "SCRIPT") {
         const src = newNode.src || "";
         if (blockedDomainsPattern.test(src) || popupPatterns.test(src)) {
-          console.log("Blocked suspicious element insertion:", src);
+          // console.log("Blocked suspicious element insertion:", src);
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return newNode;
@@ -454,7 +517,7 @@ const TvShowPage = () => {
         typeof message === "string" ? message : JSON.stringify(message);
 
       if (popupPatterns.test(messageStr)) {
-        console.log("Blocked suspicious postMessage:", targetOrigin);
+        // console.log("Blocked suspicious postMessage:", targetOrigin);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return;
@@ -492,67 +555,6 @@ const TvShowPage = () => {
       overlayShieldRef.current = shield;
       playerContainer.appendChild(shield);
 
-      // Enhanced ad overlay blocker with better styling
-      const adOverlay = document.createElement("div");
-      adOverlay.className = "ad-overlay-blocker";
-      adOverlay.style.position = "absolute";
-      adOverlay.style.top = "0";
-      adOverlay.style.left = "0";
-      adOverlay.style.width = "100%";
-      adOverlay.style.height = "100%";
-      adOverlay.style.zIndex = "10000";
-      adOverlay.style.background = "rgba(0,0,0,0.9)";
-      adOverlay.style.display = "none";
-      adOverlay.style.alignItems = "center";
-      adOverlay.style.justifyContent = "center";
-      adOverlay.style.flexDirection = "column";
-      adOverlay.innerHTML = `
-        <div style="display: flex; align-items: center; margin-bottom: 16px;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f59e0b; margin-right: 8px;">
-            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-            <line x1="12" y1="9" x2="12" y2="13"></line>
-            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-          </svg>
-          <div style="color:white; font-size:16px; font-weight:500;">Popup/Ad Blocked</div>
-        </div>
-        <div style="color:#d1d5db; font-size:14px; margin-bottom:16px; max-width:80%; text-align:center;">
-          Our system detected and blocked potentially harmful content from the video player
-        </div>
-        <button style="background:#3b82f6; color:white; border:none; padding:8px 20px; border-radius:4px; cursor:pointer; font-size:14px; font-weight:500; display:flex; align-items:center; justify-content:center;">
-          <span style="margin-right:6px">Continue to Video</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-          </svg>
-        </button>
-      `;
-
-      playerContainer.appendChild(adOverlay);
-
-      // More aggressive ad overlay display with random delay to avoid detection
-      const showAdOverlay = () => {
-        if (!isMounted) return;
-        adOverlay.style.display = "flex";
-        setAdOverlayActive(true);
-
-        // Random timeout to avoid pattern detection
-        const randomDelay = 3000 + Math.random() * 2000;
-        adTimeoutRef.current = setTimeout(() => {
-          if (isMounted) {
-            adOverlay.style.display = "none";
-            setAdOverlayActive(false);
-          }
-        }, randomDelay);
-      };
-
-      const continueButton = adOverlay.querySelector("button");
-      if (continueButton) {
-        continueButton.addEventListener("click", () => {
-          adOverlay.style.display = "none";
-          setAdOverlayActive(false);
-          clearTimeout(adTimeoutRef.current);
-        });
-      }
-
       // Advanced event handler with pattern detection and AI-like filtering
       const handleInteraction = (e) => {
         if (!playerProtected) return true;
@@ -587,7 +589,7 @@ const TvShowPage = () => {
             // Use a setTimeout to check if navigation occurred after event handling
             setTimeout(() => {
               if (window.location.href !== currentHref) {
-                console.log("Blocked redirect from player control");
+                // console.log("Blocked redirect from player control");
                 window.history.back(); // Go back if navigation occurred
                 blockedActionsRef.current++;
                 setBlockedCount((prev) => prev + 1);
@@ -611,7 +613,6 @@ const TvShowPage = () => {
         if (clickCount > 0 && now - lastClickTime < 500 + Math.random() * 300) {
           e.stopPropagation();
           e.preventDefault();
-          showAdOverlay();
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           clickCount = 0;
@@ -632,6 +633,11 @@ const TvShowPage = () => {
         // Enhanced heuristic detection logic
         const isInteractive =
           e.target.tagName === "A" ||
+          e.target.id === "dontfoid" ||
+          e.target.id?.includes("dontfoid") ||
+          (e.target.tagName === "A" &&
+            (e.target.style.display === "none" ||
+              e.target.style.visibility === "hidden")) ||
           e.target.tagName === "BUTTON" ||
           e.target.tagName === "IMG" ||
           e.target.onclick ||
@@ -679,7 +685,6 @@ const TvShowPage = () => {
         if (isInteractive || suspiciousText) {
           e.stopPropagation();
           e.preventDefault();
-          showAdOverlay();
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return false;
@@ -700,7 +705,7 @@ const TvShowPage = () => {
         (e) => {
           const isLink = e.target.tagName === "A" || e.target.closest("a");
           if (isLink) {
-            console.log("Blocked click on link in player area");
+            // console.log("Blocked click on link in player area");
             e.preventDefault();
             e.stopPropagation();
             blockedActionsRef.current++;
@@ -720,9 +725,6 @@ const TvShowPage = () => {
               history.back();
               blockedActionsRef.current++;
               setBlockedCount((prev) => prev + 1);
-
-              // Show the ad overlay
-              showAdOverlay();
             }
           }, 100);
         },
@@ -889,24 +891,20 @@ const TvShowPage = () => {
                 // Try to override frame window.open
                 // Use event listeners to intercept navigation attempts
                 try {
-                  frameWindow.addEventListener("beforeunload", function (e) {
-                    console.log("Blocked navigation attempt via beforeunload");
-                    blockedActionsRef.current++;
-                    setBlockedCount((prev) => prev + 1);
-
-                    // Cancel the event
-                    e.preventDefault();
-                    e.returnValue = "";
-                    return "";
-                  });
+                  // frameWindow.addEventListener("beforeunload", function (e) {
+                  //   console.log("Detected beforeunload – no prompt triggered"); // Just log or react
+                  //   // Do NOT set e.returnValue or return anything – this prevents the browser dialog
+                  //   blockedActionsRef.current++;
+                  //   setBlockedCount((prev) => prev + 1);
+                  // });
 
                   frameWindow.addEventListener("hashchange", function (e) {
                     const newHash = frameWindow.location.hash;
                     if (popupPatterns.test(newHash)) {
-                      console.log(
-                        "Blocked suspicious hash navigation:",
-                        newHash
-                      );
+                      // console.log(
+                      //   "Blocked suspicious hash navigation:",
+                      //   newHash
+                      // );
                       blockedActionsRef.current++;
                       setBlockedCount((prev) => prev + 1);
                       e.preventDefault();
@@ -916,7 +914,7 @@ const TvShowPage = () => {
                   // Also try to intercept form submissions which can cause navigation
                   const originalSubmit = HTMLFormElement.prototype.submit;
                   HTMLFormElement.prototype.submit = function () {
-                    console.log("Blocked form submission");
+                    // console.log("Blocked form submission");
                     blockedActionsRef.current++;
                     setBlockedCount((prev) => prev + 1);
                     return false;
@@ -929,7 +927,7 @@ const TvShowPage = () => {
                         mutation.addedNodes.forEach((node) => {
                           if (node.tagName === "FORM") {
                             node.addEventListener("submit", function (e) {
-                              console.log("Blocked form submit event");
+                              // console.log("Blocked form submit event");
                               e.preventDefault();
                               blockedActionsRef.current++;
                               setBlockedCount((prev) => prev + 1);
@@ -1045,7 +1043,8 @@ const TvShowPage = () => {
                   '[znid], [donto], [style*="z-index:"], [style*="position: absolute"][style*="z-index"], ' +
                     ".selectextShadowHost, .IOarzRhPlPOverlay, #videoOverlay, " +
                     '[class*="selectextShadowHost"], [class*="IOarzRhPlPOverlay"], ' +
-                    '[id="videoOverlay"], [id*="videoOverlay"]'
+                    '[id="videoOverlay"], [id*="videoOverlay"], #dontfoid, [id*="dontfoid"], ' +
+                    'a[style*="display: none"], a[style*="visibility: hidden"], a[style*="left: -1000px"]'
                 );
 
                 if (znidElements && znidElements.length) {
@@ -1364,7 +1363,7 @@ const TvShowPage = () => {
                       popupPatterns.test(value) ||
                       blockedDomainsPattern.test(value)
                     ) {
-                      console.log(`Blocked suspicious ${attrName}:`, value);
+                      // console.log(`Blocked suspicious ${attrName}:`, value);
                       target.setAttribute(attrName, "javascript:void(0)");
                       blockedActionsRef.current++;
                       setBlockedCount((prev) => prev + 1);
@@ -1416,10 +1415,6 @@ const TvShowPage = () => {
             setBlockedCount((prev) => prev + 1);
             return false;
           };
-
-          // Add event listeners for navigation events
-          window.addEventListener("beforeunload", navHandler, true);
-          window.addEventListener("unload", navHandler, true);
 
           // Monitor for clicks on the player controls
           const handleControlEvent = (e) => {
@@ -1483,7 +1478,7 @@ const TvShowPage = () => {
               e.target.dataset.href;
 
             if (suspiciousAttrs) {
-              console.log("Blocked suspicious click on player area element");
+              // console.log("Blocked suspicious click on player area element");
               e.stopPropagation();
               e.preventDefault();
               blockedActionsRef.current++;
@@ -1508,9 +1503,6 @@ const TvShowPage = () => {
           // Return cleanup function
           return {
             cleanup: () => {
-              window.removeEventListener("beforeunload", navHandler, true);
-              window.removeEventListener("unload", navHandler, true);
-
               playerElements.forEach((el) => {
                 el.removeEventListener("click", handleControlEvent, true);
                 el.removeEventListener("mousedown", handleControlEvent, true);
@@ -1564,10 +1556,6 @@ const TvShowPage = () => {
           if (playerContainer.contains(shield)) {
             playerContainer.removeChild(shield);
           }
-
-          if (playerContainer.contains(adOverlay)) {
-            playerContainer.removeChild(adOverlay);
-          }
         }
 
         if (observer) {
@@ -1579,7 +1567,6 @@ const TvShowPage = () => {
           iframeRef.current.removeEventListener("load", enhanceIframe);
         }
 
-        clearTimeout(adTimeoutRef.current);
         clearInterval(scanInterval);
         if (playerControlsProtection && playerControlsProtection.cleanup) {
           playerControlsProtection.cleanup();
@@ -1609,7 +1596,7 @@ const TvShowPage = () => {
         /\/\/(bit\.ly|goo\.gl|t\.co|tinyurl\.com)/.test(url);
 
       if (isEvil) {
-        console.log("Blocked navigation attempt:", url);
+        // console.log("Blocked navigation attempt:", url);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return true;
@@ -1619,22 +1606,24 @@ const TvShowPage = () => {
     };
 
     // Use beforeunload event
-    // Use beforeunload event
     const handleBeforeUnload = (event) => {
       const activeUrl = document.activeElement?.href || "";
 
-      // Only block unloads if they're malicious
-
-      if (
-        blockNavigation(activeUrl) ||
-        locationChangeAttempts >= maxAllowedChanges
-      ) {
-        event.preventDefault();
-        event.returnValue = "";
-        return "";
+      if (blockNavigation(activeUrl)) {
+        // console.log("Blocked malicious navigation silently:", activeUrl);
+        blockedActionsRef.current++;
+        setBlockedCount((prev) => prev + 1);
+        return; // Don't trigger browser prompt
       }
-      // Otherwise don't block normal navigation
-      return undefined;
+
+      if (locationChangeAttempts >= maxAllowedChanges && activeUrl) {
+        // console.log("Blocked excessive navigation silently:", activeUrl);
+        blockedActionsRef.current++;
+        setBlockedCount((prev) => prev + 1);
+        return;
+      }
+
+      // Allow all other cases including reload
     };
 
     // Use click event capture for deep interception
@@ -1716,8 +1705,6 @@ const TvShowPage = () => {
 
     // Protection for location.href changes
     try {
-      // Instead of trying to replace the method directly
-      // Use Object.defineProperty on the location object itself
       const blockNavigation = (url) => {
         // Your URL blocking logic here
         return popupPatterns.test(url) || blockedDomainsPattern.test(url);
@@ -1732,7 +1719,7 @@ const TvShowPage = () => {
           if (prop === "replace") {
             return function (url) {
               if (blockNavigation(url.toString())) {
-                console.log("Blocked location.replace to:", url);
+                // console.log("Blocked location.replace to:", url);
                 blockedActionsRef.current++;
                 setBlockedCount((prev) => prev + 1);
                 return;
@@ -1762,7 +1749,7 @@ const TvShowPage = () => {
         e.preventDefault();
         e.stopPropagation();
         history.pushState(null, "", originalLocation);
-        console.log("Blocked excessive navigation attempts");
+        // console.log("Blocked excessive navigation attempts");
         return false;
       }
     });
@@ -1948,7 +1935,7 @@ const TvShowPage = () => {
                   blockedDomainsPattern.test(src) ||
                   popupPatterns.test(src)
                 ) {
-                  console.log("Blocked suspicious nested iframe:", src);
+                  // console.log("Blocked suspicious nested iframe:", src);
                   nestedFrame.src = "about:blank";
                   blockedActionsRef.current++;
                   setBlockedCount((prev) => prev + 1);
@@ -1998,7 +1985,7 @@ const TvShowPage = () => {
         // If we lost focus, check if a popup might have been opened
         setTimeout(() => {
           if (!hasFocus) {
-            console.log("Focus lost - potential popup detected");
+            // console.log("Focus lost - potential popup detected");
             // Force focus back
             window.focus();
           }
@@ -2048,7 +2035,7 @@ const TvShowPage = () => {
     window.open = function (...args) {
       const url = args[0]?.toString() || "";
       if (popupPatterns.test(url) || blockedDomainsPattern.test(url)) {
-        console.log("Blocked popup:", url);
+        // console.log("Blocked popup:", url);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return null;
@@ -2095,7 +2082,6 @@ const TvShowPage = () => {
       try {
         setLoading(true);
         // Scroll to top when page loads
-        window.scrollTo(0, 0);
 
         const details = await getMovieDetails(id, "tv");
         setTvShow(details);
@@ -2125,64 +2111,25 @@ const TvShowPage = () => {
       window.onbeforeunload = null;
     };
   }, []);
-  const handlePlayMovie = () => {
-    const url = getStreamingUrl(id, "movie");
-    setStreamingUrl(url);
-    setIsPlaying(true);
-    setBlockedCount(0); // Reset counter
-
-    window.onbeforeunload = null;
-    // Scroll to player with a smooth transition
-    setTimeout(() => {
-      if (playerRef.current) {
-        playerRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }, 100);
-  };
-
   // Handle iframe events
   const handleIframeLoad = () => {
     window.onbeforeunload = null;
 
+    // Restore scroll AFTER iframe has loaded
+    if (scrollRestoreRef.current !== null) {
+      window.scrollTo(0, scrollRestoreRef.current);
+      scrollRestoreRef.current = null;
+    }
+
     handlePlayerLoaded();
-    // Only block unloads for malicious URLs
+
     window.addEventListener("beforeunload", (event) => {
-      // Allow normal page reloads
       if (event.currentTarget.location.href === window.location.href) {
         return undefined;
       }
     });
   };
 
-  // Toggle protection
-  const toggleProtection = () => {
-    setPlayerProtected(true); // Always set to true if it's ever called
-    if (overlayShieldRef.current) {
-      overlayShieldRef.current.style.pointerEvents = "auto";
-    }
-  };
-
-  // Change security level
-  const changeSecurityLevel = (level) => {
-    setSecurityLevel("high");
-  };
-
-  // Force close ad overlay (manual option)
-  const closeAdOverlay = () => {
-    setAdOverlayActive(false);
-    const adOverlay = playerContainerRef.current?.querySelector(
-      ".ad-overlay-blocker"
-    );
-    if (adOverlay) {
-      adOverlay.style.display = "none";
-    }
-    if (adTimeoutRef.current) {
-      clearTimeout(adTimeoutRef.current);
-    }
-  };
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -2219,41 +2166,35 @@ const TvShowPage = () => {
 
   // Handle episode play
   const handlePlayEpisode = (season, episode) => {
+    setPlayerLoading(true);
+
     const url = getStreamingUrl(id, "tv", season, episode);
     setStreamingUrl(url);
     setActiveEpisode({ season, episode });
+    setIsPlaying(true);
 
     // Scroll to player with a smooth transition
-    setTimeout(() => {
-      if (playerRef.current) {
-        playerRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }, 100);
   };
 
-  // Handle server change
   const handleServerChange = (server) => {
-    // Store current scroll position
-    const scrollPos = window.scrollY;
+    // Remove scroll position storing
 
-    // Change server
     switchServer(server);
-
-    // Reset counter
     setBlockedCount(0);
 
-    // If already playing, update the streaming URL
-    if (isPlaying) {
-      const url = getStreamingUrl(id, "movie");
-      setStreamingUrl(url);
+    if (activeEpisode) {
+      setPlayerLoading(true);
 
-      // Preserve scroll position after a brief delay
-      setTimeout(() => {
-        window.scrollTo(0, scrollPos);
-      }, 50);
+      // Remove scroll restoration logic
+
+      const url = getStreamingUrl(
+        id,
+        "tv",
+        activeEpisode.season,
+        activeEpisode.episode,
+        server
+      );
+      setStreamingUrl(url);
     }
   };
 
@@ -2264,8 +2205,11 @@ const TvShowPage = () => {
       setTimeout(() => {
         // Scroll to element with offset to account for headers
         const yOffset = -200; // Adjust this value as needed
-        const y = watchSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({top: y, behavior: 'smooth'});
+        const y =
+          watchSection.getBoundingClientRect().top +
+          window.pageYOffset +
+          yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
       }, 100);
     }
   };
@@ -2322,12 +2266,13 @@ const TvShowPage = () => {
                     className="absolute top-0 left-0 w-full h-full"
                     allowFullScreen
                     title={`${tvShow.name} - Season ${activeEpisode?.season}, Episode ${activeEpisode?.episode}`}
-                    onLoad={handlePlayerLoaded}
+                    onLoad={handleIframeLoad}
                     loading="eager"
                     importance="high"
                     referrerPolicy="no-referrer-when-downgrade"
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                  ></iframe>
+                    key={streamingUrl}
+                  />
 
                   {playerLoading && (
                     <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
@@ -2391,7 +2336,10 @@ const TvShowPage = () => {
             </div>
 
             {/* Season Selection - Dropdown */}
-            <div className="mb-6 bg-gray-800 rounded-lg p-4" id="episodes-section">
+            <div
+              className="mb-6 bg-gray-800 rounded-lg p-4"
+              id="episodes-section"
+            >
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-base font-medium flex items-center">
                   <Calendar size={16} className="mr-2" />
@@ -2434,7 +2382,7 @@ const TvShowPage = () => {
 
               {/* Episodes List with Dropdown */}
               <div>
-                <button 
+                <button
                   onClick={() => setShowEpisodes(!showEpisodes)}
                   className="w-full flex items-center justify-between bg-gray-700 hover:bg-gray-600 p-3 rounded-md mb-3 transition-colors"
                 >
@@ -2442,9 +2390,11 @@ const TvShowPage = () => {
                     <Film size={16} className="mr-2" />
                     Episodes
                   </h3>
-                  <ChevronDown 
-                    size={18} 
-                    className={`transition-transform ${showEpisodes ? "rotate-180" : ""}`} 
+                  <ChevronDown
+                    size={18}
+                    className={`transition-transform ${
+                      showEpisodes ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
 
@@ -2454,7 +2404,8 @@ const TvShowPage = () => {
                   </div>
                 )}
 
-                {showEpisodes && seasonDetails &&
+                {showEpisodes &&
+                seasonDetails &&
                 seasonDetails.episodes &&
                 seasonDetails.episodes.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mt-4">
@@ -2487,7 +2438,8 @@ const TvShowPage = () => {
                     ))}
                   </div>
                 ) : (
-                  showEpisodes && seasonDetails && (
+                  showEpisodes &&
+                  seasonDetails && (
                     <div className="bg-gray-700 p-3 rounded-md text-center">
                       <p className="text-gray-400 text-sm">
                         No episodes available.
@@ -2546,7 +2498,9 @@ const TvShowPage = () => {
                   {tvShow.networks && tvShow.networks.length > 0 && (
                     <div className="flex justify-between">
                       <span className="text-gray-400">Network:</span>
-                      <span>{tvShow.networks.map((n) => n.name).join(", ")}</span>
+                      <span>
+                        {tvShow.networks.map((n) => n.name).join(", ")}
+                      </span>
                     </div>
                   )}
 
@@ -2584,168 +2538,169 @@ const TvShowPage = () => {
             <MovieCast cast={tvShow.credits?.cast} />
 
             <div className="bg-gray-800 rounded-lg overflow-hidden mb-6 mt-6">
-            <div className="bg-blue-900/40 p-4 border-b border-blue-800">
-              <h2 className="text-lg font-bold text-blue-200 mb-2 flex items-center">
-                <ShieldCheck className="mr-2 text-blue-400" size={20} />
-                For PC/Laptop Users: Get a Seamless Viewing Experience
-              </h2>
-              <p className="text-blue-100">
-                Although we've tried our hardest to prevent or minimize popup
-                ads, our servers depend on some advertisements to operate. For
-                the best experience, we recommend installing the uBlock Origin
-                extension.
-              </p>
-            </div>
-
-            <div className="p-5">
-              <h3 className="text-xl font-semibold mb-4 text-blue-300 flex items-center">
-                <Download className="mr-2" size={20} />
-                Install uBlock Origin
-              </h3>
-
-              <div className="grid md:grid-cols-2 gap-4 mb-6">
-                <a
-                  href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
-                  target="_blank"
-                  rel="noopener"
-                  className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
-                >
-                  <Chrome
-                    className="text-blue-400 mr-3 flex-shrink-0"
-                    size={24}
-                  />
-                  <div>
-                    <h4 className="font-medium text-blue-200">
-                      Chrome Web Store
-                    </h4>
-                    <p className="text-sm text-blue-300">
-                      Chrome, Edge, Brave, etc.
-                    </p>
-                  </div>
-                  <ExternalLink size={16} className="ml-auto text-blue-400" />
-                </a>
-
-                <a
-                  href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
-                  target="_blank"
-                  rel="noopener"
-                  className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
-                >
-                  <Globe
-                    className="text-blue-400 mr-3 flex-shrink-0"
-                    size={24}
-                  />
-                  <div>
-                    <h4 className="font-medium text-blue-200">
-                      Firefox Add-ons
-                    </h4>
-                    <p className="text-sm text-blue-300">Firefox browser</p>
-                  </div>
-                  <ExternalLink size={16} className="ml-auto text-blue-400" />
-                </a>
+              <div className="bg-blue-900/40 p-4 border-b border-blue-800">
+                <h2 className="text-lg font-bold text-blue-200 mb-2 flex items-center">
+                  <ShieldCheck className="mr-2 text-blue-400" size={20} />
+                  For PC/Laptop Users: Get a Seamless Viewing Experience
+                </h2>
+                <p className="text-blue-100">
+                  Although we've tried our hardest to prevent or minimize popup
+                  ads, our servers depend on some advertisements to operate. For
+                  the best experience, we recommend installing the uBlock Origin
+                  extension.
+                </p>
               </div>
 
-              <div className="border border-blue-800/50 rounded-lg overflow-hidden bg-blue-900/20 mt-6">
-                <div className="p-4 bg-blue-800/30">
-                  <h3 className="text-lg font-medium text-blue-200 flex items-center">
-                    <HelpCircle size={18} className="mr-2" />
-                    Installation Guides
-                  </h3>
+              <div className="p-5">
+                <h3 className="text-xl font-semibold mb-4 text-blue-300 flex items-center">
+                  <Download className="mr-2" size={20} />
+                  Install uBlock Origin
+                </h3>
+
+                <div className="grid md:grid-cols-2 gap-4 mb-6">
+                  <a
+                    href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
+                    target="_blank"
+                    rel="noopener"
+                    className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
+                  >
+                    <Chrome
+                      className="text-blue-400 mr-3 flex-shrink-0"
+                      size={24}
+                    />
+                    <div>
+                      <h4 className="font-medium text-blue-200">
+                        Chrome Web Store
+                      </h4>
+                      <p className="text-sm text-blue-300">
+                        Chrome, Edge, Brave, etc.
+                      </p>
+                    </div>
+                    <ExternalLink size={16} className="ml-auto text-blue-400" />
+                  </a>
+
+                  <a
+                    href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
+                    target="_blank"
+                    rel="noopener"
+                    className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
+                  >
+                    <Globe
+                      className="text-blue-400 mr-3 flex-shrink-0"
+                      size={24}
+                    />
+                    <div>
+                      <h4 className="font-medium text-blue-200">
+                        Firefox Add-ons
+                      </h4>
+                      <p className="text-sm text-blue-300">Firefox browser</p>
+                    </div>
+                    <ExternalLink size={16} className="ml-auto text-blue-400" />
+                  </a>
                 </div>
 
-                <div className="p-5">
-                  <div className="space-y-6">
-                    <div>
-                      <h4 className="font-medium text-blue-300 mb-3">
-                        Chrome / Edge Installation
-                      </h4>
-                      <ol className="list-decimal pl-5 space-y-2 text-blue-100">
-                        <li>
-                          Visit the{" "}
-                          <a
-                            href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
-                            target="_blank"
-                            rel="noopener"
-                            className="text-blue-400 underline"
-                          >
-                            Chrome Web Store
-                          </a>
-                        </li>
-                        <li>Click "Add to Chrome"</li>
-                        <li>
-                          Confirm by clicking "Add extension" in the popup
-                        </li>
-                        <li>
-                          You'll see the uBlock Origin icon appear in your
-                          toolbar
-                        </li>
-                      </ol>
-                    </div>
+                <div className="border border-blue-800/50 rounded-lg overflow-hidden bg-blue-900/20 mt-6">
+                  <div className="p-4 bg-blue-800/30">
+                    <h3 className="text-lg font-medium text-blue-200 flex items-center">
+                      <HelpCircle size={18} className="mr-2" />
+                      Installation Guides
+                    </h3>
+                  </div>
 
-                    <div>
-                      <h4 className="font-medium text-blue-300 mb-3">
-                        Firefox Installation
-                      </h4>
-                      <ol className="list-decimal pl-5 space-y-2 text-blue-100">
-                        <li>
-                          Visit the{" "}
-                          <a
-                            href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
-                            target="_blank"
-                            rel="noopener"
-                            className="text-blue-400 underline"
-                          >
-                            Firefox Add-ons
-                          </a>{" "}
-                          page
-                        </li>
-                        <li>Click "Add to Firefox"</li>
-                        <li>Click "Add" in the confirmation dialog</li>
-                        <li>
-                          The uBlock Origin icon will appear in your browser
-                          toolbar
-                        </li>
-                      </ol>
-                    </div>
+                  <div className="p-5">
+                    <div className="space-y-6">
+                      <div>
+                        <h4 className="font-medium text-blue-300 mb-3">
+                          Chrome / Edge Installation
+                        </h4>
+                        <ol className="list-decimal pl-5 space-y-2 text-blue-100">
+                          <li>
+                            Visit the{" "}
+                            <a
+                              href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
+                              target="_blank"
+                              rel="noopener"
+                              className="text-blue-400 underline"
+                            >
+                              Chrome Web Store
+                            </a>
+                          </li>
+                          <li>Click "Add to Chrome"</li>
+                          <li>
+                            Confirm by clicking "Add extension" in the popup
+                          </li>
+                          <li>
+                            You'll see the uBlock Origin icon appear in your
+                            toolbar
+                          </li>
+                        </ol>
+                      </div>
 
-                    <div>
-                      <h4 className="font-medium text-blue-300 mb-3">
-                        Manual Installation (Advanced)
-                      </h4>
-                      <ol className="list-decimal pl-5 space-y-2 text-blue-100">
-                        <li>
-                          Download the latest release from{" "}
-                          <a
-                            href="https://github.com/gorhill/uBlock/releases"
-                            target="_blank"
-                            rel="noopener"
-                            className="text-blue-400 underline"
-                          >
-                            GitHub
-                          </a>
-                        </li>
-                        <li>Extract the downloaded zip file to a folder</li>
-                        <li>
-                          In your browser, go to the extensions page (e.g.,{" "}
-                          <code className="bg-blue-900/60 px-2 py-1 rounded">
-                            chrome://extensions
-                          </code>
-                          )
-                        </li>
-                        <li>
-                          Enable "Developer mode" using the toggle in the
-                          top-right corner
-                        </li>
-                        <li>
-                          Click "Load unpacked" and select the extracted folder
-                        </li>
-                      </ol>
+                      <div>
+                        <h4 className="font-medium text-blue-300 mb-3">
+                          Firefox Installation
+                        </h4>
+                        <ol className="list-decimal pl-5 space-y-2 text-blue-100">
+                          <li>
+                            Visit the{" "}
+                            <a
+                              href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
+                              target="_blank"
+                              rel="noopener"
+                              className="text-blue-400 underline"
+                            >
+                              Firefox Add-ons
+                            </a>{" "}
+                            page
+                          </li>
+                          <li>Click "Add to Firefox"</li>
+                          <li>Click "Add" in the confirmation dialog</li>
+                          <li>
+                            The uBlock Origin icon will appear in your browser
+                            toolbar
+                          </li>
+                        </ol>
+                      </div>
+
+                      <div>
+                        <h4 className="font-medium text-blue-300 mb-3">
+                          Manual Installation (Advanced)
+                        </h4>
+                        <ol className="list-decimal pl-5 space-y-2 text-blue-100">
+                          <li>
+                            Download the latest release from{" "}
+                            <a
+                              href="https://github.com/gorhill/uBlock/releases"
+                              target="_blank"
+                              rel="noopener"
+                              className="text-blue-400 underline"
+                            >
+                              GitHub
+                            </a>
+                          </li>
+                          <li>Extract the downloaded zip file to a folder</li>
+                          <li>
+                            In your browser, go to the extensions page (e.g.,{" "}
+                            <code className="bg-blue-900/60 px-2 py-1 rounded">
+                              chrome://extensions
+                            </code>
+                            )
+                          </li>
+                          <li>
+                            Enable "Developer mode" using the toggle in the
+                            top-right corner
+                          </li>
+                          <li>
+                            Click "Load unpacked" and select the extracted
+                            folder
+                          </li>
+                        </ol>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
           </div>
 
           {/* Right Column - Additional Info - Only visible on desktop */}
@@ -2829,9 +2784,7 @@ const TvShowPage = () => {
           tvShow.similar.results &&
           tvShow.similar.results.length > 0 && (
             <div className="bg-gray-800 rounded-lg p-4 mb-6 mt-8 w-full">
-              <h3 className="text-base font-medium mb-3">
-                Related TV Shows
-              </h3>
+              <h3 className="text-base font-medium mb-3">Related TV Shows</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 {tvShow.similar.results.slice(0, 12).map((similar) => (
                   <a
@@ -2848,9 +2801,7 @@ const TvShowPage = () => {
                       />
                     ) : (
                       <div className="bg-gray-600 w-full pt-[150%] flex items-center justify-center">
-                        <span className="text-gray-400 text-xs">
-                          No Image
-                        </span>
+                        <span className="text-gray-400 text-xs">No Image</span>
                       </div>
                     )}
                     <div className="p-2">
