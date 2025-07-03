@@ -85,14 +85,14 @@ const FAQ = () => {
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
         <link rel="dns-prefetch" href="//tmbd.org" />
-      <!-- Google tag (gtag.js) -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"></script>
       <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-      
-        gtag('config', 'G-QKRDMZMXVJ');
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-QKRDMZMXVJ');
+        `}
       </script>
         </HelmetProvider>
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
