@@ -1950,7 +1950,7 @@ const TvShowPage = () => {
         // Start processing from the main iframe
         processIframe(iframeRef.current);
       } catch (e) {
-        console.log("Error in iframe scanner:", e);
+        // console.log("Error in iframe scanner:", e);
       }
     };
 
@@ -2003,7 +2003,7 @@ const TvShowPage = () => {
           // If we can still access it, close it
           if (!newWindowReferences[i].closed) {
             newWindowReferences[i].close();
-            console.log("Closed detected popup window");
+            // console.log("Closed detected popup window");
             blockedActionsRef.current++;
             setBlockedCount((prev) => prev + 1);
           }
@@ -2060,7 +2060,7 @@ const TvShowPage = () => {
           const winUrl = win.location.href;
           if (blockedDomainsPattern.test(winUrl)) {
             win.close();
-            console.log("Closed malicious window:", winUrl);
+            // console.log("Closed malicious window:", winUrl);
             blockedActionsRef.current++;
             setBlockedCount((prev) => prev + 1);
           }
@@ -2091,7 +2091,7 @@ const TvShowPage = () => {
 
         setLoading(false);
       } catch (err) {
-        console.error("Error fetching TV show details:", err);
+        // console.error("Error fetching TV show details:", err);
         setError("Failed to load TV show details");
         setLoading(false);
       }
@@ -2156,7 +2156,7 @@ const TvShowPage = () => {
           const details = await getTvShowSeasonDetails(id, selectedSeason);
           setSeasonDetails(details);
         } catch (err) {
-          console.error("Error fetching season details:", err);
+          // console.error("Error fetching season details:", err);
         }
       }
     };
