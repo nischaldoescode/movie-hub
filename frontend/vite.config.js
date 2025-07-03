@@ -13,6 +13,7 @@ export default defineConfig({
     historyApiFallback: true,
   },
   build: {
+    sourcemap: false,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
