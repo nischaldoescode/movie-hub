@@ -363,19 +363,31 @@ export const MovieProvider = ({ children }) => {
     id,
     mediaType = "movie",
     season = null,
-    episode = null
+    episode = null,
+    server = null // Add optional server parameter
   ) => {
-    setPlayerLoading(true);
+    // setPlayerLoading(true);
 
-    if (activeServer === "server1") {
-      // Server 1 (vidlink.pro)
+    // Use provided server or fall back to activeServer
+    const selectedServer = server || activeServer;
+    console.log("getStreamingUrl called with:", {
+      id,
+      mediaType,
+      season,
+      episode,
+      selectedServer,
+    });
+    if (selectedServer === "server1") {
+      // Server 1 (vidsrc.co)
+      // embed-api.stream
       if (mediaType === "movie") {
-        return `https://player.vidsrc.co/embed/movie/${id}`;
-       // return `https://player.embed-api.stream/?id=${id}&type=movie`;
+        // https://player.embed-api.stream/?id={tmdbId}&type=movie
+        // return `https://player.vidsrc.co/embed/movie/${id}`;
+        return `https://player.embed-api.stream/?id=${id}&type=movie`;
       } else if (mediaType === "tv" && season && episode) {
-        return `https://player.vidsrc.co/embed/tv/${id}/${season}/${episode}`;
         // https://player.embed-api.stream/?id={tmdbId}&s={season}&e={episode}
-        // return `https://player.vidsrc.co/?id=${id}&s=${season}&e=${episode}`;
+        // return `https://player.vidsrc.co/embed/tv/${id}/${season}/${episode}`;
+        return `https://player.embed-api.stream/?id=${id}&s=${season}&e=${episode}`;
       }
     } else {
       // Server 2 (vidsrc.icu)
@@ -393,9 +405,11 @@ export const MovieProvider = ({ children }) => {
   };
   // Handle iframe load completion
   const handlePlayerLoaded = () => {
-    setPlayerLoading(false);
+    // Add small delay to ensure iframe is fully loaded
+    setTimeout(() => {
+      setPlayerLoading(false);
+    }, 100);
   };
-
   // Get movie videos (trailers, teasers)
   const getMovieVideos = async (id, mediaType = "movie") => {
     try {
@@ -519,6 +533,7 @@ export const MovieProvider = ({ children }) => {
         allHomeMovies: combinedMovies,
         loading,
         playerLoading,
+        setPlayerLoading,
         error,
         getMovieDetails,
         getTvShowSeasonDetails,
