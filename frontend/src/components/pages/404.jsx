@@ -1,13 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const Notfound = () => {
   const navigate = useNavigate();
 
   return (
     <>
-      <Helmet>
+      <HelmetProvider>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Oops! Page Not Found</title>
@@ -16,7 +16,7 @@ const Notfound = () => {
           content="Oops! Seems you got lost, the page you are looking for does not exist."
         />
         <meta name="robots" content="noindex, nofollow" />
-      </Helmet>
+      </HelmetProvider>
 
       <div className="min-h-screen flex flex-col items-center justify-center text-center bg-gray-900 p-9">
         <img src="https://img.freepik.com/free-vector/oops-404-error-with-broken-robot-concept-illustration_114360-1932.jpg" alt="Not Found" className="w-[32rem] h-[28rem] md:w-[32rem] md:h-[28rem] mb-8 mt-10 object-fill" />
