@@ -1,16 +1,16 @@
 import React from 'react';
 import './styles.css';
-
+import { Helmet } from 'react-helmet'
 const PrivacyPolicy = () => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
-      <h1 className="text-3xl font-bold mb-8 text-purple-400">Movie Hub Privacy Policy</h1>
+      <h1 className="text-3xl font-bold mb-8 text-purple-400">Movie Den Privacy Policy</h1>
       
       <div className="space-y-8">
         <section>
           <h2 className="text-xl font-semibold mb-4 text-purple-300">Content Usage Terms</h2>
           <p className="mb-4">
-            Movie Hub provides access to a variety of movies and TV shows for entertainment purposes. All content 
+            Movie Den provides access to a variety of movies and TV shows for entertainment purposes. All content 
             available through our service is provided "as is" and may be subject to copyright protection.
           </p>
           <p className="mb-4">
@@ -23,7 +23,7 @@ const PrivacyPolicy = () => {
         <section>
           <h2 className="text-xl font-semibold mb-4 text-purple-300">DMCA Compliance</h2>
           <p className="mb-4">
-            Movie Hub respects intellectual property rights and responds to notices of alleged copyright infringement.
+            Movie Den respects intellectual property rights and responds to notices of alleged copyright infringement.
             If you believe that content available through our service infringes your copyright, please send a notification
             to our designated agent.
           </p>
@@ -39,14 +39,14 @@ const PrivacyPolicy = () => {
             device capabilities, and other factors. We do not guarantee uninterrupted or error-free service.
           </p>
           <p className="mb-4">
-            Movie Hub may limit the number of concurrent streams from the same account to maintain service quality.
+            Movie Den may limit the number of concurrent streams from the same account to maintain service quality.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold mb-4 text-purple-300">User Responsibilities</h2>
           <p className="mb-4">
-            By using Movie Hub, you agree not to:
+            By using Movie Den, you agree not to:
           </p>
           <ul className="list-disc pl-5 space-y-2 text-gray-300">
             <li>Record, download, or redistribute any content obtained through our service</li>
@@ -59,7 +59,7 @@ const PrivacyPolicy = () => {
         <section>
           <h2 className="text-xl font-semibold mb-4 text-purple-300">Content Availability</h2>
           <p className="mb-4">
-            The availability of movies and TV shows on Movie Hub may change over time due to licensing agreements 
+            The availability of movies and TV shows on Movie Den may change over time due to licensing agreements 
             between content owners and our third-party providers. We do not guarantee specific content will remain 
             available indefinitely.
           </p>
@@ -72,11 +72,11 @@ const PrivacyPolicy = () => {
         <section>
           <h2 className="text-xl font-semibold mb-4 text-purple-300">Service Changes and Termination</h2>
           <p className="mb-4">
-            We reserve the right to modify or discontinue Movie Hub, with or without notice. We may also restrict access 
+            We reserve the right to modify or discontinue Movie Den, with or without notice. We may also restrict access 
             to some or all features to users at our discretion.
           </p>
           <p className="mb-4">
-            Movie Hub may terminate or suspend access to our service immediately, without prior notice, for conduct 
+            Movie Den may terminate or suspend access to our service immediately, without prior notice, for conduct 
             that we believe violates these terms or is harmful to other users or us.
           </p>
         </section>
@@ -84,7 +84,7 @@ const PrivacyPolicy = () => {
         <section>
           <h2 className="text-xl font-semibold mb-4 text-purple-300">Third-Party Content Disclaimer</h2>
           <p className="mb-4">
-            Movie Hub acts solely as an aggregator of third-party content. We do not review, censor, or edit the 
+            Movie Den acts solely as an aggregator of third-party content. We do not review, censor, or edit the 
             content provided through our platform. We are not responsible for and do not endorse any opinions, 
             views, or content that may be found in videos accessible through our service.
           </p>
@@ -97,12 +97,12 @@ const PrivacyPolicy = () => {
         <div className="mt-8 p-5 bg-gray-800 rounded-lg">
           <h3 className="font-medium mb-2 text-purple-300">Final Acknowledgment</h3>
           <p className="text-gray-300 mb-4">
-            By continuing to use Movie Hub, you agree to the terms outlined above. These terms may be updated 
+            By continuing to use Movie Den, you agree to the terms outlined above. These terms may be updated 
             from time to time without prior notice.
           </p>
           <p className="text-gray-300">
             If you have any questions about our privacy policy, please contact us at: 
-            <a href="mailto:connect.moviehub@gmail.com" className="text-purple-300 ml-1 hover:underline">connect.moviehub@gmail.com</a>
+            <a href="mailto:connect.moviehub@gmail.com" className="text-purple-300 ml-1 hover:underline">connect.movieden@gmail.com</a>
           </p>
         </div>
       </div>
