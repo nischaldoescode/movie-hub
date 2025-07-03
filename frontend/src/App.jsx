@@ -4,7 +4,6 @@ import Navbar from './components/layouts/Nabar'
 import Footer from './components/layouts/Footer'
 import Loader from './components/ui/Loader'
 import SearchModal from './components/ui/Searchbar'
-import { MovieProvider } from './components/context/MovieContext'
 
 // Lazy load pages for better performance
 const HomePage = lazy(() => import('./components/pages/Homepage'))
