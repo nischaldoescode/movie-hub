@@ -4,7 +4,7 @@ import MovieCarousel from '../movie/MovieCarousel';
 import MovieGrid from '../movie/MovieGrid';
 import FilterBar from '../ui/FilterBar';
 import Loader from '../ui/Loader';
-
+import { Helmet, HelmetProvider } from 'react-helmet-async'
 const HomePage = () => {
   const context = useMovieContext();
   
@@ -111,6 +111,82 @@ const HomePage = () => {
   const filteredMovies = getFilteredMovies();
   
   return (
+    <>
+      <HelmetProvider>
+        {/* Basic Meta Tags */}
+        <title>MovieDen - Watch Movies Online Free | HD Movies & TV Shows</title>
+        <meta name="description" content="Watch latest movies and TV shows online for free in HD quality. Stream Hollywood, Bollywood, and international films. No registration required. MovieDen - Your ultimate entertainment destination." />
+        <meta name="keywords" content="watch movies online, free movies, HD movies, streaming, TV shows, Hollywood movies, Bollywood movies, latest movies, online cinema, movie streaming, free streaming, watch online, entertainment, films, series, episodes, MovieDen, Movie Den, Movie-Den, Movie Den, Movie Den, movie-watch, stream movie, stream movie free, watch movie for free, stream movie for free," />
+        <meta name="author" content="MovieDen" />
+        <meta name="robots" content="index, follow" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="language" content="en" />
+        <meta name="revisit-after" content="1 day" />
+        <meta name="distribution" content="global" />
+        <meta name="rating" content="general" />
+        <meta name="copyright" content="MovieDen" />
+        <meta name="theme-color" content="#1f2937" />
+        <meta name="msapplication-TileColor" content="#1f2937" />
+        <meta name="msapplication-navbutton-color" content="#1f2937" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="#1f2937" />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://movieDen.space" />
+        
+        {/* Open Graph Tags */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="MovieDen - Watch Movies Online Free | HD Movies & TV Shows" />
+        <meta property="og:description" content="Watch latest movies and TV shows online for free in HD quality. Stream Hollywood, Bollywood, and international films. No registration required." />
+        <meta property="og:url" content="https://movieDen.space" />
+        <meta property="og:site_name" content="MovieDen" />
+        <meta property="og:image" content="https://res.cloudinary.com/dd7yplbta/image/upload/v1751558020/image_1_r7k55v.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="MovieDen - Watch Movies Online Free" />
+        <meta property="og:locale" content="en_US" />
+        
+        {/* Twitter Cards */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="MovieDen - Watch Movies Online Free | HD Movies & TV Shows" />
+        <meta name="twitter:description" content="Watch latest movies and TV shows online for free in HD quality. Stream Hollywood, Bollywood, and international films. No registration required." />
+        <meta name="twitter:image" content="https://res.cloudinary.com/dd7yplbta/image/upload/v1751558020/image_1_r7k55v.png" />
+        <meta name="twitter:image:alt" content="MovieDen - Watch Movies Online Free" />
+        <meta name="twitter:site" content="@MovieDen" />
+        <meta name="twitter:creator" content="@MovieDen" />
+        
+        {/* Additional SEO Tags */}
+        <meta name="application-name" content="MovieDen" />
+        <meta name="msapplication-TileImage" content="https://res.cloudinary.com/dd7yplbta/image/upload/v1751558020/image_1_r7k55v.png" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="MovieDen" />
+        <meta name="theme-color" content="#1f2937" />
+        
+        {/* Additional Meta Tags for Movie Site */}
+        <meta name="category" content="Entertainment" />
+        <meta name="coverage" content="Worldwide" />
+        <meta name="identifier-URL" content="https://movieden.space" />
+        <meta name="owner" content="MovieDen" />
+        <meta name="url" content="https://movieden.space" />
+        <meta name="pagename" content="MovieDen - Watch Movies Online Free" />
+        <meta name="subtitle" content="HD Movies & TV Shows Streaming" />
+        <meta name="HandheldFriendly" content="True" />
+        <meta name="audience" content="all" />
+        <meta name="googlebot" content="index,follow" />
+        <meta name="bingbot" content="index,follow" />
+        
+        {/* Preconnect to external domains */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        
+        {/* DNS Prefetch */}
+        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="//fonts.gstatic.com" />
+        <link rel="dns-prefetch" href="//res.cloudinary.com" />
+        <link rel="dns-prefetch" href="//tmbd.org" />
+      </HelmetProvider>
     <div className="min-h-screen bg-gray-900 text-white px-6 xl:px-24">
       {/* Hero Carousel */}
       {trendingMovies && trendingMovies.length > 0 && (
@@ -153,6 +229,7 @@ const HomePage = () => {
         />
       )}
     </div>
+    </>
   );
 };
 
