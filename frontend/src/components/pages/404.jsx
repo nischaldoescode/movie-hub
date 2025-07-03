@@ -16,14 +16,14 @@ const Notfound = () => {
           content="Oops! Seems you got lost, the page you are looking for does not exist."
         />
         <meta name="robots" content="noindex, nofollow" />
-        <!-- Google tag (gtag.js) -->
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"></script>
       <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-      
-        gtag('config', 'G-QKRDMZMXVJ');
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-QKRDMZMXVJ');
+        `}
       </script>
       </HelmetProvider>
 
