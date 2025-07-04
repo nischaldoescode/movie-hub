@@ -5,6 +5,7 @@ import MovieGrid from "../movie/MovieGrid";
 import Loader from "../ui/Loader";
 import SideAd2 from "../ui/Horizontal2";
 import SideAd3 from "../ui/Horizontal3";
+
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import {
   Search,
