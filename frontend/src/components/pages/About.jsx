@@ -118,7 +118,7 @@ const AboutUs = () => {
      crossorigin="anonymous"></script>
       </HelmetProvider>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
+     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
         <h1 className="text-4xl font-bold mb-8 text-center text-purple-400 fade-in">About Movie Den</h1>
         
         <div className="flex flex-col md:flex-row items-center mb-16 gap-8 justify-center">
