@@ -244,6 +244,8 @@ const HomePage = () => {
           gtag('config', 'G-QKRDMZMXVJ');
         `}
         </script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
+     crossorigin="anonymous"></script>
       </HelmetProvider>
       <div className="min-h-screen bg-gray-900 text-white px-6 xl:px-24">
         {/* Hero Carousel */}
