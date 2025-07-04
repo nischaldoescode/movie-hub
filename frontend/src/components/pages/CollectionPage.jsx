@@ -477,7 +477,7 @@ const CollectionPage = () => {
                   )}
                 </div>
               )}
-
+            <HorizontalAd />
               {/* Pagination */}
               {totalPages > 1 && items.length > 0 && (
                 <Pagination
@@ -488,6 +488,7 @@ const CollectionPage = () => {
               )}
             </>
           )}
+          
         </div>
       </div>
     </>
