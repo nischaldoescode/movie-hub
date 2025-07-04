@@ -4,7 +4,7 @@ import Navbar from './components/layouts/Nabar'
 import Footer from './components/layouts/Footer'
 import Loader from './components/ui/Loader'
 import SearchModal from './components/ui/Searchbar'
-import HorizontalAd from "../ui/Horizontal";
+import HorizontalAd from "./ui/Horizontal";
 // Lazy load pages for better performance
 const HomePage = lazy(() => import('./components/pages/Homepage'))
 const MoviePage = lazy(() => import('./components/pages/MoviePage'))
