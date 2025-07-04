@@ -93,7 +93,7 @@ const AboutUs = () => {
         <meta name="audience" content="all" />
         <meta name="googlebot" content="index,follow" />
         <meta name="bingbot" content="index,follow" />
-        <meta name="google-adsense-account" content="ca-pub-8779876482236769">
+        <meta name="google-adsense-account" content="ca-pub-8779876482236769" />
           
         {/* Preconnect to external domains */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
