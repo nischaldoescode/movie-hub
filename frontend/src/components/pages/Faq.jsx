@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './styles.css';
 import { Helmet, HelmetProvider } from 'react-helmet-async'; 
-
+import HorizontalAd from "../ui/Horizontal";
 const FAQ = () => {
   const [expandedSections, setExpandedSections] = useState({
     streaming: false,
@@ -297,6 +297,7 @@ const FAQ = () => {
           </p>
         </div>
       </div>
+      <HorizontalAd />
     </div>
     </>
   );
