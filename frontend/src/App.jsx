@@ -4,7 +4,7 @@ import Navbar from './components/layouts/Nabar'
 import Footer from './components/layouts/Footer'
 import Loader from './components/ui/Loader'
 import SearchModal from './components/ui/Searchbar'
-import HorizontalAd from "./components/ui/Horizontal";
+import SideAd from "./components/ui/Horizontal";
 // Lazy load pages for better performance
 const HomePage = lazy(() => import('./components/pages/Homepage'))
 const MoviePage = lazy(() => import('./components/pages/MoviePage'))
@@ -79,7 +79,7 @@ function App() {
             <Route path="*" element={<Notfound />} />
           </Routes>
         </Suspense>
-        <HorizontalAd />
+       <SideAd />
       </main>
       <Footer />
     </>
