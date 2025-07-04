@@ -15,6 +15,7 @@ const Notfound = () => {
           name="description"
           content="Oops! Seems you got lost, the page you are looking for does not exist."
         />
+        <meta name="google-adsense-account" content="ca-pub-8779876482236769">
         <meta name="robots" content="noindex, nofollow" />
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
      crossorigin="anonymous"></script>
