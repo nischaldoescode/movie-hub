@@ -2,8 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import HorizontalAd from "../ui/Horizontal";
-import SideAd2 from "./components/ui/Horizontal2";
-import SideAd3 from "./components/ui/Horizontal3";
+import SideAd2 from "../ui/Horizontal2";
+import SideAd3 from "../ui/Horizontal3";
 
 const Notfound = () => {
   const navigate = useNavigate();
