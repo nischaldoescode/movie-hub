@@ -5,7 +5,7 @@ import {
   Film,
 } from "lucide-react";
 import './styles.css';
-
+import HorizontalAd from "../ui/Horizontal";
 const AboutUs = () => {
   useEffect(() => {
     // Animation for elements with fade-in class
@@ -188,6 +188,7 @@ const AboutUs = () => {
             Start Watching Now
           </a>
         </div>
+       <HorizontalAd />
       </div>
     </>
   );
