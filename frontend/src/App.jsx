@@ -5,6 +5,7 @@ import Footer from './components/layouts/Footer'
 import Loader from './components/ui/Loader'
 import SearchModal from './components/ui/Searchbar'
 import SideAd from "./components/ui/Horizontal";
+import SideAd2 from "./components/ui/Horizontal2";
 // Lazy load pages for better performance
 const HomePage = lazy(() => import('./components/pages/Homepage'))
 const MoviePage = lazy(() => import('./components/pages/MoviePage'))
@@ -80,6 +81,7 @@ function App() {
           </Routes>
         </Suspense>
        <SideAd />
+        <SideAd2 />
       </main>
       <Footer />
     </>
