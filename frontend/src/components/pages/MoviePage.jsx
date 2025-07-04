@@ -4,7 +4,7 @@ import { useMovieContext } from "../context/MovieContext";
 import MovieDetailHero from "../movie/MovieDetailHero";
 import MovieCast from "../movie/MovieCast";
 import Loader from "../ui/Loader";
-import { Helmet, HelmetProvider } from 'react-helmet-async'
+
 import {
   Play,
   Server,
@@ -722,11 +722,7 @@ const MoviePage = () => {
         true
       );
 
-      // Deeper iframe protection strategies
-      const enhanceIframe = () => {
-        try {
-          if (!iframeRef.current) return;
-          const observeDOM = () => {
+         const observeDOM = () => {
             try {
               if (!iframeRef.current || !iframeRef.current.contentDocument)
                 return;
@@ -804,6 +800,10 @@ const MoviePage = () => {
               return null;
             }
           };
+      // Deeper iframe protection strategies
+      const enhanceIframe = () => {
+        try {
+          if (!iframeRef.current) return;
           // Track iframe loading attempts
           let frameLoadCounter = 0;
 
@@ -862,17 +862,17 @@ const MoviePage = () => {
               try {
                 iframeRef.current.contentDocument.head.appendChild(script);
               } catch (err) {
-                console.log("Could not inject protection script");
+                // console.log("Could not inject protection script");
               }
             } catch (err) {
-              console.log("Could not access iframe document");
+              // console.log("Could not access iframe document");
             }
           };
 
           // Enhanced iframe protector
           iframeRef.current.addEventListener("load", () => {
             frameLoadCounter++;
-            console.log(`Frame load attempt ${frameLoadCounter}`);
+            // console.log(`Frame load attempt ${frameLoadCounter}`);
 
             try {
               // Apply advanced iframe protection
@@ -883,7 +883,7 @@ const MoviePage = () => {
                 // Use event listeners to intercept navigation attempts
                 try {
                   frameWindow.addEventListener("beforeunload", function (e) {
-                    console.log("Detected beforeunload – no prompt triggered"); // Just log or react
+                    // console.log("Detected beforeunload – no prompt triggered"); // Just log or react
                     // Do NOT set e.returnValue or return anything – this prevents the browser dialog
                     blockedActionsRef.current++;
                     setBlockedCount((prev) => prev + 1);
@@ -936,7 +936,7 @@ const MoviePage = () => {
                     subtree: true,
                   });
                 } catch (e) {
-                  console.log("Could not add navigation event listeners:", e);
+                  // console.log("Could not add navigation event listeners:", e);
                 }
 
                 // Try to override other potentially dangerous methods
@@ -951,31 +951,31 @@ const MoviePage = () => {
                     return null;
                   };
                 } catch (e) {
-                  console.log("Could not override frame dialogs");
+                  // console.log("Could not override frame dialogs");
                 }
 
                 // Try to detect and block popunder techniques
                 try {
                   frameWindow.addEventListener("blur", function (e) {
-                    console.log("Frame blur detected - potential popunder");
+                    // console.log("Frame blur detected - potential popunder");
                     frameWindow.focus();
                     blockedActionsRef.current++;
                     setBlockedCount((prev) => prev + 1);
                   });
                 } catch (e) {
-                  console.log("Could not add blur listener");
+                  // console.log("Could not add blur listener");
                 }
               }
 
               // Add CSP to the frame
               addCSPToFrame();
             } catch (err) {
-              console.log("Protected frame access error:", err);
+              // console.log("Protected frame access error:", err);
             }
 
             // Check for excessive reloads (popup technique)
             if (frameLoadCounter > 3) {
-              console.log("Excessive frame reloads detected - freezing iframe");
+              // console.log("Excessive frame reloads detected - freezing iframe");
               try {
                 iframeRef.current.src = "about:blank";
               } catch (e) {}
@@ -985,7 +985,7 @@ const MoviePage = () => {
             mutations.forEach((mutation) => {
               if (mutation.attributeName === "src") {
                 // Handle src attribute changes here if needed
-                console.log("iframe src changed");
+                // console.log("iframe src changed");
               }
             });
           });
@@ -1023,7 +1023,7 @@ const MoviePage = () => {
                     });
                   }
                 } catch (e) {
-                  console.log(`Error with querySelector for ${pattern}:`, e);
+                  // console.log(`Error with querySelector for ${pattern}:`, e);s
                 }
               };
 
@@ -1088,10 +1088,10 @@ const MoviePage = () => {
                   }
                 });
               } catch (e) {
-                console.log("Shadow DOM cleaning error:", e);
+                // console.log("Shadow DOM cleaning error:", e);
               }
             } catch (e) {
-              console.log("Error removing known bad elements:", e);
+              // console.log("Error removing known bad elements:", e);
             }
           };
           const badElementsInterval = setInterval(removeKnownBadElements, 200);
@@ -1128,7 +1128,7 @@ const MoviePage = () => {
 
               if (overlays && overlays.length) {
                 overlays.forEach((el) => {
-                  console.log("Removing invisible overlay:", el);
+                  // console.log("Removing invisible overlay:", el);
                   el.remove();
                   blockedActionsRef.current++;
                   setBlockedCount((prev) => prev + 1);
@@ -1157,7 +1157,7 @@ const MoviePage = () => {
                       div.querySelectorAll("img, video, svg").length > 0;
 
                     if (!hasVisibleContent) {
-                      console.log("Removing large overlay div:", div);
+                      // console.log("Removing large overlay div:", div);
                       div.remove();
                       blockedActionsRef.current++;
                       setBlockedCount((prev) => prev + 1);
@@ -1166,7 +1166,7 @@ const MoviePage = () => {
                 }
               });
             } catch (e) {
-              console.log("Error removing invisible overlays:", e);
+              // console.log("Error removing invisible overlays:", e);
             }
           };
 
@@ -1174,7 +1174,7 @@ const MoviePage = () => {
           const overlayInterval = setInterval(removeInvisibleOverlays, 300);
           clearInterval(overlayInterval);
         } catch (err) {
-          console.log("Could not enhance iframe:", err);
+          // console.log("Could not enhance iframe:", err);
         }
       };
 
@@ -1185,10 +1185,10 @@ const MoviePage = () => {
 
         scripts.forEach((script) => {
           if (blockScript(script)) {
-            console.log(
-              "Removing suspicious existing script:",
-              script.src || "inline script"
-            );
+            // console.log(
+            //   "Removing suspicious existing script:",
+            //   script.src || "inline script"
+            // );
             script.remove();
             blockedActionsRef.current++;
             setBlockedCount((prev) => prev + 1);
@@ -1202,17 +1202,17 @@ const MoviePage = () => {
               iframeRef.current.contentDocument.querySelectorAll("script");
             iframeScripts.forEach((script) => {
               if (blockScript(script)) {
-                console.log(
-                  "Removing suspicious iframe script:",
-                  script.src || "inline script"
-                );
+                // console.log(
+                //   "Removing suspicious iframe script:",
+                //   script.src || "inline script"
+                // );
                 script.remove();
                 blockedActionsRef.current++;
                 setBlockedCount((prev) => prev + 1);
               }
             });
           } catch (e) {
-            console.log("Could not access iframe scripts:", e);
+            // console.log("Could not access iframe scripts:", e);
           }
         }
       };
@@ -1245,7 +1245,7 @@ const MoviePage = () => {
             });
           }
         } catch (e) {
-          console.log("Error in scanForProblematicElements:", e);
+          // console.log("Error in scanForProblematicElements:", e);
         }
       };
       // Run this function frequently
@@ -1254,6 +1254,7 @@ const MoviePage = () => {
       // Apply iframe enhancement
       enhanceIframe();
 
+      
       // MutationObserver to detect and remove ads or dangerous elements
       let observer = null;
       let domObserver = null;
@@ -1274,7 +1275,7 @@ const MoviePage = () => {
               iframeRef.current.contentDocument ||
               iframeRef.current.contentWindow.document;
           } catch (e) {
-            console.log("Cannot access iframe content directly");
+            // console.log("Cannot access iframe content directly");
           }
 
           if (iframeDoc) {
@@ -1860,7 +1861,7 @@ const MoviePage = () => {
         return context;
       };
     } catch (e) {
-      console.log("Could not apply fingerprinting protection");
+      // console.log("Could not apply fingerprinting protection");
     }
 
     return () => {
@@ -1902,7 +1903,7 @@ const MoviePage = () => {
             const nestedFrames = iframeDoc.querySelectorAll("iframe");
 
             if (nestedFrames.length > 0) {
-              console.log(`Found ${nestedFrames.length} nested iframes`);
+              // console.log(`Found ${nestedFrames.length} nested iframes`);
 
               // Apply protection to each nested iframe
               nestedFrames.forEach((nestedFrame) => {
@@ -2200,18 +2201,6 @@ const MoviePage = () => {
     return null;
   }
   return (
-    <>
-      <HelmetProvider>
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"></script>
-      <script>
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-QKRDMZMXVJ');
-        `}
-      </script>
-      </HelmetProvider>
     <div ref={topRef} className="min-h-screen bg-gray-900 text-white pb-16">
       {/* Hero Section */}
       <MovieDetailHero
@@ -2767,7 +2756,6 @@ const MoviePage = () => {
           )}
       </div>
     </div>
-    </>
   );
 };
 
