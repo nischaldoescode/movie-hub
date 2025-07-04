@@ -370,13 +370,13 @@ export const MovieProvider = ({ children }) => {
 
     // Use provided server or fall back to activeServer
     const selectedServer = server || activeServer;
-    console.log("getStreamingUrl called with:", {
-      id,
-      mediaType,
-      season,
-      episode,
-      selectedServer,
-    });
+    // console.log("getStreamingUrl called with:", {
+    //   id,
+    //   mediaType,
+    //   season,
+    //   episode,
+    //   selectedServer,
+    // });
     if (selectedServer === "server1") {
       // Server 1 (vidsrc.co)
       // embed-api.stream
