@@ -16,6 +16,8 @@ const Notfound = () => {
           content="Oops! Seems you got lost, the page you are looking for does not exist."
         />
         <meta name="robots" content="noindex, nofollow" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
+     crossorigin="anonymous"></script>
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"></script>
       <script>
         {`
