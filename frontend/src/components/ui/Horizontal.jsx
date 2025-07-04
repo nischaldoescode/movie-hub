@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 
 const SideAd = () => {
   const [currentAdIndex, setCurrentAdIndex] = useState(0)
+  const [allFailed, setAllFailed] = useState(false)
 
   // Your 4 ad units
   const adUnits = [
@@ -15,6 +16,7 @@ const SideAd = () => {
     const tryNextAd = (index) => {
       if (index >= adUnits.length) {
         console.log('All ad units failed')
+        setAllFailed(true)
         return
       }
 
@@ -84,6 +86,11 @@ const SideAd = () => {
       clearInterval(interval)
     }
   }, [])
+
+  // Don't render anything if all ads failed
+  if (allFailed) {
+    return null
+  }
 
   return (
     <ins className="adsbygoogle"
