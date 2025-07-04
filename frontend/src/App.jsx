@@ -4,7 +4,7 @@ import Navbar from './components/layouts/Nabar'
 import Footer from './components/layouts/Footer'
 import Loader from './components/ui/Loader'
 import SearchModal from './components/ui/Searchbar'
-
+import HorizontalAd from "../ui/Horizontal";
 // Lazy load pages for better performance
 const HomePage = lazy(() => import('./components/pages/Homepage'))
 const MoviePage = lazy(() => import('./components/pages/MoviePage'))
@@ -15,6 +15,7 @@ const PrivacyPolicy = lazy(() => import('./components/pages/PrivacyPolicy'))
 const Faq = lazy(() => import('./components/pages/Faq'))
 const About = lazy(() => import('./components/pages/About'))
 const Notfound = lazy(() => import('./components/pages/404'))
+
 function App() {
   // Manage loading state directly in App
   const [isLoading, setIsLoading] = useState(true)
@@ -78,6 +79,7 @@ function App() {
             <Route path="*" element={<Notfound />} />
           </Routes>
         </Suspense>
+        <HorizontalAd />
       </main>
       <Footer />
     </>
