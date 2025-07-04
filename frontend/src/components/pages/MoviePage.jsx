@@ -4,6 +4,7 @@ import { useMovieContext } from "../context/MovieContext";
 import MovieDetailHero from "../movie/MovieDetailHero";
 import MovieCast from "../movie/MovieCast";
 import Loader from "../ui/Loader";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 import {
   Play,
@@ -722,84 +723,83 @@ const MoviePage = () => {
         true
       );
 
-         const observeDOM = () => {
-            try {
-              if (!iframeRef.current || !iframeRef.current.contentDocument)
-                return;
+      const observeDOM = () => {
+        try {
+          if (!iframeRef.current || !iframeRef.current.contentDocument) return;
 
-              const doc = iframeRef.current.contentDocument;
-              const observer = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                  if (mutation.addedNodes && mutation.addedNodes.length) {
-                    mutation.addedNodes.forEach((node) => {
-                      // Check for specific problematic elements
-                      if (node.nodeType === 1) {
-                        // Element node
-                        // Check classes and IDs
-                        if (
-                          node.className &&
-                          typeof node.className === "string" &&
-                          (node.className.includes("selectextShadowHost") ||
-                            node.className.includes("IOarzRhPlPOverlay"))
-                        ) {
-                          node.remove();
-                          blockedActionsRef.current++;
-                          setBlockedCount((prev) => prev + 1);
-                        }
+          const doc = iframeRef.current.contentDocument;
+          const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+              if (mutation.addedNodes && mutation.addedNodes.length) {
+                mutation.addedNodes.forEach((node) => {
+                  // Check for specific problematic elements
+                  if (node.nodeType === 1) {
+                    // Element node
+                    // Check classes and IDs
+                    if (
+                      node.className &&
+                      typeof node.className === "string" &&
+                      (node.className.includes("selectextShadowHost") ||
+                        node.className.includes("IOarzRhPlPOverlay"))
+                    ) {
+                      node.remove();
+                      blockedActionsRef.current++;
+                      setBlockedCount((prev) => prev + 1);
+                    }
 
-                        if (node.id === "videoOverlay") {
-                          node.remove();
-                          blockedActionsRef.current++;
-                          setBlockedCount((prev) => prev + 1);
-                        }
+                    if (node.id === "videoOverlay") {
+                      node.remove();
+                      blockedActionsRef.current++;
+                      setBlockedCount((prev) => prev + 1);
+                    }
 
-                        // Check for znid attribute
-                        if (node.hasAttribute && node.hasAttribute("znid")) {
-                          node.remove();
-                          blockedActionsRef.current++;
-                          setBlockedCount((prev) => prev + 1);
-                        }
+                    // Check for znid attribute
+                    if (node.hasAttribute && node.hasAttribute("znid")) {
+                      node.remove();
+                      blockedActionsRef.current++;
+                      setBlockedCount((prev) => prev + 1);
+                    }
 
-                        // Check for script elements with suspicious patterns
-                        // Enhanced script scanning
-                        if (node.tagName === "SCRIPT") {
-                          const src = node.src || "";
-                          const content = node.textContent || "";
+                    // Check for script elements with suspicious patterns
+                    // Enhanced script scanning
+                    if (node.tagName === "SCRIPT") {
+                      const src = node.src || "";
+                      const content = node.textContent || "";
 
-                          // More aggressive script content scanning
-                          if (
-                            src.includes("intellipopup") ||
-                            content.includes("popup-ads") ||
-                            content.includes("window.open") ||
-                            content.includes("_blank") ||
-                            content.includes("target=") ||
-                            content.includes("location.href") ||
-                            (node.id && node.id.includes("ads"))
-                          ) {
-                            node.remove();
-                            blockedActionsRef.current++;
-                            setBlockedCount((prev) => prev + 1);
-                          }
-                        }
+                      // More aggressive script content scanning
+                      if (
+                        src.includes("intellipopup") ||
+                        content.includes("popup-ads") ||
+                        content.includes("window.open") ||
+                        content.includes("_blank") ||
+                        content.includes("target=") ||
+                        content.includes("location.href") ||
+                        (node.id && node.id.includes("ads"))
+                      ) {
+                        node.remove();
+                        blockedActionsRef.current++;
+                        setBlockedCount((prev) => prev + 1);
                       }
-                    });
+                    }
                   }
                 });
-              });
+              }
+            });
+          });
 
-              observer.observe(doc, {
-                childList: true,
-                subtree: true,
-                attributes: true,
-                attributeFilter: ["class", "id", "style", "znid"],
-              });
+          observer.observe(doc, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["class", "id", "style", "znid"],
+          });
 
-              return observer;
-            } catch (e) {
-              console.log("Error setting up DOM observer:", e);
-              return null;
-            }
-          };
+          return observer;
+        } catch (e) {
+          console.log("Error setting up DOM observer:", e);
+          return null;
+        }
+      };
       // Deeper iframe protection strategies
       const enhanceIframe = () => {
         try {
@@ -1254,7 +1254,6 @@ const MoviePage = () => {
       // Apply iframe enhancement
       enhanceIframe();
 
-      
       // MutationObserver to detect and remove ads or dangerous elements
       let observer = null;
       let domObserver = null;
@@ -2201,130 +2200,429 @@ const MoviePage = () => {
     return null;
   }
   return (
-    <div ref={topRef} className="min-h-screen bg-gray-900 text-white pb-16">
-      {/* Hero Section */}
-      <MovieDetailHero
-        movie={movie}
-        onPlayClick={handlePlayClick}
-        // No need to pass streamingUrl here
-      />
+    <>
+    <HelmetProvider>
+      <script>
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-QKRDMZMXVJ');
+        `}
+      </script>
+      </HelmetProvider>
+      <div ref={topRef} className="min-h-screen bg-gray-900 text-white pb-16">
+        {/* Hero Section */}
+        <MovieDetailHero
+          movie={movie}
+          onPlayClick={handlePlayClick}
+          // No need to pass streamingUrl here
+        />
 
-      {/* Movie Information */}
-      <div className="container mx-auto px-4 mt-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Video Player and Details */}
-          <div className="lg:col-span-2">
-            {/* Video Player (Only shown when play button is clicked) */}
-            {streamingUrl && (
-              <div
-                ref={playerRef}
-                className="mb-8 bg-gray-800 rounded-lg overflow-hidden shadow-xl"
-              >
+        {/* Movie Information */}
+        <div className="container mx-auto px-4 mt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column - Video Player and Details */}
+            <div className="lg:col-span-2">
+              {/* Video Player (Only shown when play button is clicked) */}
+              {streamingUrl && (
                 <div
-                  ref={playerContainerRef}
-                  className="relative w-full pt-0"
-                  style={{
-                    paddingBottom: "56.25%",
-                    overflow: "hidden", // Prevent scrollbar flickering
-                  }}
+                  ref={playerRef}
+                  className="mb-8 bg-gray-800 rounded-lg overflow-hidden shadow-xl"
                 >
-                  <iframe
-                    ref={iframeRef}
-                    src={streamingUrl}
-                    className="absolute top-0 left-0 w-full h-full"
-                    allowFullScreen
-                    title={movie.title || movie.name}
-                    onLoad={handleIframeLoad}
-                    loading="eager"
-                    importance="high"
-                    referrerPolicy="no-referrer"
-                    allow="fullscreen"
-                    style={{ border: "none" }}
-                    key={`${streamingUrl}-${activeServer}`} // Add this to force re-render with new URL
-                  ></iframe>
+                  <div
+                    ref={playerContainerRef}
+                    className="relative w-full pt-0"
+                    style={{
+                      paddingBottom: "56.25%",
+                      overflow: "hidden", // Prevent scrollbar flickering
+                    }}
+                  >
+                    <iframe
+                      ref={iframeRef}
+                      src={streamingUrl}
+                      className="absolute top-0 left-0 w-full h-full"
+                      allowFullScreen
+                      title={movie.title || movie.name}
+                      onLoad={handleIframeLoad}
+                      loading="eager"
+                      importance="high"
+                      referrerPolicy="no-referrer"
+                      allow="fullscreen"
+                      style={{ border: "none" }}
+                      key={`${streamingUrl}-${activeServer}`} // Add this to force re-render with new URL
+                    ></iframe>
 
-                  {playerLoading && (
-                    <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-20">
-                      <div className="text-center">
-                        <LoaderIcon className="animate-spin h-10 w-10 text-blue-500 mx-auto" />
-                        <p className="text-white mt-3">Loading player...</p>
+                    {playerLoading && (
+                      <div className="absolute inset-0 bg-black/70 flex items-center justify-center z-20">
+                        <div className="text-center">
+                          <LoaderIcon className="animate-spin h-10 w-10 text-blue-500 mx-auto" />
+                          <p className="text-white mt-3">Loading player...</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-gray-900 px-4 py-3">
+                    <div className="flex flex-wrap justify-between items-center">
+                      <div className="flex items-center">
+                        <p className="text-sm text-gray-400">
+                          Now Playing: {movie.title || movie.name}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center mt-2 sm:mt-0">
+                        <p className="text-sm text-gray-400">
+                          Server:{" "}
+                          {activeServer === "server1" ? "Server 1" : "Server 2"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Server Selection - Smaller UI */}
+              <div className="bg-gray-800 rounded-lg p-4 mb-6" id="Server2">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-base font-medium flex items-center">
+                    <Server size={16} className="mr-2" />
+                    Select Server
+                  </h3>
+
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleServerChange("server1")}
+                      className={`py-1 px-3 text-center rounded-md text-sm transition-all ${
+                        activeServer === "server1"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      }`}
+                    >
+                      Server 1
+                    </button>
+
+                    <button
+                      onClick={() => handleServerChange("server2")}
+                      className={`py-1 px-3 text-center rounded-md text-sm transition-all ${
+                        activeServer === "server2"
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      }`}
+                    >
+                      Server 2
+                    </button>
+                  </div>
+                </div>
+
+                {/* Watch Movie Button */}
+                <button
+                  onClick={handlePlayMovie}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md flex items-center justify-center text-base font-medium transition-all"
+                >
+                  <Play size={18} className="mr-2" />
+                  Watch Movie Now
+                </button>
+              </div>
+
+              {/* Movie Overview */}
+              <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                <h3 className="text-base font-medium mb-3">Overview</h3>
+                <p className="text-gray-300 text-sm">
+                  {movie.overview || "No overview available."}
+                </p>
+              </div>
+
+              {/* Mobile-only Movie Information - Will show on mobile, hidden on desktop */}
+              <div className="lg:hidden">
+                {/* Movie Info */}
+                <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                  <h3 className="text-base font-medium mb-3">
+                    Movie Information
+                  </h3>
+
+                  <div className="space-y-2 text-sm">
+                    {movie.release_date && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Release Date:</span>
+                        <span>
+                          {new Date(movie.release_date).toLocaleDateString()}
+                        </span>
+                      </div>
+                    )}
+
+                    {movie.runtime && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Runtime:</span>
+                        <span>
+                          {Math.floor(movie.runtime / 60)}h {movie.runtime % 60}
+                          m
+                        </span>
+                      </div>
+                    )}
+
+                    {movie.vote_average && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Rating:</span>
+                        <span>{movie.vote_average.toFixed(1)}/10</span>
+                      </div>
+                    )}
+
+                    {movie.budget > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Budget:</span>
+                        <span>${movie.budget.toLocaleString()}</span>
+                      </div>
+                    )}
+
+                    {movie.revenue > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Revenue:</span>
+                        <span>${movie.revenue.toLocaleString()}</span>
+                      </div>
+                    )}
+
+                    {movie.original_language && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Language:</span>
+                        <span>{movie.original_language.toUpperCase()}</span>
+                      </div>
+                    )}
+
+                    {movie.status && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Status:</span>
+                        <span>{movie.status}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Genres - Mobile */}
+                {movie.genres && movie.genres.length > 0 && (
+                  <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                    <h3 className="text-base font-medium mb-3">Genres</h3>
+
+                    <div className="flex flex-wrap gap-2">
+                      {movie.genres.map((genre) => (
+                        <span
+                          key={genre.id}
+                          className="px-3 py-1 bg-blue-800/50 text-blue-100 border border-blue-700 rounded-full text-xs"
+                        >
+                          {genre.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Production Companies - Mobile */}
+                {movie.production_companies &&
+                  movie.production_companies.length > 0 && (
+                    <div className="bg-gray-800 rounded-lg p-4 mb-6">
+                      <h3 className="text-base font-medium mb-3">Production</h3>
+
+                      <div className="space-y-2 text-sm">
+                        {movie.production_companies.map((company) => (
+                          <div
+                            key={company.id}
+                            className="flex items-center text-gray-300 py-1"
+                          >
+                            {company.logo_path ? (
+                              <img
+                                src={`https://image.tmdb.org/t/p/w92${company.logo_path}`}
+                                alt={company.name}
+                                className="h-5 mr-2 object-contain"
+                              />
+                            ) : (
+                              <Film size={16} className="mr-2 text-gray-400" />
+                            )}
+                            <span className="ml-2">{company.name}</span>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
+              </div>
+
+              {/* Movie Cast */}
+              <MovieCast cast={movie.credits?.cast} />
+
+              {/* Enhanced Security Info - Moved inside the Left Column */}
+              <div className="bg-gray-800 rounded-lg overflow-hidden mb-6 mt-6">
+                <div className="bg-blue-900/40 p-4 border-b border-blue-800">
+                  <h2 className="text-lg font-bold text-blue-200 mb-2 flex items-center">
+                    <ShieldCheck className="mr-2 text-blue-400" size={20} />
+                    For PC/Laptop Users: Get a Seamless Viewing Experience
+                  </h2>
+                  <p className="text-blue-100">
+                    Although we've tried our hardest to prevent or minimize
+                    popup ads, our servers depend on some advertisements to
+                    operate. For the best experience, we recommend installing
+                    the uBlock Origin extension.
+                  </p>
                 </div>
 
-                <div className="bg-gray-900 px-4 py-3">
-                  <div className="flex flex-wrap justify-between items-center">
-                    <div className="flex items-center">
-                      <p className="text-sm text-gray-400">
-                        Now Playing: {movie.title || movie.name}
-                      </p>
+                <div className="p-5">
+                  <h3 className="text-xl font-semibold mb-4 text-blue-300 flex items-center">
+                    <Download className="mr-2" size={20} />
+                    Install uBlock Origin
+                  </h3>
+
+                  <div className="grid md:grid-cols-2 gap-4 mb-6">
+                    <a
+                      href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
+                      target="_blank"
+                      rel="noopener"
+                      className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
+                    >
+                      <Chrome
+                        className="text-blue-400 mr-3 flex-shrink-0"
+                        size={24}
+                      />
+                      <div>
+                        <h4 className="font-medium text-blue-200">
+                          Chrome Web Store
+                        </h4>
+                        <p className="text-sm text-blue-300">
+                          Chrome, Edge, Brave, etc.
+                        </p>
+                      </div>
+                      <ExternalLink
+                        size={16}
+                        className="ml-auto text-blue-400"
+                      />
+                    </a>
+
+                    <a
+                      href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
+                      target="_blank"
+                      rel="noopener"
+                      className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
+                    >
+                      <Globe
+                        className="text-blue-400 mr-3 flex-shrink-0"
+                        size={24}
+                      />
+                      <div>
+                        <h4 className="font-medium text-blue-200">
+                          Firefox Add-ons
+                        </h4>
+                        <p className="text-sm text-blue-300">Firefox browser</p>
+                      </div>
+                      <ExternalLink
+                        size={16}
+                        className="ml-auto text-blue-400"
+                      />
+                    </a>
+                  </div>
+
+                  <div className="border border-blue-800/50 rounded-lg overflow-hidden bg-blue-900/20 mt-6">
+                    <div className="p-4 bg-blue-800/30">
+                      <h3 className="text-lg font-medium text-blue-200 flex items-center">
+                        <HelpCircle size={18} className="mr-2" />
+                        Installation Guides
+                      </h3>
                     </div>
 
-                    <div className="flex items-center mt-2 sm:mt-0">
-                      <p className="text-sm text-gray-400">
-                        Server:{" "}
-                        {activeServer === "server1" ? "Server 1" : "Server 2"}
-                      </p>
+                    <div className="p-5">
+                      <div className="space-y-6">
+                        <div>
+                          <h4 className="font-medium text-blue-300 mb-3">
+                            Chrome / Edge Installation
+                          </h4>
+                          <ol className="list-decimal pl-5 space-y-2 text-blue-100">
+                            <li>
+                              Visit the{" "}
+                              <a
+                                href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
+                                target="_blank"
+                                rel="noopener"
+                                className="text-blue-400 underline"
+                              >
+                                Chrome Web Store
+                              </a>
+                            </li>
+                            <li>Click "Add to Chrome"</li>
+                            <li>
+                              Confirm by clicking "Add extension" in the popup
+                            </li>
+                            <li>
+                              You'll see the uBlock Origin icon appear in your
+                              toolbar
+                            </li>
+                          </ol>
+                        </div>
+
+                        <div>
+                          <h4 className="font-medium text-blue-300 mb-3">
+                            Firefox Installation
+                          </h4>
+                          <ol className="list-decimal pl-5 space-y-2 text-blue-100">
+                            <li>
+                              Visit the{" "}
+                              <a
+                                href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
+                                target="_blank"
+                                rel="noopener"
+                                className="text-blue-400 underline"
+                              >
+                                Firefox Add-ons
+                              </a>{" "}
+                              page
+                            </li>
+                            <li>Click "Add to Firefox"</li>
+                            <li>Click "Add" in the confirmation dialog</li>
+                            <li>
+                              The uBlock Origin icon will appear in your browser
+                              toolbar
+                            </li>
+                          </ol>
+                        </div>
+
+                        <div>
+                          <h4 className="font-medium text-blue-300 mb-3">
+                            Manual Installation (Advanced)
+                          </h4>
+                          <ol className="list-decimal pl-5 space-y-2 text-blue-100">
+                            <li>
+                              Download the latest release from{" "}
+                              <a
+                                href="https://github.com/gorhill/uBlock/releases"
+                                target="_blank"
+                                rel="noopener"
+                                className="text-blue-400 underline"
+                              >
+                                GitHub
+                              </a>
+                            </li>
+                            <li>Extract the downloaded zip file to a folder</li>
+                            <li>
+                              In your browser, go to the extensions page (e.g.,{" "}
+                              <code className="bg-blue-900/60 px-2 py-1 rounded">
+                                chrome://extensions
+                              </code>
+                              )
+                            </li>
+                            <li>
+                              Enable "Developer mode" using the toggle in the
+                              top-right corner
+                            </li>
+                            <li>
+                              Click "Load unpacked" and select the extracted
+                              folder
+                            </li>
+                          </ol>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            )}
-
-            {/* Server Selection - Smaller UI */}
-            <div className="bg-gray-800 rounded-lg p-4 mb-6" id="Server2">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-base font-medium flex items-center">
-                  <Server size={16} className="mr-2" />
-                  Select Server
-                </h3>
-
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleServerChange("server1")}
-                    className={`py-1 px-3 text-center rounded-md text-sm transition-all ${
-                      activeServer === "server1"
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                    }`}
-                  >
-                    Server 1
-                  </button>
-
-                  <button
-                    onClick={() => handleServerChange("server2")}
-                    className={`py-1 px-3 text-center rounded-md text-sm transition-all ${
-                      activeServer === "server2"
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                    }`}
-                  >
-                    Server 2
-                  </button>
-                </div>
-              </div>
-
-              {/* Watch Movie Button */}
-              <button
-                onClick={handlePlayMovie}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md flex items-center justify-center text-base font-medium transition-all"
-              >
-                <Play size={18} className="mr-2" />
-                Watch Movie Now
-              </button>
             </div>
 
-            {/* Movie Overview */}
-            <div className="bg-gray-800 rounded-lg p-4 mb-6">
-              <h3 className="text-base font-medium mb-3">Overview</h3>
-              <p className="text-gray-300 text-sm">
-                {movie.overview || "No overview available."}
-              </p>
-            </div>
-
-            {/* Mobile-only Movie Information - Will show on mobile, hidden on desktop */}
-            <div className="lg:hidden">
+            {/* Right Column - Additional Info - Hidden on mobile */}
+            <div className="hidden lg:block">
               {/* Movie Info */}
               <div className="bg-gray-800 rounded-lg p-4 mb-6">
                 <h3 className="text-base font-medium mb-3">
@@ -2387,25 +2685,7 @@ const MoviePage = () => {
                 </div>
               </div>
 
-              {/* Genres - Mobile */}
-              {movie.genres && movie.genres.length > 0 && (
-                <div className="bg-gray-800 rounded-lg p-4 mb-6">
-                  <h3 className="text-base font-medium mb-3">Genres</h3>
-
-                  <div className="flex flex-wrap gap-2">
-                    {movie.genres.map((genre) => (
-                      <span
-                        key={genre.id}
-                        className="px-3 py-1 bg-blue-800/50 text-blue-100 border border-blue-700 rounded-full text-xs"
-                      >
-                        {genre.name}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Production Companies - Mobile */}
+              {/* Production Companies - Moved right after Movie Info */}
               {movie.production_companies &&
                 movie.production_companies.length > 0 && (
                   <div className="bg-gray-800 rounded-lg p-4 mb-6">
@@ -2432,330 +2712,72 @@ const MoviePage = () => {
                     </div>
                   </div>
                 )}
-            </div>
 
-            {/* Movie Cast */}
-            <MovieCast cast={movie.credits?.cast} />
-
-            {/* Enhanced Security Info - Moved inside the Left Column */}
-            <div className="bg-gray-800 rounded-lg overflow-hidden mb-6 mt-6">
-              <div className="bg-blue-900/40 p-4 border-b border-blue-800">
-                <h2 className="text-lg font-bold text-blue-200 mb-2 flex items-center">
-                  <ShieldCheck className="mr-2 text-blue-400" size={20} />
-                  For PC/Laptop Users: Get a Seamless Viewing Experience
-                </h2>
-                <p className="text-blue-100">
-                  Although we've tried our hardest to prevent or minimize popup
-                  ads, our servers depend on some advertisements to operate. For
-                  the best experience, we recommend installing the uBlock Origin
-                  extension.
-                </p>
-              </div>
-
-              <div className="p-5">
-                <h3 className="text-xl font-semibold mb-4 text-blue-300 flex items-center">
-                  <Download className="mr-2" size={20} />
-                  Install uBlock Origin
-                </h3>
-
-                <div className="grid md:grid-cols-2 gap-4 mb-6">
-                  <a
-                    href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
-                    target="_blank"
-                    rel="noopener"
-                    className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
-                  >
-                    <Chrome
-                      className="text-blue-400 mr-3 flex-shrink-0"
-                      size={24}
-                    />
-                    <div>
-                      <h4 className="font-medium text-blue-200">
-                        Chrome Web Store
-                      </h4>
-                      <p className="text-sm text-blue-300">
-                        Chrome, Edge, Brave, etc.
-                      </p>
-                    </div>
-                    <ExternalLink size={16} className="ml-auto text-blue-400" />
-                  </a>
-
-                  <a
-                    href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
-                    target="_blank"
-                    rel="noopener"
-                    className="flex items-center p-4 bg-blue-900/30 border border-blue-800/50 rounded-lg hover:bg-blue-900/50 transition"
-                  >
-                    <Globe
-                      className="text-blue-400 mr-3 flex-shrink-0"
-                      size={24}
-                    />
-                    <div>
-                      <h4 className="font-medium text-blue-200">
-                        Firefox Add-ons
-                      </h4>
-                      <p className="text-sm text-blue-300">Firefox browser</p>
-                    </div>
-                    <ExternalLink size={16} className="ml-auto text-blue-400" />
-                  </a>
-                </div>
-
-                <div className="border border-blue-800/50 rounded-lg overflow-hidden bg-blue-900/20 mt-6">
-                  <div className="p-4 bg-blue-800/30">
-                    <h3 className="text-lg font-medium text-blue-200 flex items-center">
-                      <HelpCircle size={18} className="mr-2" />
-                      Installation Guides
-                    </h3>
-                  </div>
-
-                  <div className="p-5">
-                    <div className="space-y-6">
-                      <div>
-                        <h4 className="font-medium text-blue-300 mb-3">
-                          Chrome / Edge Installation
-                        </h4>
-                        <ol className="list-decimal pl-5 space-y-2 text-blue-100">
-                          <li>
-                            Visit the{" "}
-                            <a
-                              href="https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm"
-                              target="_blank"
-                              rel="noopener"
-                              className="text-blue-400 underline"
-                            >
-                              Chrome Web Store
-                            </a>
-                          </li>
-                          <li>Click "Add to Chrome"</li>
-                          <li>
-                            Confirm by clicking "Add extension" in the popup
-                          </li>
-                          <li>
-                            You'll see the uBlock Origin icon appear in your
-                            toolbar
-                          </li>
-                        </ol>
-                      </div>
-
-                      <div>
-                        <h4 className="font-medium text-blue-300 mb-3">
-                          Firefox Installation
-                        </h4>
-                        <ol className="list-decimal pl-5 space-y-2 text-blue-100">
-                          <li>
-                            Visit the{" "}
-                            <a
-                              href="https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/"
-                              target="_blank"
-                              rel="noopener"
-                              className="text-blue-400 underline"
-                            >
-                              Firefox Add-ons
-                            </a>{" "}
-                            page
-                          </li>
-                          <li>Click "Add to Firefox"</li>
-                          <li>Click "Add" in the confirmation dialog</li>
-                          <li>
-                            The uBlock Origin icon will appear in your browser
-                            toolbar
-                          </li>
-                        </ol>
-                      </div>
-
-                      <div>
-                        <h4 className="font-medium text-blue-300 mb-3">
-                          Manual Installation (Advanced)
-                        </h4>
-                        <ol className="list-decimal pl-5 space-y-2 text-blue-100">
-                          <li>
-                            Download the latest release from{" "}
-                            <a
-                              href="https://github.com/gorhill/uBlock/releases"
-                              target="_blank"
-                              rel="noopener"
-                              className="text-blue-400 underline"
-                            >
-                              GitHub
-                            </a>
-                          </li>
-                          <li>Extract the downloaded zip file to a folder</li>
-                          <li>
-                            In your browser, go to the extensions page (e.g.,{" "}
-                            <code className="bg-blue-900/60 px-2 py-1 rounded">
-                              chrome://extensions
-                            </code>
-                            )
-                          </li>
-                          <li>
-                            Enable "Developer mode" using the toggle in the
-                            top-right corner
-                          </li>
-                          <li>
-                            Click "Load unpacked" and select the extracted
-                            folder
-                          </li>
-                        </ol>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Column - Additional Info - Hidden on mobile */}
-          <div className="hidden lg:block">
-            {/* Movie Info */}
-            <div className="bg-gray-800 rounded-lg p-4 mb-6">
-              <h3 className="text-base font-medium mb-3">Movie Information</h3>
-
-              <div className="space-y-2 text-sm">
-                {movie.release_date && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Release Date:</span>
-                    <span>
-                      {new Date(movie.release_date).toLocaleDateString()}
-                    </span>
-                  </div>
-                )}
-
-                {movie.runtime && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Runtime:</span>
-                    <span>
-                      {Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m
-                    </span>
-                  </div>
-                )}
-
-                {movie.vote_average && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Rating:</span>
-                    <span>{movie.vote_average.toFixed(1)}/10</span>
-                  </div>
-                )}
-
-                {movie.budget > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Budget:</span>
-                    <span>${movie.budget.toLocaleString()}</span>
-                  </div>
-                )}
-
-                {movie.revenue > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Revenue:</span>
-                    <span>${movie.revenue.toLocaleString()}</span>
-                  </div>
-                )}
-
-                {movie.original_language && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Language:</span>
-                    <span>{movie.original_language.toUpperCase()}</span>
-                  </div>
-                )}
-
-                {movie.status && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Status:</span>
-                    <span>{movie.status}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Production Companies - Moved right after Movie Info */}
-            {movie.production_companies &&
-              movie.production_companies.length > 0 && (
+              {/* Genres */}
+              {movie.genres && movie.genres.length > 0 && (
                 <div className="bg-gray-800 rounded-lg p-4 mb-6">
-                  <h3 className="text-base font-medium mb-3">Production</h3>
+                  <h3 className="text-base font-medium mb-3">Genres</h3>
 
-                  <div className="space-y-2 text-sm">
-                    {movie.production_companies.map((company) => (
-                      <div
-                        key={company.id}
-                        className="flex items-center text-gray-300 py-1"
+                  <div className="flex flex-wrap gap-2">
+                    {movie.genres.map((genre) => (
+                      <span
+                        key={genre.id}
+                        className="px-3 py-1 bg-blue-800/50 text-blue-100 border border-blue-700 rounded-full text-xs"
                       >
-                        {company.logo_path ? (
-                          <img
-                            src={`https://image.tmdb.org/t/p/w92${company.logo_path}`}
-                            alt={company.name}
-                            className="h-5 mr-2 object-contain"
-                          />
-                        ) : (
-                          <Film size={16} className="mr-2 text-gray-400" />
-                        )}
-                        <span className="ml-2">{company.name}</span>
-                      </div>
+                        {genre.name}
+                      </span>
                     ))}
                   </div>
                 </div>
               )}
+            </div>
+          </div>
 
-            {/* Genres */}
-            {movie.genres && movie.genres.length > 0 && (
-              <div className="bg-gray-800 rounded-lg p-4 mb-6">
-                <h3 className="text-base font-medium mb-3">Genres</h3>
-
-                <div className="flex flex-wrap gap-2">
-                  {movie.genres.map((genre) => (
-                    <span
-                      key={genre.id}
-                      className="px-3 py-1 bg-blue-800/50 text-blue-100 border border-blue-700 rounded-full text-xs"
+          {/* Similar Movies - Outside grid layout, full width */}
+          {movie.similar &&
+            movie.similar.results &&
+            movie.similar.results.length > 0 && (
+              <div className="bg-gray-800 rounded-lg p-4 mt-6">
+                <h3 className="text-lg font-medium mb-4">Related Movies</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {movie.similar.results.slice(0, 10).map((similar) => (
+                    <a
+                      key={similar.id}
+                      href={`/movie/${similar.id}`}
+                      className="block bg-gray-700 rounded-lg overflow-hidden hover:opacity-80 transition-opacity"
                     >
-                      {genre.name}
-                    </span>
+                      {similar.poster_path ? (
+                        <img
+                          src={`https://image.tmdb.org/t/p/w300${similar.poster_path}`}
+                          alt={similar.title}
+                          className="w-full h-auto"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="bg-gray-600 w-full pt-[150%] flex items-center justify-center">
+                          <span className="text-gray-400 text-xs">
+                            No Image
+                          </span>
+                        </div>
+                      )}
+                      <div className="p-3">
+                        <h4 className="text-sm font-medium truncate">
+                          {similar.title}
+                        </h4>
+                        {similar.release_date && (
+                          <p className="text-gray-400 text-xs mt-1">
+                            {similar.release_date.split("-")[0]}
+                          </p>
+                        )}
+                      </div>
+                    </a>
                   ))}
                 </div>
               </div>
             )}
-          </div>
         </div>
-
-        {/* Similar Movies - Outside grid layout, full width */}
-        {movie.similar &&
-          movie.similar.results &&
-          movie.similar.results.length > 0 && (
-            <div className="bg-gray-800 rounded-lg p-4 mt-6">
-              <h3 className="text-lg font-medium mb-4">Related Movies</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                {movie.similar.results.slice(0, 10).map((similar) => (
-                  <a
-                    key={similar.id}
-                    href={`/movie/${similar.id}`}
-                    className="block bg-gray-700 rounded-lg overflow-hidden hover:opacity-80 transition-opacity"
-                  >
-                    {similar.poster_path ? (
-                      <img
-                        src={`https://image.tmdb.org/t/p/w300${similar.poster_path}`}
-                        alt={similar.title}
-                        className="w-full h-auto"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="bg-gray-600 w-full pt-[150%] flex items-center justify-center">
-                        <span className="text-gray-400 text-xs">No Image</span>
-                      </div>
-                    )}
-                    <div className="p-3">
-                      <h4 className="text-sm font-medium truncate">
-                        {similar.title}
-                      </h4>
-                      {similar.release_date && (
-                        <p className="text-gray-400 text-xs mt-1">
-                          {similar.release_date.split("-")[0]}
-                        </p>
-                      )}
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
       </div>
-    </div>
+    </>
   );
 };
 
