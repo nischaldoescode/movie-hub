@@ -82,28 +82,38 @@ const SideAd = () => {
   }, [])
 
   // Push adsbygoogle every time ad index changes
-  useEffect(() => {
-    if (!allFailed && window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
+useEffect(() => {
+  if (allFailed) return
+
+  const adTimeout = setTimeout(() => {
+    if (window.adsbygoogle && Array.isArray(window.adsbygoogle)) {
       try {
+        console.log("Pushing adsbygoogle for ad unit", currentAdIndex + 1)
         window.adsbygoogle.push({})
       } catch (e) {
         console.error("Adsbygoogle push error:", e)
       }
     }
-  }, [currentAdIndex, allFailed])
+  }, 100) // Slight delay to ensure DOM has updated
+
+  return () => clearTimeout(adTimeout)
+}, [currentAdIndex, allFailed])
+
 
   if (allFailed) return null
 
   return (
-    <ins
-      className="adsbygoogle"
-      ref={adRef}
-      style={{ display: "block" }}
-      data-ad-client="ca-pub-8779876482236769"
-      data-ad-slot={adUnits[currentAdIndex]}
-      data-ad-format="auto"
-      data-full-width-responsive="true"
-    />
+<ins
+  key={currentAdIndex}
+  className="adsbygoogle"
+  ref={adRef}
+  style={{ display: "block" }}
+  data-ad-client="ca-pub-8779876482236769"
+  data-ad-slot={adUnits[currentAdIndex]}
+  data-ad-format="auto"
+  data-full-width-responsive="true"
+/>
+
   )
 }
 
