@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import HorizontalAd from "../ui/Horizontal";
 
 const Notfound = () => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ const Notfound = () => {
             Previous Page
           </button>
         </div>
+        <HorizontalAd />
       </div>
     </>
   );
