@@ -7,6 +7,7 @@ import SearchModal from './components/ui/Searchbar'
 import SideAd from "./components/ui/Horizontal";
 import SideAd2 from "./components/ui/Horizontal2";
 import SideAd3 from "./components/ui/Horizontal3";
+
 // Lazy load pages for better performance
 const HomePage = lazy(() => import('./components/pages/Homepage'))
 const MoviePage = lazy(() => import('./components/pages/MoviePage'))
