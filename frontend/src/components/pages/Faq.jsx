@@ -20,7 +20,6 @@ const FAQ = () => {
   return (
     <>
     <HelmetProvider>
-      <Helmet>
     <title>FAQ - Frequently Asked Questions | Movie Den</title>
         <meta name="description" content="Find answers to frequently asked questions about Movie Den. Get help with streaming, account issues, movie availability, and technical support for our entertainment platform." />
         <meta name="keywords" content="Movie Den faq, frequently asked questions, streaming help, Movie Den support, account help, technical support, movie streaming issues, how to use Movie Den, Movie Den guide, streaming questions, movie platform help" />
@@ -75,7 +74,7 @@ const FAQ = () => {
         <meta name="HandheldFriendly" content="True" />
         <meta name="googlebot" content="index,follow" />
         <meta name="bingbot" content="index,follow" />
-        <meta name="google-adsense-account" content="ca-pub-8779876482236769">
+        <meta name="google-adsense-account" content="ca-pub-8779876482236769" />
         {/* Preconnect to external domains */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -97,7 +96,6 @@ const FAQ = () => {
       </script>
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
      crossorigin="anonymous"></script>
-        </Helmet>
         </HelmetProvider>
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
       <h1 className="text-3xl font-bold mb-2 text-center text-purple-400">Frequently Asked Questions</h1>
