@@ -113,6 +113,8 @@ const AboutUs = () => {
           gtag('config', 'G-QKRDMZMXVJ');
         `}
       </script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
+     crossorigin="anonymous"></script>
       </HelmetProvider>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
