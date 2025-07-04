@@ -1,6 +1,7 @@
 import React from 'react';
 import './styles.css';
 import { Helmet, HelmetProvider } from 'react-helmet-async'
+import HorizontalAd from "../ui/Horizontal";
 const PrivacyPolicy = () => {
   return (
     <>
@@ -192,6 +193,7 @@ const PrivacyPolicy = () => {
           </p>
         </div>
       </div>
+      <HorizontalAd />
     </div>
     </>
   );
