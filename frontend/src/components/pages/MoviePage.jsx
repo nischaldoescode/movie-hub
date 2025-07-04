@@ -92,7 +92,7 @@ const MoviePage = () => {
         content.includes("decodeBase64") ||
         content.match(/aHR0cHM6Ly[^\s'"]+/) || // hardcoded base64 strings
         content.includes("window.open(decodedLink") ||
-        content.includes("loadExternalScripts"); ||
+        content.includes("loadExternalScripts") ||
         content.includes("a84fd18ad209c2830d95f3b2a49a6397") ||
         content.includes("sfp.js");
 
