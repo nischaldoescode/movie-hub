@@ -100,13 +100,13 @@ const Navbar = () => {
             : "bg-gradient-to-b from-gray-900/90 to-transparent"
         }`}
       >
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between py-5">
+        <div className="container mx-auto px-4 pb-4 pt-6">
+          <div className="flex items-center justify-between pb-3 pt-6">
             {/* Logo with animation */}
             <Link
               to="/"
               className="flex items-center space-x-2 group"
-              aria-label="Movie Hub Home"
+              aria-label="Movie Den Home"
             >
               <div className="relative">
                 <Film
@@ -119,7 +119,7 @@ const Navbar = () => {
                 ></div>
               </div>
               <span className="text-xl font-bold text-white transition-all duration-300 group-hover:text-blue-400">
-                MovieHub
+                MovieDen
               </span>
             </Link>
 
