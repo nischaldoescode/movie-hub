@@ -6,8 +6,8 @@ import {
 } from "lucide-react";
 import './styles.css';
 import HorizontalAd from "../ui/Horizontal";
-import SideAd2 from "./components/ui/Horizontal2";
-import SideAd3 from "./components/ui/Horizontal3";
+import SideAd2 from "../ui/Horizontal2";
+import SideAd3 from "../ui/Horizontal3";
 const AboutUs = () => {
   useEffect(() => {
     // Animation for elements with fade-in class
