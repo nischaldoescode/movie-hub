@@ -94,6 +94,8 @@ const FAQ = () => {
           gtag('config', 'G-QKRDMZMXVJ');
         `}
       </script>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
+     crossorigin="anonymous"></script>
         </HelmetProvider>
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
       <h1 className="text-3xl font-bold mb-2 text-center text-purple-400">Frequently Asked Questions</h1>
