@@ -1,38 +1,58 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 
 const SideAd = () => {
+  const [adStatus, setAdStatus] = useState('Loading...')
+
   useEffect(() => {
     const pushAd = () => {
       try {
         const adsbygoogle = window.adsbygoogle
-        console.log({ adsbygoogle })
-        adsbygoogle.push({})
+        console.log('AdSense object:', adsbygoogle)
+        
+        if (adsbygoogle && adsbygoogle.loaded) {
+          adsbygoogle.push({})
+          setAdStatus('Ad pushed successfully')
+        } else {
+          setAdStatus('AdSense not loaded')
+        }
       } catch (e) {
-        console.error(e)
+        console.error('AdSense error:', e)
+        setAdStatus(`Error: ${e.message}`)
       }
     }
 
     let interval = setInterval(() => {
-      // Check if Adsense script is loaded every 300ms
       if (window.adsbygoogle) {
         pushAd()
-        // clear the interval once the ad is pushed so that function isn't called indefinitely
         clearInterval(interval)
       }
     }, 300)
+
+    setTimeout(() => {
+      clearInterval(interval)
+      if (adStatus === 'Loading...') {
+        setAdStatus('Timeout - AdSense not loaded')
+      }
+    }, 10000)
 
     return () => {
       clearInterval(interval)
     }
   }, [])
+
   return (
-    <ins className="adsbygoogle"
-         style={{ display: "block" }}
-         data-ad-client="ca-pub-8779876482236769"
-         data-ad-slot="9980651939"
-         data-ad-format="auto"
-         data-full-width-responsive="true">
-    </ins>
+    <div>
+      <div style={{ fontSize: '12px', color: '#666', marginBottom: '10px' }}>
+        Ad Status: {adStatus}
+      </div>
+      <ins className="adsbygoogle"
+           style={{ display: "block" }}
+           data-ad-client="ca-pub-8779876482236769"
+           data-ad-slot="9980651939"
+           data-ad-format="auto"
+           data-full-width-responsive="true">
+      </ins>
+    </div>
   )
 }
 
