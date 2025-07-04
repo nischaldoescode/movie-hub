@@ -282,6 +282,8 @@ const SearchResultsPage = () => {
           gtag('js', new Date());
           gtag('config', 'G-QKRDMZMXVJ');
         `}
+          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
+     crossorigin="anonymous"></script>
         </script>
       </HelmetProvider>
       <div className="min-h-screen bg-gray-900 text-white">
