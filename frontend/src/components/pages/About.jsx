@@ -6,6 +6,8 @@ import {
 } from "lucide-react";
 import './styles.css';
 import HorizontalAd from "../ui/Horizontal";
+import SideAd2 from "./components/ui/Horizontal2";
+import SideAd3 from "./components/ui/Horizontal3";
 const AboutUs = () => {
   useEffect(() => {
     // Animation for elements with fade-in class
@@ -119,6 +121,8 @@ const AboutUs = () => {
       </HelmetProvider>
 
      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
+       <SideAd2 />
+       <SideAd3 />
         <h1 className="text-4xl font-bold mb-8 text-center text-purple-400 fade-in">About Movie Den</h1>
         
         <div className="flex flex-col md:flex-row items-center mb-16 gap-8 justify-center">
