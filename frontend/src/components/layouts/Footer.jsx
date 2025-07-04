@@ -39,7 +39,7 @@ const Footer = () => {
           <div className="col-span-2 lg:col-span-1">
             <Link to="/" className="flex items-center space-x-2 mb-4">
               <Film size={32} className="text-blue-500" />
-              <span className="text-xl font-bold text-white">MovieHub</span>
+              <span className="text-xl font-bold text-white">MovieDen</span>
             </Link>
             <p className="text-sm mb-4">
               Discover and watch the latest movies and TV shows from around the world. 
@@ -107,10 +107,10 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="border-t border-gray-800 mt-12 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm mb-4 md:mb-0">
-            © {currentYear} MovieHub. All rights reserved.
+            © {currentYear} MovieDen. All rights reserved.
           </p>
           <p className="text-sm flex items-center">
-            Made with <Heart size={14} className="mx-1 text-red-500" /> by MovieHub Team
+            Made with <Heart size={14} className="mx-1 text-red-500" /> by MovieDen Team
           </p>
         </div>
       </div>
