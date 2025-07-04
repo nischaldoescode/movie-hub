@@ -15,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import Pagination from "../ui/Pagination";
+import HorizontalAd from "../ui/Horizontal";
 
 const SearchResultsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -475,6 +476,7 @@ const SearchResultsPage = () => {
             </>
           )}
         </div>
+        <HorizontalAd />
       </div>
     </>
   );
