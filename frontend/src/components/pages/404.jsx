@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import HorizontalAd from "../ui/Horizontal";
+import SideAd2 from "./components/ui/Horizontal2";
+import SideAd3 from "./components/ui/Horizontal3";
 
 const Notfound = () => {
   const navigate = useNavigate();
@@ -30,7 +32,8 @@ const Notfound = () => {
         `}
       </script>
       </HelmetProvider>
-
+<SideAd2 />
+      <SideAd3 />
       <div className="min-h-screen flex flex-col items-center justify-center text-center bg-gray-900 p-9">
         <img src="https://img.freepik.com/free-vector/oops-404-error-with-broken-robot-concept-illustration_114360-1932.jpg" alt="Not Found" className="w-[32rem] h-[28rem] md:w-[32rem] md:h-[28rem] mb-8 mt-10 object-fill" />
         <h1 className="text-4xl font-bold mb-4 text-white">
