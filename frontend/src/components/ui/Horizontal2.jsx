@@ -9,6 +9,7 @@ const SideAd = () => {
         if (adsbygoogle && adsbygoogle.loaded) {
           adsbygoogle.push({})
         }
+        
       } catch (e) {
         console.error('AdSense error:', e)
       }
