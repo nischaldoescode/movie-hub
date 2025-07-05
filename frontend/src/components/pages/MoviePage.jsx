@@ -5,7 +5,7 @@ import MovieDetailHero from "../movie/MovieDetailHero";
 import MovieCast from "../movie/MovieCast";
 import Loader from "../ui/Loader";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-
+import SideAd from "./components/ui/Horizontal";
 import {
   Play,
   Server,
@@ -2220,7 +2220,7 @@ const MoviePage = () => {
           onPlayClick={handlePlayClick}
           // No need to pass streamingUrl here
         />
-
+      <SideAd />
         {/* Movie Information */}
         <div className="container mx-auto px-4 mt-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
