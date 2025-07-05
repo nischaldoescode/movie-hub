@@ -61,6 +61,7 @@ const TvShowPage = () => {
   const seasonDropdownRef = useRef(null);
   const adTimeoutRef = useRef(null);
   const [showEpisodes, setShowEpisodes] = useState(true);
+    const [adOverlayActive, setAdOverlayActive] = useState(false);
   const scrollRestoreRef = useRef(null);
   const popupPatterns =
     /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|osumpdfciiptn|muthwhcjuwela|qtdfxjlbnojnc|trackingwbasecond/i;
