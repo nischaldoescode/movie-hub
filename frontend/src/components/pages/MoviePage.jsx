@@ -45,6 +45,7 @@ const MoviePage = () => {
   const [playerProtected, setPlayerProtected] = useState(true);
   const [securityLevel, setSecurityLevel] = useState("high"); // "high", "medium", "low"
   const [blockedCount, setBlockedCount] = useState(0);
+  const [adOverlayActive, setAdOverlayActive] = useState(false);
   const playerRef = useRef(null);
   const iframeRef = useRef(null);
   const playerContainerRef = useRef(null);
