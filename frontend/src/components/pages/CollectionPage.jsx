@@ -9,6 +9,7 @@ import { Search, AlertCircle } from "lucide-react";
 import { Helmet, HelmetProvider } from 'react-helmet-async'
 import SideAd2 from "../ui/Horizontal2";
 import SideAd3 from "../ui/Horizontal3";
+import HorizontalAd from "./components/ui/Horizontal";
 const CollectionPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
