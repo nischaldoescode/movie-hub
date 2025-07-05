@@ -33,8 +33,8 @@ const SideAd = () => {
   }, [])
 
   return (
-<ins class="adsbygoogle"
-     style="display:block"
+<ins className="adsbygoogle"
+     style={{ display: "block" }}
      data-ad-client="ca-pub-8779876482236769"
      data-ad-slot="4571013785"
      data-ad-format="auto"
