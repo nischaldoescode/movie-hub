@@ -54,10 +54,10 @@ const MoviePage = () => {
   const scrollRestoreRef = useRef(null);
 
   const popupPatterns =
-    /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|x7130zp|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|osumpdfciiptn|muthwhcjuwela|qtdfxjlbnojnc|pl-d8e112f909ccf659971eeb2e95e5128c__wrap|pl-d8e112f909ccf659971eeb2e95e5128c__content|pl-d8e112f909ccf659971eeb2e95e5128c__btn-block|pl-d8e112f909ccf659971eeb2e95e5128c__bt|pl-d8e112f909ccf659971eeb2e95e5128c__link pl-d8e112f909ccf659971eeb2e95e5128c__finlink|pl-d8e112f909ccf659971eeb2e95e5128c__content-block|pl-d8e112f909ccf659971eeb2e95e5128c__desc-wrap|pl-d8e112f909ccf659971eeb2e95e5128c__desc|bbmfcst/i;
+    /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|x7130zp|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|osumpdfciiptn|muthwhcjuwela|qtdfxjlbnojnc|pl-d8e112f909ccf659971eeb2e95e5128c__wrap|pl-d8e112f909ccf659971eeb2e95e5128c__content|pl-d8e112f909ccf659971eeb2e95e5128c__btn-block|pl-d8e112f909ccf659971eeb2e95e5128c__bt|pl-d8e112f909ccf659971eeb2e95e5128c__link|pl-d8e112f909ccf659971eeb2e95e5128c__finlink|pl-d8e112f909ccf659971eeb2e95e5128c__content-block|pl-d8e112f909ccf659971eeb2e95e5128c__desc-wrap|pl-d8e112f909ccf659971eeb2e95e5128c__desc|bbmfcst|videoOverlay|selectextShadowHost/i;
   const blockedDomainsPattern =
-    /doubleclick|adservice|adnxs|adsystem|adsrvr|taboola|outbrain|revcontent|zedo|adroll|rubiconproject|openx|invadedisheartentrail|criteo|pubmatic|smartadserver|adtechus|quantserve|mediamath|turn|intellipopup|popcash|custom|effectivemeasure|tjwsg|osumpdfciiptn|\.online|muthwhcjuwela|\.store|qtdfxjlbnojnc|raggedstriking|usrpubtrk|brightadnetwor|storageimagedisplay|recordedthereby|nannyirrationalacquainted/i;
-  
+    /doubleclick|adservice|adnxs|adsystem|adsrvr|taboola|outbrain|revcontent|zedo|adroll|rubiconproject|openx|invadedisheartentrail|criteo|pubmatic|smartadserver|adtechus|quantserve|mediamath|turn|intellipopup|popcash|custom|effectivemeasure|tjwsg|osumpdfciiptn|\.online|muthwhcjuwela|\.store|qtdfxjlbnojnc|raggedstriking|usrpubtrk|brightadnetwork|storageimagedisplay|recordedthereby|nannyirrationalacquainted/i;
+
   useEffect(() => {
     if (!streamingUrl || !playerProtected) return;
 
@@ -65,7 +65,6 @@ const MoviePage = () => {
     let clickCount = 0;
     let lastClickTime = 0;
     let originalFunctions = {};
-
     // Enhanced script blocking function
     const blockScript = (script) => {
       const src = script.src || "";
@@ -90,18 +89,34 @@ const MoviePage = () => {
       const hasBase64Redirection =
         content.includes("atob(") ||
         content.includes("decodeBase64") ||
-        content.match(/aHR0cHM6Ly[^\s'"]+/) || // hardcoded base64 strings
-        content.includes("window.open(decodedLink") ||
         content.includes("loadExternalScripts") ||
-        content.includes("a84fd18ad209c2830d95f3b2a49a6397") ||
-        content.includes("sfp.js");
-
+        content.includes("decodeURIComponent") ||
+        content.match(/aHR0cHM6Ly[^\s'"]+/) ||
+        content.match(/[A-Za-z0-9+/]{20,}={0,2}/) || // Generic base64 pattern
+        content.match(/window\.open\([^)]*atob/) ||
+        content.match(/createElement.*script.*atob/) ||
+        content.includes("raggedstriking.com") ||
+        content.includes("rashcolonizeexpand.com");
+  const hasAdvancedThreats = (
+    content.includes("setCookie") && content.includes("getCookie") && content.includes("atob") ||
+    content.includes("loadExternalScripts") ||
+    content.includes("ad_4_handleClick") ||
+    content.includes("decodeBase64") ||
+    content.includes("raggedstriking.com") ||
+    content.includes("rashcolonizeexpand.com") ||
+    content.match(/function\s+[a-zA-Z_][a-zA-Z0-9_]*\s*\(\s*\)\s*{[\s\S]*atob/) ||
+    content.match(/const\s+[a-zA-Z_][a-zA-Z0-9_]*\s*=\s*\[[\s\S]*aHR0cHM6Ly/)
+  );
       return (
         blockedDomainsPattern.test(src) ||
         popupPatterns.test(src) ||
         src.includes("popcash") ||
         src.includes("intellipopup") ||
         src.includes("script-custom.js") ||
+        src.includes(
+          "https://vidlink.pro/_next/static/chunks/800-c28b1e953be540c7.js"
+        ) ||
+        src.includes("800-c28b1e953be540c7.js") ||
         content.includes("znid") ||
         content.includes("donto") ||
         content.includes("IOarzRhPlP") ||
@@ -123,8 +138,11 @@ const MoviePage = () => {
         content.includes(
           "Ly9yYWdnZWRzdHJpa2luZy5jb20vMjAvZWIvYmEvMjBlYmJhMGEyOGYyNDFhODgwOGUyYTU4OTBlODNlODQuanM="
         ) ||
+        content.includes("sfp") ||
+        content.includes("loadExternalScripts") ||
         // Add these new checks
         hasAdServerDomain ||
+        hasAdvancedThreats ||
         hasRandomVarNames ||
         hasBase64Redirection ||
         content.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") || // Block this specific script
@@ -156,6 +174,7 @@ const MoviePage = () => {
     storeOriginalFunctions();
 
     // Override window.open with robust URL analysis
+    // Enhance the window.open override with stronger checks
     window.open = function (...args) {
       if (!args[0]) return null;
 
@@ -163,7 +182,7 @@ const MoviePage = () => {
 
       // Always block _blank targets
       if (args[1] && args[1].includes("_blank")) {
-        // console.log("Blocked _blank target:", url);
+        console.log("Blocked _blank target:", url);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return null;
@@ -178,14 +197,14 @@ const MoviePage = () => {
         (document.referrer && popupPatterns.test(document.referrer));
 
       if (isBlocked) {
-        // console.log("Popup blocked:", url);
+        console.log("Popup blocked:", url);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return null;
       }
 
       // Block by default for streaming content (cautious approach)
-      // console.log("Popup blocked (default protection):", url);
+      console.log("Popup blocked (default protection):", url);
       blockedActionsRef.current++;
       setBlockedCount((prev) => prev + 1);
       return null;
@@ -226,7 +245,7 @@ const MoviePage = () => {
         callbackStr.includes("popup") ||
         callbackStr.includes("adv")
       ) {
-        // console.log("Blocked suspicious timeout");
+        console.log("Blocked suspicious timeout");
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return 0;
@@ -271,7 +290,7 @@ const MoviePage = () => {
                     blockedDomainsPattern.test(src) ||
                     popupPatterns.test(src)
                   ) {
-                    // console.log("Blocked suspicious iframe load:", src);
+                    console.log("Blocked suspicious iframe load:", src);
                     element.src = "about:blank";
                     blockedActionsRef.current++;
                     setBlockedCount((prev) => prev + 1);
@@ -282,7 +301,7 @@ const MoviePage = () => {
                     if (element.contentWindow) {
                       // Try to hijack the iframe's window.open
                       element.contentWindow.open = function () {
-                        // console.log("Iframe popup blocked");
+                        console.log("Iframe popup blocked");
                         blockedActionsRef.current++;
                         setBlockedCount((prev) => prev + 1);
                         return null;
@@ -305,10 +324,10 @@ const MoviePage = () => {
                           return window.location;
                         },
                         set: function (value) {
-                          // console.log(
-                          //   "Blocked iframe location change to:",
-                          //   value
-                          // );
+                          console.log(
+                            "Blocked iframe location change to:",
+                            value
+                          );
                           blockedActionsRef.current++;
                           setBlockedCount((prev) => prev + 1);
                           return window.location;
@@ -333,7 +352,7 @@ const MoviePage = () => {
                 attr.toLowerCase() === "src" &&
                 (blockedDomainsPattern.test(value) || popupPatterns.test(value))
               ) {
-                // console.log("Blocked suspicious iframe src:", value);
+                console.log("Blocked suspicious iframe src:", value);
                 blockedActionsRef.current++;
                 setBlockedCount((prev) => prev + 1);
                 return;
@@ -341,9 +360,9 @@ const MoviePage = () => {
               return originalSetAttribute.call(this, attr, value);
             };
 
-            // console.log("Enhanced iframe security applied");
+            console.log("Enhanced iframe security applied");
           } catch (e) {
-            // console.log("Could not enhance iframe security");
+            console.log("Could not enhance iframe security");
           }
         }, 0);
       }
@@ -356,7 +375,7 @@ const MoviePage = () => {
             name.toLowerCase() === "src" &&
             (blockedDomainsPattern.test(value) || popupPatterns.test(value))
           ) {
-            // console.log("Blocked script src attribute:", value);
+            console.log("Blocked script src attribute:", value);
             blockedActionsRef.current++;
             setBlockedCount((prev) => prev + 1);
             return;
@@ -378,27 +397,21 @@ const MoviePage = () => {
               (value.includes("adserverDomain") ||
                 value.includes("qqsfafvkgsyto.online") ||
                 value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
+                value.includes("brightadnetwork") ||
+                value.includes("storageimagedisplay") ||
+                value.includes("recordedthereby") ||
+                value.includes("nannyirrationalacquainted") ||
+                value.includes("a84fd18ad209c2830d95f3b2a49a6397") ||
+                content.includes("loadExternalScripts") ||
+                value.includes("sfp") ||
                 value.match(/window\['[a-zA-Z0-9]{20,}'\]/))
             ) {
-              // console.log("Blocked suspicious script content");
+              console.log("Blocked suspicious script content");
               blockedActionsRef.current++;
               setBlockedCount((prev) => prev + 1);
               // Return silently without setting the content
               return;
             }
-            if (
-              value &&
-              (value.includes("decodeBase64") ||
-                value.includes("window.open(decodedLink") ||
-                value.includes("atob(") ||
-                value.match(/aHR0cHM6Ly[^\s'"]+/)) // base64 URL inline
-            ) {
-              // console.log("Blocked Base64/obfuscated ad logic");
-              blockedActionsRef.current++;
-              setBlockedCount((prev) => prev + 1);
-              return;
-            }
-
             scriptContent = value;
           },
         });
@@ -412,27 +425,21 @@ const MoviePage = () => {
               (value.includes("adserverDomain") ||
                 value.includes("qqsfafvkgsyto.online") ||
                 value.includes("x4G9Tq2Kw6R7v1Dy3P0B5N8Lc9M2zF") ||
-                value.includes("decodeBase64") ||
+                value.includes("brightadnetwork") ||
+                value.includes("storageimagedisplay") ||
+                value.includes("recordedthereby") ||
+                value.includes("nannyirrationalacquainted") ||
+                value.includes("a84fd18ad209c2830d95f3b2a49a6397") ||
+                content.includes("loadExternalScripts") ||
+                value.includes("sfp") ||
+                value.includes("atob(") ||
                 value.match(/window\['[a-zA-Z0-9]{20,}'\]/))
             ) {
-              // console.log("Blocked suspicious script innerHTML");
+              console.log("Blocked suspicious script innerHTML");
               blockedActionsRef.current++;
               setBlockedCount((prev) => prev + 1);
               return;
             }
-            if (
-              value &&
-              (value.includes("decodeBase64") ||
-                value.includes("window.open(decodedLink") ||
-                value.includes("atob(") ||
-                value.match(/aHR0cHM6Ly[^\s'"]+/)) // base64 URL inline
-            ) {
-              // console.log("Blocked Base64/obfuscated ad logic");
-              blockedActionsRef.current++;
-              setBlockedCount((prev) => prev + 1);
-              return;
-            }
-
             // Use the native innerHTML setter
             HTMLScriptElement.prototype.innerHTML = value;
           },
@@ -450,7 +457,7 @@ const MoviePage = () => {
         // Analyze the iframe before allowing
         const src = child.src || "";
         if (blockedDomainsPattern.test(src) || popupPatterns.test(src)) {
-          // console.log("Blocked suspicious iframe append:", src);
+          console.log("Blocked suspicious iframe append:", src);
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return child; // Return child but don't actually append
@@ -464,25 +471,14 @@ const MoviePage = () => {
 
         if (
           scriptContent.match(
-            /window\.open|popup|banner|redirect|location\s*=|postMessage/i
+            /window\.open|popup|banner|redirect|location\s*=|postMessage|_blank|setCookie|getCookie|window.onload|loadExternalScripts|loadExternalScripts|ad_4_handleClick2|decodeBase64/i
           ) ||
           blockedDomainsPattern.test(scriptSrc)
         ) {
-          // console.log("Blocked suspicious script append");
+          console.log("Blocked suspicious script append");
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return child; // Return child but don't actually append
-        }
-        if (
-          scriptContent.includes("decodeBase64") ||
-          scriptContent.includes("loadExternalScripts") ||
-          scriptContent.includes("atob(") ||
-          scriptContent.match(/aHR0cHM6Ly[^\s'"]+/)
-        ) {
-          // console.log("Blocked Base64-redirect script via appendChild");
-          blockedActionsRef.current++;
-          setBlockedCount((prev) => prev + 1);
-          return child;
         }
       }
 
@@ -495,7 +491,7 @@ const MoviePage = () => {
       if (newNode.tagName === "IFRAME" || newNode.tagName === "SCRIPT") {
         const src = newNode.src || "";
         if (blockedDomainsPattern.test(src) || popupPatterns.test(src)) {
-          // console.log("Blocked suspicious element insertion:", src);
+          console.log("Blocked suspicious element insertion:", src);
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return newNode;
@@ -505,13 +501,73 @@ const MoviePage = () => {
       return originalInsertBefore.call(this, newNode, referenceNode);
     };
 
+    const detectSuspiciousOverlays = () => {
+      try {
+        if (!iframeRef.current?.contentDocument) return;
+
+        const doc = iframeRef.current.contentDocument;
+
+        // Detect elements with suspicious behavioral patterns
+        const allElements = doc.querySelectorAll("div, a");
+
+        allElements.forEach((el) => {
+          const style = window.getComputedStyle(el);
+          const rect = el.getBoundingClientRect();
+
+          // Detect invisible overlay patterns
+          const isSuspiciousOverlay =
+            // Fixed/absolute positioning with high z-index
+            (style.position === "fixed" || style.position === "absolute") &&
+            parseInt(style.zIndex) > 1000000 &&
+            // Covers significant area
+            (rect.width > window.innerWidth * 0.7 ||
+              rect.height > window.innerHeight * 0.7) &&
+            // Very low opacity (nearly invisible)
+            (parseFloat(style.opacity) < 0.1 || style.opacity === "0.01") &&
+            // Has click handler or href
+            (el.onclick || el.href || el.querySelector("a[href]"));
+
+          // Detect random ID patterns
+          const hasRandomId =
+            el.id &&
+            (/^[a-z0-9]{6,8}$/.test(el.id) || // Short random IDs like 'n298qfm'
+              /^[a-zA-Z]{5,7}$/.test(el.id) || // Random letter IDs like 'lkvqm'
+              /^[a-z]+\d+[a-z]+$/.test(el.id)); // Mixed patterns
+
+          // Detect suspicious URLs
+          const hasSuspiciousUrl =
+            el.href &&
+            (el.href.includes("rashcolonizeexpand.com") ||
+              el.href.includes("raggedstriking.com") ||
+              el.href.match(/[a-z]+colonize[a-z]+\.com/) ||
+              el.href.match(/[a-z]+striking\.com/) ||
+              el.href.includes("vi7scvnf") ||
+              el.href.includes("dcxkkq2rvp") ||
+              el.href.includes("rc8v7qwsge"));
+
+          if (isSuspiciousOverlay || hasRandomId || hasSuspiciousUrl) {
+            console.log(
+              "Removing suspicious element:",
+              el.id,
+              el.className,
+              el.href
+            );
+            el.remove();
+            blockedActionsRef.current++;
+            setBlockedCount((prev) => prev + 1);
+          }
+        });
+      } catch (e) {
+        console.log("Error detecting suspicious overlays:", e);
+      }
+    };
     // Proxy postMessage to prevent cross-origin issues
     window.postMessage = function (message, targetOrigin, transfer) {
       const messageStr =
         typeof message === "string" ? message : JSON.stringify(message);
 
       if (popupPatterns.test(messageStr)) {
-        // console.log("Blocked suspicious postMessage:", targetOrigin);
+        console.log("Blocked suspicious postMessage:", targetOrigin);
         blockedActionsRef.current++;
         setBlockedCount((prev) => prev + 1);
         return;
@@ -549,6 +605,67 @@ const MoviePage = () => {
       overlayShieldRef.current = shield;
       playerContainer.appendChild(shield);
 
+      // Enhanced ad overlay blocker with better styling
+      const adOverlay = document.createElement("div");
+      adOverlay.className = "ad-overlay-blocker";
+      adOverlay.style.position = "absolute";
+      adOverlay.style.top = "0";
+      adOverlay.style.left = "0";
+      adOverlay.style.width = "100%";
+      adOverlay.style.height = "100%";
+      adOverlay.style.zIndex = "10000";
+      adOverlay.style.background = "rgba(0,0,0,0.9)";
+      adOverlay.style.display = "none";
+      adOverlay.style.alignItems = "center";
+      adOverlay.style.justifyContent = "center";
+      adOverlay.style.flexDirection = "column";
+      adOverlay.innerHTML = `
+        <div style="display: flex; align-items: center; margin-bottom: 16px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #f59e0b; margin-right: 8px;">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <div style="color:white; font-size:16px; font-weight:500;">Popup/Ad Blocked</div>
+        </div>
+        <div style="color:#d1d5db; font-size:14px; margin-bottom:16px; max-width:80%; text-align:center;">
+          Our system detected and blocked potentially harmful content from the video player
+        </div>
+        <button style="background:#3b82f6; color:white; border:none; padding:8px 20px; border-radius:4px; cursor:pointer; font-size:14px; font-weight:500; display:flex; align-items:center; justify-content:center;">
+          <span style="margin-right:6px">Continue to Video</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+        </button>
+      `;
+
+      playerContainer.appendChild(adOverlay);
+
+      // More aggressive ad overlay display with random delay to avoid detection
+      const showAdOverlay = () => {
+        if (!isMounted) return;
+        adOverlay.style.display = "flex";
+        setAdOverlayActive(true);
+
+        // Random timeout to avoid pattern detection
+        const randomDelay = 3000 + Math.random() * 2000;
+        adTimeoutRef.current = setTimeout(() => {
+          if (isMounted) {
+            adOverlay.style.display = "none";
+            setAdOverlayActive(false);
+          }
+        }, randomDelay);
+      };
+
+      const continueButton = adOverlay.querySelector("button");
+      if (continueButton) {
+        continueButton.addEventListener("click", () => {
+          adOverlay.style.display = "none";
+          setAdOverlayActive(false);
+          clearTimeout(adTimeoutRef.current);
+        });
+      }
+
       // Advanced event handler with pattern detection and AI-like filtering
       const handleInteraction = (e) => {
         if (!playerProtected) return true;
@@ -559,6 +676,7 @@ const MoviePage = () => {
           "duration-150",
           "media-buffering",
           "-mt-0.5",
+          "playButton",
         ];
 
         // Check if the clicked element or its parents are legitimate player controls
@@ -583,7 +701,7 @@ const MoviePage = () => {
             // Use a setTimeout to check if navigation occurred after event handling
             setTimeout(() => {
               if (window.location.href !== currentHref) {
-                // console.log("Blocked redirect from player control");
+                console.log("Blocked redirect from player control");
                 window.history.back(); // Go back if navigation occurred
                 blockedActionsRef.current++;
                 setBlockedCount((prev) => prev + 1);
@@ -607,6 +725,7 @@ const MoviePage = () => {
         if (clickCount > 0 && now - lastClickTime < 500 + Math.random() * 300) {
           e.stopPropagation();
           e.preventDefault();
+          showAdOverlay();
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           clickCount = 0;
@@ -627,11 +746,6 @@ const MoviePage = () => {
         // Enhanced heuristic detection logic
         const isInteractive =
           e.target.tagName === "A" ||
-          e.target.id === "dontfoid" ||
-          e.target.id?.includes("dontfoid") ||
-          (e.target.tagName === "A" &&
-            (e.target.style.display === "none" ||
-              e.target.style.visibility === "hidden")) ||
           e.target.tagName === "BUTTON" ||
           e.target.tagName === "IMG" ||
           e.target.onclick ||
@@ -650,9 +764,13 @@ const MoviePage = () => {
           e.target.className?.includes("closeButton") ||
           e.target.className?.includes("IOarzRhPlPOverlay") ||
           e.target.className?.includes("absolute inset-0") ||
+          e.target.className?.includes("gradient-shadow") ||
+          e.target.className?.includes("overscroll-contain") ||
+          e.target.id?.includes("dontfoid") ||
           e.target.id?.includes("ad") ||
           e.target.id?.includes("modal") ||
           e.target.id?.includes("closeButton") ||
+          e.target.id?.includes("videoOverlay") ||
           e.target.parentElement?.className?.includes("ad") ||
           // Advanced detection for invisible overlay buttons
           (e.target.style.position === "absolute" &&
@@ -679,6 +797,7 @@ const MoviePage = () => {
         if (isInteractive || suspiciousText) {
           e.stopPropagation();
           e.preventDefault();
+          showAdOverlay();
           blockedActionsRef.current++;
           setBlockedCount((prev) => prev + 1);
           return false;
@@ -699,7 +818,7 @@ const MoviePage = () => {
         (e) => {
           const isLink = e.target.tagName === "A" || e.target.closest("a");
           if (isLink) {
-            // console.log("Blocked click on link in player area");
+            console.log("Blocked click on link in player area");
             e.preventDefault();
             e.stopPropagation();
             blockedActionsRef.current++;
@@ -719,6 +838,9 @@ const MoviePage = () => {
               history.back();
               blockedActionsRef.current++;
               setBlockedCount((prev) => prev + 1);
+
+              // Show the ad overlay
+              showAdOverlay();
             }
           }, 100);
         },
@@ -736,13 +858,68 @@ const MoviePage = () => {
                 mutation.addedNodes.forEach((node) => {
                   // Check for specific problematic elements
                   if (node.nodeType === 1) {
+                    // Immediate removal for known patterns
+                    const shouldRemove =
+                      // Hash-based classes
+                      (node.className &&
+                        /pl-[a-f0-9]{20,}__/.test(node.className)) ||
+                      // Random IDs
+                      (node.id && /^[a-z0-9]{6,8}$/.test(node.id)) ||
+                      // Suspicious positioning
+                      (node.style &&
+                        node.style.position === "fixed" &&
+                        parseInt(node.style.zIndex) > 1000000) ||
+                      // Base64 content
+                      (node.innerHTML &&
+                        node.innerHTML.match(/[A-Za-z0-9+/]{20,}={0,2}/)) ||
+                      // Suspicious domains
+                      (node.href &&
+                        (node.href.includes("rashcolonizeexpand.com") ||
+                          node.href.includes("raggedstriking.com")));
+
+                    if (shouldRemove) {
+                      console.log(
+                        "Immediately removing suspicious node:",
+                        node
+                      );
+                      node.remove();
+                      blockedActionsRef.current++;
+                      setBlockedCount((prev) => prev + 1);
+                    }
                     // Element node
                     // Check classes and IDs
                     if (
-                      node.className &&
-                      typeof node.className === "string" &&
-                      (node.className.includes("selectextShadowHost") ||
-                        node.className.includes("IOarzRhPlPOverlay"))
+                      (node.className &&
+                        typeof node.className === "string" &&
+                        (node.className.includes("selectextShadowHost") ||
+                          node.className.includes("IOarzRhPlPOverlay"))) ||
+                      node.className.includes("absolute inset-0") ||
+                      node.className.includes("dontfoid") ||
+                      node.className.includes("video-layout_controls__rRx2z") ||
+                      node.classname.includes(
+                        "pl-d8e112f909ccf659971eeb2e95e5128c__btn"
+                      ) ||
+                      node.classname.includes(
+                        "pl-d8e112f909ccf659971eeb2e95e5128c__finlink"
+                      ) ||
+                      node.classname.includes(
+                        "pl-d8e112f909ccf659971eeb2e95e5128c_wrap"
+                      ) ||
+                      node.classname.includes(
+                        "pl-d8e112f909ccf659971eeb2e95e5128c__desc"
+                      ) ||
+                      node.className.includes(
+                        "pl-d8e112f909ccf659971eeb2e95e5128c__desc_wrap"
+                      ) ||
+                      node.className.includes("pl-") ||
+                      node.className.includes(
+                        "pl-d8e112f909ccf659971eeb2e95e5128c__content-block"
+                      ) ||
+                      (node.id &&
+                        typeof node.id === "string" &&
+                        node.id.includes("dontfoid")) ||
+                      node.id.includes("videoOverlay") ||
+                      node.id.includes("closeButton")
                     ) {
                       node.remove();
                       blockedActionsRef.current++;
@@ -776,6 +953,13 @@ const MoviePage = () => {
                         content.includes("_blank") ||
                         content.includes("target=") ||
                         content.includes("location.href") ||
+                        src.includes("nannyirrationalacquainted") ||
+                        src.includes("recordedthereby") ||
+                        src.includes("storageimagedisplay") ||
+                        src.includes("brightadnetwork") ||
+                        src.includes("https://vidlink.pro") ||
+                        src.includes("adserverDomain") ||
+                        src.includes("qqsfafvkgsyto.online") ||
                         (node.id && node.id.includes("ads"))
                       ) {
                         node.remove();
@@ -802,10 +986,12 @@ const MoviePage = () => {
           return null;
         }
       };
+
       // Deeper iframe protection strategies
       const enhanceIframe = () => {
         try {
           if (!iframeRef.current) return;
+
           // Track iframe loading attempts
           let frameLoadCounter = 0;
 
@@ -864,17 +1050,17 @@ const MoviePage = () => {
               try {
                 iframeRef.current.contentDocument.head.appendChild(script);
               } catch (err) {
-                // console.log("Could not inject protection script");
+                console.log("Could not inject protection script");
               }
             } catch (err) {
-              // console.log("Could not access iframe document");
+              console.log("Could not access iframe document");
             }
           };
 
           // Enhanced iframe protector
           iframeRef.current.addEventListener("load", () => {
             frameLoadCounter++;
-            // console.log(`Frame load attempt ${frameLoadCounter}`);
+            console.log(`Frame load attempt ${frameLoadCounter}`);
 
             try {
               // Apply advanced iframe protection
@@ -885,8 +1071,6 @@ const MoviePage = () => {
                 // Use event listeners to intercept navigation attempts
                 try {
                   frameWindow.addEventListener("beforeunload", function (e) {
-                    // console.log("Detected beforeunload – no prompt triggered"); // Just log or react
-                    // Do NOT set e.returnValue or return anything – this prevents the browser dialog
                     blockedActionsRef.current++;
                     setBlockedCount((prev) => prev + 1);
                   });
@@ -894,10 +1078,10 @@ const MoviePage = () => {
                   frameWindow.addEventListener("hashchange", function (e) {
                     const newHash = frameWindow.location.hash;
                     if (popupPatterns.test(newHash)) {
-                      // console.log(
-                      //   "Blocked suspicious hash navigation:",
-                      //   newHash
-                      // );
+                      console.log(
+                        "Blocked suspicious hash navigation:",
+                        newHash
+                      );
                       blockedActionsRef.current++;
                       setBlockedCount((prev) => prev + 1);
                       e.preventDefault();
@@ -907,7 +1091,7 @@ const MoviePage = () => {
                   // Also try to intercept form submissions which can cause navigation
                   const originalSubmit = HTMLFormElement.prototype.submit;
                   HTMLFormElement.prototype.submit = function () {
-                    // console.log("Blocked form submission");
+                    console.log("Blocked form submission");
                     blockedActionsRef.current++;
                     setBlockedCount((prev) => prev + 1);
                     return false;
@@ -920,7 +1104,7 @@ const MoviePage = () => {
                         mutation.addedNodes.forEach((node) => {
                           if (node.tagName === "FORM") {
                             node.addEventListener("submit", function (e) {
-                              // console.log("Blocked form submit event");
+                              console.log("Blocked form submit event");
                               e.preventDefault();
                               blockedActionsRef.current++;
                               setBlockedCount((prev) => prev + 1);
@@ -938,7 +1122,7 @@ const MoviePage = () => {
                     subtree: true,
                   });
                 } catch (e) {
-                  // console.log("Could not add navigation event listeners:", e);
+                  console.log("Could not add navigation event listeners:", e);
                 }
 
                 // Try to override other potentially dangerous methods
@@ -953,31 +1137,31 @@ const MoviePage = () => {
                     return null;
                   };
                 } catch (e) {
-                  // console.log("Could not override frame dialogs");
+                  console.log("Could not override frame dialogs");
                 }
 
                 // Try to detect and block popunder techniques
                 try {
                   frameWindow.addEventListener("blur", function (e) {
-                    // console.log("Frame blur detected - potential popunder");
+                    console.log("Frame blur detected - potential popunder");
                     frameWindow.focus();
                     blockedActionsRef.current++;
                     setBlockedCount((prev) => prev + 1);
                   });
                 } catch (e) {
-                  // console.log("Could not add blur listener");
+                  console.log("Could not add blur listener");
                 }
               }
 
               // Add CSP to the frame
               addCSPToFrame();
             } catch (err) {
-              // console.log("Protected frame access error:", err);
+              console.log("Protected frame access error:", err);
             }
 
             // Check for excessive reloads (popup technique)
             if (frameLoadCounter > 3) {
-              // console.log("Excessive frame reloads detected - freezing iframe");
+              console.log("Excessive frame reloads detected - freezing iframe");
               try {
                 iframeRef.current.src = "about:blank";
               } catch (e) {}
@@ -987,10 +1171,42 @@ const MoviePage = () => {
             mutations.forEach((mutation) => {
               if (mutation.attributeName === "src") {
                 // Handle src attribute changes here if needed
-                // console.log("iframe src changed");
+                console.log("iframe src changed");
               }
             });
           });
+          // Dynamic pattern detection for hash-based class names
+          const removeDynamicPatterns = () => {
+            try {
+              if (!iframeRef.current?.contentDocument) return;
+
+              const doc = iframeRef.current.contentDocument;
+
+              // Detect elements with hash-based class patterns
+              const hashBasedElements = doc.querySelectorAll(
+                '*[class*="pl-"][class*="__wrap"], *[class*="pl-"][class*="__content"], *[class*="pl-"][class*="__btn"], *[class*="pl-"][class*="__finlink"]'
+              );
+
+              hashBasedElements.forEach((el) => {
+                // Check if class matches the pattern: pl-[hash]__[suffix]
+                const classes = el.className.split(" ");
+                const hasHashPattern = classes.some(
+                  (cls) =>
+                    /^pl-[a-f0-9]{32}__/.test(cls) ||
+                    /^pl-[a-zA-Z0-9]{20,}__/.test(cls)
+                );
+
+                if (hasHashPattern) {
+                  console.log("Removing hash-based ad element:", el.className);
+                  el.remove();
+                  blockedActionsRef.current++;
+                  setBlockedCount((prev) => prev + 1);
+                }
+              });
+            } catch (e) {
+              console.log("Error removing dynamic patterns:", e);
+            }
+          };
 
           const removeKnownBadElements = () => {
             try {
@@ -1015,7 +1231,7 @@ const MoviePage = () => {
                 try {
                   const elements2 = doc.querySelectorAll(
                     `.${pattern}, #${pattern}, [class*="${pattern}"], [id*="${pattern}"], 
-                     [class^="${pattern}"], [id^="${pattern}"], [class$="${pattern}"], [id$="${pattern}"]`
+                     [class^="${pattern}"], [id^="${pattern}"], [class$="${pattern}"], [id$="${pattern}"],a[^="${pattern}"]`
                   );
                   if (elements2 && elements2.length) {
                     elements2.forEach((el) => {
@@ -1025,7 +1241,7 @@ const MoviePage = () => {
                     });
                   }
                 } catch (e) {
-                  // console.log(`Error with querySelector for ${pattern}:`, e);s
+                  console.log(`Error with querySelector for ${pattern}:`, e);
                 }
               };
 
@@ -1036,8 +1252,7 @@ const MoviePage = () => {
                   '[znid], [donto], [style*="z-index:"], [style*="position: absolute"][style*="z-index"], ' +
                     ".selectextShadowHost, .IOarzRhPlPOverlay, #videoOverlay, " +
                     '[class*="selectextShadowHost"], [class*="IOarzRhPlPOverlay"], ' +
-                    '[id="videoOverlay"], [id*="videoOverlay"], #dontfoid, [id*="dontfoid"], ' +
-                    'a[style*="display: none"], a[style*="visibility: hidden"], a[style*="left: -1000px"]'
+                    '[id="videoOverlay"], [id*="videoOverlay"]'
                 );
 
                 if (znidElements && znidElements.length) {
@@ -1052,7 +1267,7 @@ const MoviePage = () => {
                 const suspiciousScripts = doc.querySelectorAll(
                   'script[src*="intellipopup"], script[src*="popup"], script[src*="ad"], ' +
                     'script[id*="ad"], script[class*="ad"], script[id*="popup-ads"], ' +
-                    'script[type="text/javascript"][id*="ad"], script[src*="popcash"]'
+                    'script[type="text/javascript"][id*="ad"], script[src*="popcash"], script[src*="adserverDomain"], script[src*="qqsfafvkgsyto.online"], script[src*="nannyirrationalacquainted"], script[src*="recordedthereby"], script[src*="storageimagedisplay"], script[src*="brightadnetwork"], script[src*="https://vidlink.pro"]'
                 );
 
                 if (suspiciousScripts && suspiciousScripts.length) {
@@ -1065,12 +1280,30 @@ const MoviePage = () => {
               } catch (e) {
                 console.log("Error removing znid elements:", e);
               }
-
               // Target these specific problematic elements
               removeElementsByPattern("IOarzRhPlPOverlay");
               removeElementsByPattern("selectextShadowHost");
               removeElementsByPattern("intellipopup");
               removeElementsByPattern("videoOverlay"); // Added for specific ID targeting
+              removeElementsByPattern("dontfoid");
+              removeElementsByPattern(
+                "pl-d8e112f909ccf659971eeb2e95e5128c__wrap"
+              );
+              removeElementsByPattern(
+                "pl-d8e112f909ccf659971eeb2e95e5128c__content-block"
+              );
+              removeElementsByPattern(
+                "pl-d8e112f909ccf659971eeb2e95e5128c__btn"
+              );
+              removeElementsByPattern(
+                "pl-d8e112f909ccf659971eeb2e95e5128c__finlink"
+              );
+              removeElementsByPattern(
+                "pl-d8e112f909ccf659971eeb2e95e5128c__bt"
+              );
+              removeElementsByPattern(
+                "container-d8e112f909ccf659971eeb2e95e5128c77821"
+              );
 
               // Run a more frequent check on shadow DOM elements
               try {
@@ -1080,7 +1313,7 @@ const MoviePage = () => {
                   if (el.shadowRoot) {
                     // Find and remove elements in shadow DOM
                     const shadowElements = el.shadowRoot.querySelectorAll(
-                      ".selectextShadowHost, .IOarzRhPlPOverlay, #videoOverlay"
+                      ".selectextShadowHost, .IOarzRhPlPOverlay, #videoOverlay, .pl-d8e112f909ccf659971eeb2e95e5128c__wrap, #dontfoid, .pl-d8e112f909ccf659971eeb2e95e5128c__content-block, .pl-d8e112f909ccf659971eeb2e95e5128c__btn, .pl-d8e112f909ccf659971eeb2e95e5128c__finlink, .pl-d8e112f909ccf659971eeb2e95e5128c__bt"
                     );
                     shadowElements.forEach((shadowEl) => {
                       shadowEl.remove();
@@ -1090,13 +1323,17 @@ const MoviePage = () => {
                   }
                 });
               } catch (e) {
-                // console.log("Shadow DOM cleaning error:", e);
+                console.log("Shadow DOM cleaning error:", e);
               }
             } catch (e) {
-              // console.log("Error removing known bad elements:", e);
+              console.log("Error removing known bad elements:", e);
             }
           };
-          const badElementsInterval = setInterval(removeKnownBadElements, 200);
+          const badElementsInterval = setInterval(() => {
+            removeKnownBadElements();
+            removeDynamicPatterns();
+            detectSuspiciousOverlays();
+          }, 100); // Faster detection
           clearInterval(badElementsInterval);
           // Monitor src attribute changes
 
@@ -1124,13 +1361,17 @@ const MoviePage = () => {
                 'div[style*="pointer-events: none"]',
                 'div[style*="opacity:0"]',
                 'div[style*="opacity: 0"]',
+                'a[href="https://tylvixwbfkatd.site"]',
+                'a[href="tlqjonbqwuwmp.online"]',
+                'a[href="t"]',
+                'a[href="https://brightadnetwork"]',
               ];
 
               const overlays = doc.querySelectorAll(overlaySelectors.join(","));
 
               if (overlays && overlays.length) {
                 overlays.forEach((el) => {
-                  // console.log("Removing invisible overlay:", el);
+                  console.log("Removing invisible overlay:", el);
                   el.remove();
                   blockedActionsRef.current++;
                   setBlockedCount((prev) => prev + 1);
@@ -1159,7 +1400,7 @@ const MoviePage = () => {
                       div.querySelectorAll("img, video, svg").length > 0;
 
                     if (!hasVisibleContent) {
-                      // console.log("Removing large overlay div:", div);
+                      console.log("Removing large overlay div:", div);
                       div.remove();
                       blockedActionsRef.current++;
                       setBlockedCount((prev) => prev + 1);
@@ -1168,7 +1409,7 @@ const MoviePage = () => {
                 }
               });
             } catch (e) {
-              // console.log("Error removing invisible overlays:", e);
+              console.log("Error removing invisible overlays:", e);
             }
           };
 
@@ -1176,7 +1417,7 @@ const MoviePage = () => {
           const overlayInterval = setInterval(removeInvisibleOverlays, 300);
           clearInterval(overlayInterval);
         } catch (err) {
-          // console.log("Could not enhance iframe:", err);
+          console.log("Could not enhance iframe:", err);
         }
       };
 
@@ -1187,10 +1428,10 @@ const MoviePage = () => {
 
         scripts.forEach((script) => {
           if (blockScript(script)) {
-            // console.log(
-            //   "Removing suspicious existing script:",
-            //   script.src || "inline script"
-            // );
+            console.log(
+              "Removing suspicious existing script:",
+              script.src || "inline script"
+            );
             script.remove();
             blockedActionsRef.current++;
             setBlockedCount((prev) => prev + 1);
@@ -1204,17 +1445,17 @@ const MoviePage = () => {
               iframeRef.current.contentDocument.querySelectorAll("script");
             iframeScripts.forEach((script) => {
               if (blockScript(script)) {
-                // console.log(
-                //   "Removing suspicious iframe script:",
-                //   script.src || "inline script"
-                // );
+                console.log(
+                  "Removing suspicious iframe script:",
+                  script.src || "inline script"
+                );
                 script.remove();
                 blockedActionsRef.current++;
                 setBlockedCount((prev) => prev + 1);
               }
             });
           } catch (e) {
-            // console.log("Could not access iframe scripts:", e);
+            console.log("Could not access iframe scripts:", e);
           }
         }
       };
@@ -1230,11 +1471,23 @@ const MoviePage = () => {
             '[class*="IOarzRhPlPOverlay"]',
             '[class*="selectextShadowHos"]',
             '[class*="shadow"]',
+            '[id*="videoOverlay"]',
+            '[id*="dontfoid"]',
+            '[id*="pl-d8e112f909ccf659971eeb2e95e5128c__wrap"]',
+            '[id*="pl-d8e112f909ccf659971eeb2e95e5128c__content-block"]',
+            '[id*="pl-d8e112f909ccf659971eeb2e95e5128c__btn"]',
+            '[id*="pl-d8e112f909ccf659971eeb2e95e5128c__finlink"]',
+            '[id*="pl-d8e112f909ccf659971eeb2e95e5128c__bt"]',
+            '[class*="videoOverlay"]',
+            '[class*="dontfoid"]',
             "[znid]",
             "[donto]",
             'div[style*="position: absolute"][style*="z-index"]',
             'iframe[style*="position: absolute"]',
             'script[src*="popcash"]',
+            'script[src*="nannyirrationalacquainted"]',
+            'script[src*="brightadnetwork"]',
+            '[class*="container-d8e112f909ccf659971eeb2e95e5128c50290"]',
           ];
 
           const elements = doc.querySelectorAll(suspiciousSelectors.join(","));
@@ -1247,7 +1500,7 @@ const MoviePage = () => {
             });
           }
         } catch (e) {
-          // console.log("Error in scanForProblematicElements:", e);
+          console.log("Error in scanForProblematicElements:", e);
         }
       };
       // Run this function frequently
@@ -1276,7 +1529,7 @@ const MoviePage = () => {
               iframeRef.current.contentDocument ||
               iframeRef.current.contentWindow.document;
           } catch (e) {
-            // console.log("Cannot access iframe content directly");
+            console.log("Cannot access iframe content directly");
           }
 
           if (iframeDoc) {
@@ -1293,12 +1546,12 @@ const MoviePage = () => {
                         node.id
                           ?.toLowerCase()
                           .match(
-                            /ad|popup|overlay|banner|float|promo|sponsor|offer|selectextShadowHost|interstitial|closeButton|IOarzRhPlPOverlay/i
+                            /ad|popup|overlay|banner|float|promo|sponsor|offer|selectextShadowHost|interstitial|closeButton|IOarzRhPlPOverlay|pl-d8e112f909ccf659971eeb2e95e5128c__wrap|dontfoid|container-d8e112f909ccf659971eeb2e95e5128c77821/i
                           ) ||
                         node.className
                           ?.toLowerCase()
                           .match(
-                            /ad|popup|overlay|banner|float|promo|sponsor|offer|selectextShadowHost|closeButton|interstitial|IOarzRhPlPOverlay/i
+                            /ad|popup|overlay|banner|float|promo|sponsor|offer|selectextShadowHost|closeButton|interstitial|IOarzRhPlPOverlay|pl-d8e112f909ccf659971eeb2e95e5128c__wrap|dontfoid}container-d8e112f909ccf659971eeb2e95e5128c50290/i
                           ) ||
                         node.style?.zIndex > 100 ||
                         node.style?.position === "fixed" ||
@@ -1356,7 +1609,7 @@ const MoviePage = () => {
                       popupPatterns.test(value) ||
                       blockedDomainsPattern.test(value)
                     ) {
-                      // console.log(`Blocked suspicious ${attrName}:`, value);
+                      console.log(`Blocked suspicious ${attrName}:`, value);
                       target.setAttribute(attrName, "javascript:void(0)");
                       blockedActionsRef.current++;
                       setBlockedCount((prev) => prev + 1);
@@ -1396,7 +1649,9 @@ const MoviePage = () => {
         try {
           // Get all player elements and their children
           const playerElements = document.querySelectorAll(
-            '.time-slider, .duration-150, .media-buffering\\:hidden, .-mt-0\\.5, [class*="controls"], [class*="player"], video, audio'
+            '.time-slider, .duration-150, .media-buffering\\:hidden, .-mt-0\\.5, [class*="controls"], [class*="container-d8e112f909ccf659971eeb2e95e5128c77821"], [class*="player"], video, audio',
+            ".volume-slider",
+            ".time-slider"
           );
 
           // Intercept navigation events rather than trying to override properties
@@ -1425,7 +1680,8 @@ const MoviePage = () => {
                 e.target.className?.includes("volume") ||
                 e.target.className?.includes("fullscreen") ||
                 e.target.className?.includes("time") ||
-                e.target.className?.includes("progress")
+                e.target.className?.includes("progress") ||
+                e.target.className?.includes("slider")
               ) {
                 return true;
               }
@@ -1475,7 +1731,7 @@ const MoviePage = () => {
               e.target.dataset.href;
 
             if (suspiciousAttrs) {
-              // console.log("Blocked suspicious click on player area element");
+              console.log("Blocked suspicious click on player area element");
               e.stopPropagation();
               e.preventDefault();
               blockedActionsRef.current++;
@@ -1556,6 +1812,10 @@ const MoviePage = () => {
           if (playerContainer.contains(shield)) {
             playerContainer.removeChild(shield);
           }
+
+          if (playerContainer.contains(adOverlay)) {
+            playerContainer.removeChild(adOverlay);
+          }
         }
 
         if (observer) {
@@ -1567,6 +1827,7 @@ const MoviePage = () => {
           iframeRef.current.removeEventListener("load", enhanceIframe);
         }
 
+        clearTimeout(adTimeoutRef.current);
         clearInterval(scanInterval);
         if (playerControlsProtection && playerControlsProtection.cleanup) {
           playerControlsProtection.cleanup();
@@ -2153,6 +2414,19 @@ const MoviePage = () => {
 
       const url = getStreamingUrl(id, "movie", null, null, server);
       setStreamingUrl(url);
+    }
+  };
+
+  const closeAdOverlay = () => {
+    setAdOverlayActive(false);
+    const adOverlay = playerContainerRef.current?.querySelector(
+      ".ad-overlay-blocker"
+    );
+    if (adOverlay) {
+      adOverlay.style.display = "none";
+    }
+    if (adTimeoutRef.current) {
+      clearTimeout(adTimeoutRef.current);
     }
   };
 
