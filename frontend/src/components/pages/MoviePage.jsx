@@ -53,7 +53,7 @@ const MoviePage = () => {
   const overlayShieldRef = useRef(null);
   const blockedActionsRef = useRef(0);
   const scrollRestoreRef = useRef(null);
-
+  const adTimeoutRef = useRef(null);
   const popupPatterns =
     /pop|click|redirect|offer|win|prize|free|bonus|ad|banner|track|survey|smart|clk|advert|campaign|campaign|x7130zp|IOarzRhPlPOverlay|modal|selectextShadowHos|shadow|znid|donto|popcash|display|osumpdfciiptn|muthwhcjuwela|qtdfxjlbnojnc|pl-d8e112f909ccf659971eeb2e95e5128c__wrap|pl-d8e112f909ccf659971eeb2e95e5128c__content|pl-d8e112f909ccf659971eeb2e95e5128c__btn-block|pl-d8e112f909ccf659971eeb2e95e5128c__bt|pl-d8e112f909ccf659971eeb2e95e5128c__link|pl-d8e112f909ccf659971eeb2e95e5128c__finlink|pl-d8e112f909ccf659971eeb2e95e5128c__content-block|pl-d8e112f909ccf659971eeb2e95e5128c__desc-wrap|pl-d8e112f909ccf659971eeb2e95e5128c__desc|bbmfcst|videoOverlay|selectextShadowHost/i;
   const blockedDomainsPattern =
