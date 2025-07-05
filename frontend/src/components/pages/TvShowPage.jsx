@@ -59,7 +59,7 @@ const TvShowPage = () => {
   const playerRef = useRef(null);
   const topRef = useRef(null);
   const seasonDropdownRef = useRef(null);
-    const adTimeoutRef = useRef(null);
+  const adTimeoutRef = useRef(null);
   const [showEpisodes, setShowEpisodes] = useState(true);
   const scrollRestoreRef = useRef(null);
   const popupPatterns =
