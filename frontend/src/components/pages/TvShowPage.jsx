@@ -2445,7 +2445,19 @@ const TvShowPage = () => {
 
     // Scroll to player with a smooth transition
   };
-
+  const closeAdOverlay = () => {
+    setAdOverlayActive(false);
+    const adOverlay = playerContainerRef.current?.querySelector(
+      ".ad-overlay-blocker"
+    );
+    if (adOverlay) {
+      adOverlay.style.display = "none";
+    }
+    if (adTimeoutRef.current) {
+      clearTimeout(adTimeoutRef.current);
+    }
+  };
+  
   const handleServerChange = (server) => {
     // Remove scroll position storing
 
