@@ -5,7 +5,7 @@ import MovieDetailHero from "../movie/MovieDetailHero";
 import MovieCast from "../movie/MovieCast";
 import Loader from "../ui/Loader";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import SideAd from "./components/ui/Horizontal";
+import SideAd from "../ui/Horizontal";
 import {
   Play,
   Server,
