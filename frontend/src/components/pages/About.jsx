@@ -93,7 +93,6 @@ const AboutUs = () => {
         <meta name="audience" content="all" />
         <meta name="googlebot" content="index,follow" />
         <meta name="bingbot" content="index,follow" />
-        <meta name="google-adsense-account" content="ca-pub-8779876482236769" />
           
         {/* Preconnect to external domains */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -114,11 +113,10 @@ const AboutUs = () => {
           gtag('config', 'G-QKRDMZMXVJ');
         `}
       </script>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
-     crossorigin="anonymous"></script>
       </HelmetProvider>
 
      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
+       <div id="ezoic-pub-ad-placeholder-118"></div>
         <h1 className="text-4xl font-bold mb-8 text-center text-purple-400 fade-in">About Movie Den</h1>
         
         <div className="flex flex-col md:flex-row items-center mb-16 gap-8 justify-center">
@@ -188,6 +186,7 @@ const AboutUs = () => {
             Start Watching Now
           </a>
         </div>
+         <div id="ezoic-pub-ad-placeholder-112"></div>
       </div>
     </>
   );
