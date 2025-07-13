@@ -3,8 +3,6 @@ import { useSearchParams, Link } from "react-router-dom";
 import { useMovieContext } from "../context/MovieContext";
 import MovieGrid from "../movie/MovieGrid";
 import Loader from "../ui/Loader";
-import SideAd2 from "../ui/Horizontal2";
-import SideAd3 from "../ui/Horizontal3";
 
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import {
@@ -18,7 +16,6 @@ import {
   X,
 } from "lucide-react";
 import Pagination from "../ui/Pagination";
-import HorizontalAd from "../ui/Horizontal";
 
 const SearchResultsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -292,8 +289,6 @@ const SearchResultsPage = () => {
         </script>
       </HelmetProvider>
       <div className="min-h-screen bg-gray-900 text-white">
-        <SideAd3 />
-        <SideAd2 />
         <div className="container mx-auto px-4 py-8">
           {/* Search Header */}
           <div className="mb-8">
@@ -481,7 +476,6 @@ const SearchResultsPage = () => {
             </>
           )}
         </div>
-        <HorizontalAd />
       </div>
     </>
   );
