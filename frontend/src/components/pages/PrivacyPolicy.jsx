@@ -192,6 +192,15 @@ const PrivacyPolicy = () => {
           </p>
         </div>
       </div>
+      {/* Ezoic Required Privacy Disclosure */}
+      <div className="mt-10 bg-gray-800 p-5 rounded-lg">
+        <h3 className="text-purple-300 font-semibold mb-3">Ezoic Privacy Disclosure</h3>
+        <p className="text-gray-300 mb-4">
+          This website uses Ezoic to personalize content and ads, to provide social media features and to analyze our traffic. Ezoic may share information about your use of our site with our social media, advertising and analytics partners. For more details, visit our <a href="https://g.ezoic.net/privacy/movieden.space" className="text-purple-300 underline" target="_blank" rel="noopener noreferrer">Ezoic privacy policy page</a>.
+        </p>
+        <span id="ezoic-privacy-policy-embed"></span>
+      </div>
+
     <div id="ezoic-pub-ad-placeholder-118"></div>
     </div>
     </>
