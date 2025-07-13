@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import './styles.css';
 import { Helmet, HelmetProvider } from 'react-helmet-async'; 
-import HorizontalAd from "../ui/Horizontal";
-import SideAd2 from "../ui/Horizontal2";
-import SideAd3 from "../ui/Horizontal3";
+
 const FAQ = () => {
   const [expandedSections, setExpandedSections] = useState({
     streaming: false,
@@ -100,8 +98,6 @@ const FAQ = () => {
      crossorigin="anonymous"></script>
         </HelmetProvider>
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
-      <SideAd2 />
-      <SideAd3 />
       <h1 className="text-3xl font-bold mb-2 text-center text-purple-400">Frequently Asked Questions</h1>
       <p className="text-center text-gray-400 mb-12">Get answers to the most common questions about Movie Den</p>
       
@@ -301,7 +297,6 @@ const FAQ = () => {
           </p>
         </div>
       </div>
-      <HorizontalAd />
     </div>
     </>
   );
