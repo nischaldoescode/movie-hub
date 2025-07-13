@@ -5,8 +5,7 @@ import MovieGrid from "../movie/MovieGrid";
 import FilterBar from "../ui/FilterBar";
 import Loader from "../ui/Loader";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import SideAd2 from "../ui/Horizontal2";
-import SideAd3 from "../ui/Horizontal3";
+
 const HomePage = () => {
   const context = useMovieContext();
 
