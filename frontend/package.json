@@ -3,13 +3,13 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "GENERATE_SOURCEMAP=false vite build",
-    "preview": "vite preview",
-    "start": "node server.js",
-    "postinstall": "npm run build"
-  },
+"scripts": {
+  "dev": "vite",
+  "build": "GENERATE_SOURCEMAP=false vite build",
+  "preview": "vite preview",
+  "start": "node server.js",
+  "postinstall": "npm run build"
+},
   "dependencies": {
     "@headlessui/react": "^2.2.2",
     "axios": "^1.9.0",
