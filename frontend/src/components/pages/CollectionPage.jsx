@@ -349,7 +349,6 @@ const CollectionPage = () => {
         <meta name="MobileOptimized" content="320" />
         <meta name="googlebot" content="index,follow" />
         <meta name="bingbot" content="index,follow" />
-        <meta name="google-adsense-account" content="ca-pub-8779876482236769" />
           
         {/* Preconnect to external domains */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -365,8 +364,7 @@ const CollectionPage = () => {
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
         <link rel="dns-prefetch" href="//tmbd.org" />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
-     crossorigin="anonymous"></script>
+
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"></script>
       <script>
         {`
@@ -441,6 +439,8 @@ const CollectionPage = () => {
               <p className="text-red-500">{error}</p>
             </div>
           )}
+            <div id="ezoic-pub-ad-placeholder-112"></div>
+          
           {!loading && !error && (
             <>
               <MovieGrid movies={items} />
@@ -476,6 +476,7 @@ const CollectionPage = () => {
                   )}
                 </div>
               )}
+              <div id="ezoic-pub-ad-placeholder-118"></div>
               {/* Pagination */}
               {totalPages > 1 && items.length > 0 && (
                 <Pagination
