@@ -48,6 +48,8 @@ const Notfound = () => {
             Previous Page
           </button>
         </div>
+          <div id="ezoic-pub-ad-placeholder-113"></div>
+        <div id="ezoic-pub-ad-placeholder-118"></div>
       </div>
     </>
   );
