@@ -175,7 +175,6 @@ const SearchResultsPage = () => {
           name="keywords"
           content="movie search, search movies, search tv shows, find movies, movie den search, movie finder, film search, entertainment search, movie database, movie library search, tv series search"
         />
-        <meta name="google-adsense-account" content="ca-pub-8779876482236769" />
         <meta name="author" content="Movie Den" />
         <meta name="robots" content="index, follow" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -284,8 +283,6 @@ const SearchResultsPage = () => {
           gtag('js', new Date());
           gtag('config', 'G-QKRDMZMXVJ');
         `}
-          <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
-     crossorigin="anonymous"></script>
         </script>
       </HelmetProvider>
       <div className="min-h-screen bg-gray-900 text-white">
@@ -417,7 +414,7 @@ const SearchResultsPage = () => {
               </button>
             </div>
           )}
-
+            <div id="ezoic-pub-ad-placeholder-112"></div>
           {/* Results Grid */}
           {!loading && !error && (
             <>
@@ -464,6 +461,7 @@ const SearchResultsPage = () => {
                   </p>
                 </div>
               )}
+              <div id="ezoic-pub-ad-placeholder-118"></div>
 
               {/* Pagination - Use the Pagination component when applicable */}
               {filteredTotalPages > 1 && filteredResults.length > 0 ? (
