@@ -1,9 +1,7 @@
 import React from 'react';
 import './styles.css';
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-import HorizontalAd from "../ui/Horizontal";
-import SideAd2 from "../ui/Horizontal2";
-import SideAd3 from "../ui/Horizontal3";
+
 const PrivacyPolicy = () => {
   return (
     <>
@@ -96,8 +94,6 @@ const PrivacyPolicy = () => {
       <h1 className="text-3xl font-bold mb-8 text-purple-400">Movie Den Privacy Policy</h1>
       
       <div className="space-y-8">
-        <SideAd3 />
-        <SideAd2 />
         <section>
           <h2 className="text-xl font-semibold mb-4 text-purple-300">Content Usage Terms</h2>
           <p className="mb-4">
@@ -197,7 +193,7 @@ const PrivacyPolicy = () => {
           </p>
         </div>
       </div>
-      <HorizontalAd />
+
     </div>
     </>
   );
