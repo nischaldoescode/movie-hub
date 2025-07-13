@@ -7,9 +7,6 @@ import Loader from "../ui/Loader";
 import Pagination from "../ui/Pagination";
 import { Search, AlertCircle } from "lucide-react";
 import { Helmet, HelmetProvider } from 'react-helmet-async'
-import SideAd2 from "../ui/Horizontal2";
-import SideAd3 from "../ui/Horizontal3";
-import HorizontalAd from "../ui/Horizontal";
 
 const CollectionPage = () => {
   const location = useLocation();
@@ -444,8 +441,6 @@ const CollectionPage = () => {
               <p className="text-red-500">{error}</p>
             </div>
           )}
-<SideAd3 />
-          <SideAd2 />
           {!loading && !error && (
             <>
               <MovieGrid movies={items} />
@@ -481,7 +476,6 @@ const CollectionPage = () => {
                   )}
                 </div>
               )}
-            <HorizontalAd />
               {/* Pagination */}
               {totalPages > 1 && items.length > 0 && (
                 <Pagination
