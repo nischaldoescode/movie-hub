@@ -142,7 +142,6 @@ const HomePage = () => {
         <meta name="msapplication-TileColor" content="#1f2937" />
         <meta name="msapplication-navbutton-color" content="#1f2937" />
         <meta name="apple-mobile-web-app-status-bar-style" content="#1f2937" />
-        <meta name="google-adsense-account" content="ca-pub-8779876482236769" />
           
         {/* Canonical URL */}
         <link rel="canonical" href="https://movieDen.space" />
@@ -247,8 +246,7 @@ const HomePage = () => {
           gtag('config', 'G-QKRDMZMXVJ');
         `}
         </script>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
-     crossorigin="anonymous"></script>
+
         </Helmet>
       </HelmetProvider>
       <div className="min-h-screen bg-gray-900 text-white px-6 xl:px-24">
@@ -267,7 +265,7 @@ const HomePage = () => {
           onClearAll={handleClearAll}
           disabled={loading}
         />
-
+          <div id="ezoic-pub-ad-placeholder-112"></div>
         {/* All Movies */}
         <MovieGrid
           title="All Movies"
@@ -292,6 +290,7 @@ const HomePage = () => {
             loading={loading}
           />
         )}
+        <div id="ezoic-pub-ad-placeholder-118"></div>
       </div>
     </>
   );
