@@ -21,7 +21,6 @@ const PrivacyPolicy = () => {
         <meta name="msapplication-TileColor" content="#1f2937" />
         <meta name="msapplication-navbutton-color" content="#1f2937" />
         <meta name="apple-mobile-web-app-status-bar-style" content="#1f2937" />
-        <meta name="google-adsense-account" content="ca-pub-8779876482236769" />
         
         {/* Canonical URL */}
         <link rel="canonical" href="https://movieden.space/privacypolicy" />
@@ -86,11 +85,11 @@ const PrivacyPolicy = () => {
           gtag('js', new Date());
           gtag('config', 'G-QKRDMZMXVJ');
         `}
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8779876482236769"
-     crossorigin="anonymous"></script>
+ 
       </script>
         </HelmetProvider>
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
+  <div id="ezoic-pub-ad-placeholder-112"></div>
       <h1 className="text-3xl font-bold mb-8 text-purple-400">Movie Den Privacy Policy</h1>
       
       <div className="space-y-8">
@@ -193,7 +192,7 @@ const PrivacyPolicy = () => {
           </p>
         </div>
       </div>
-
+    <div id="ezoic-pub-ad-placeholder-118"></div>
     </div>
     </>
   );
