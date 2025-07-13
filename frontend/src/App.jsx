@@ -4,9 +4,6 @@ import Navbar from './components/layouts/Nabar'
 import Footer from './components/layouts/Footer'
 import Loader from './components/ui/Loader'
 import SearchModal from './components/ui/Searchbar'
-import SideAd from "./components/ui/Horizontal";
-import SideAd2 from "./components/ui/Horizontal2";
-import SideAd3 from "./components/ui/Horizontal3";
 
 // Lazy load pages for better performance
 const HomePage = lazy(() => import('./components/pages/Homepage'))
@@ -80,7 +77,7 @@ function App() {
   return (
     <>
       <Navbar />
-      <SideAd3 />
+  <div id="ezoic-pub-ad-placeholder-114"></div>
       <SearchModal 
         isOpen={isSearchOpen} 
         onClose={() => setIsSearchOpen(false)} 
@@ -166,8 +163,7 @@ function App() {
             <Route path="*" element={<Notfound />} />
           </Routes>
         </Suspense>
-       <SideAd />
-        <SideAd2 />
+          <div id="ezoic-pub-ad-placeholder-101"></div>
       </main>
       <Footer />
     </>
