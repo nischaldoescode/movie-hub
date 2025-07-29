@@ -2479,6 +2479,7 @@ const MoviePage = () => {
   return (
     <>
     <HelmetProvider>
+      <meta name="referrer" content="origin" />
       <script>
         {`
           window.dataLayer = window.dataLayer || [];
@@ -2523,7 +2524,7 @@ const MoviePage = () => {
                       onLoad={handleIframeLoad}
                       loading="eager"
                       importance="high"
-                      referrerPolicy="no-referrer"
+                      referrerpolicy="origin"
                       allow="fullscreen"
                       style={{ border: "none" }}
                       key={`${streamingUrl}-${activeServer}`} // Add this to force re-render with new URL
