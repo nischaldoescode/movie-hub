@@ -77,7 +77,6 @@ function App() {
   return (
     <>
       <Navbar />
-  <div id="ezoic-pub-ad-placeholder-114"></div>
       <SearchModal 
         isOpen={isSearchOpen} 
         onClose={() => setIsSearchOpen(false)} 
