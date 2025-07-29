@@ -270,7 +270,7 @@ const HomePage = () => {
           onClearAll={handleClearAll}
           disabled={loading}
         />
-          <div id="ezoic-pub-ad-placeholder-112"></div>
+          <div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
         {/* All Movies */}
         <MovieGrid
           title="All Movies"
@@ -286,7 +286,9 @@ const HomePage = () => {
             loading={loading}
           />
         )}
-
+        
+      <div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
+        
         {/* Hollywood Movies */}
         {hollywoodMovies && hollywoodMovies.length > 0 && (
           <MovieGrid
