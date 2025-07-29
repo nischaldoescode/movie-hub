@@ -383,18 +383,19 @@ export const MovieProvider = ({ children }) => {
       if (mediaType === "movie") {
         // https://player.embed-api.stream/?id={tmdbId}&type=movie
         // return `https://player.vidsrc.co/embed/movie/${id}`;
-        return `https://player.embed-api.stream/?id=${id}&type=movie`;
+        // return `https://player.embed-api.stream/?id=${id}&type=movie`;
+        return `https://vidsrc.pm/embed/movie/${id}`;
       } else if (mediaType === "tv" && season && episode) {
         // https://player.embed-api.stream/?id={tmdbId}&s={season}&e={episode}
         // return `https://player.vidsrc.co/embed/tv/${id}/${season}/${episode}`;
-        return `https://player.embed-api.stream/?id=${id}&s=${season}&e=${episode}`;
+        return `https://vidsrc.pm/embed/tv/${id}/${season}/${episode}`;
       }
     } else {
       // Server 2 (vidsrc.icu)
       if (mediaType === "movie") {
-        return `https://vidsrc.icu/embed/movie/${id}`;
+        return `https://vidsrc.xyz/embed/movie/${id}`;
       } else if (mediaType === "tv" && season && episode) {
-        return `https://vidsrc.icu/embed/tv/${id}/${season}/${episode}`;
+        return `https://vidsrc.xyz/embed/tv/${id}/${season}/${episode}`;
       }
     }
     return null;
