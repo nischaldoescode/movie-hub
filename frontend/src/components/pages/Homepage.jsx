@@ -295,7 +295,7 @@ const HomePage = () => {
             loading={loading}
           />
         )}
-        <div id="ezoic-pub-ad-placeholder-118"></div>
+        <div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
       </div>
     </>
   );
