@@ -16,6 +16,16 @@ const Notfound = () => {
           content="Oops! Seems you got lost, the page you are looking for does not exist."
         />
         <meta name="robots" content="noindex, nofollow" />
+        <script type="text/javascript">
+	atOptions = {
+		'key' : 'd1e54e44823315bf2810d13afe01a386',
+		'format' : 'iframe',
+		'height' : 300,
+		'width' : 160,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/d1e54e44823315bf2810d13afe01a386/invoke.js"></script>
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"></script>
       <script>
         {`
