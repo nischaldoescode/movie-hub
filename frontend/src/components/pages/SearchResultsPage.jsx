@@ -274,6 +274,7 @@ const SearchResultsPage = () => {
         <link rel="dns-prefetch" href="//tmbd.org" />
         <link rel="dns-prefetch" href="//pl27291960.profitableratecpm.com" />
         <script type='text/javascript' src='//pl27291960.profitableratecpm.com/52/a3/f1/52a3f1cd263224425bfb07c95a7e98ee.js'></script>
+        <script async="async" data-cfasync="false" src="//pl27292121.profitableratecpm.com/d462e4cf49daea77f391535f1e045eb0/invoke.js"></script>
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"
@@ -356,6 +357,8 @@ const SearchResultsPage = () => {
             )}
           </div>
 
+          <div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
+
           {/* Media Type Filter Tabs */}
           {!loading && !error && results.length > 0 && (
             <div className="mb-6 border-b border-gray-800">
@@ -395,7 +398,6 @@ const SearchResultsPage = () => {
               </div>
             </div>
           )}
-
           {/* Loading State */}
           {loading && (
             <div className="flex justify-center items-center min-h-64">
@@ -416,7 +418,6 @@ const SearchResultsPage = () => {
               </button>
             </div>
           )}
-            <div id="ezoic-pub-ad-placeholder-112"></div>
           {/* Results Grid */}
           {!loading && !error && (
             <>
@@ -463,7 +464,7 @@ const SearchResultsPage = () => {
                   </p>
                 </div>
               )}
-              <div id="ezoic-pub-ad-placeholder-118"></div>
+              <div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
 
               {/* Pagination - Use the Pagination component when applicable */}
               {filteredTotalPages > 1 && filteredResults.length > 0 ? (
