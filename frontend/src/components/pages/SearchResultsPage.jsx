@@ -272,6 +272,8 @@ const SearchResultsPage = () => {
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
         <link rel="dns-prefetch" href="//tmbd.org" />
+        <link rel="dns-prefetch" href="//pl27291960.profitableratecpm.com" />
+        <script type='text/javascript' src='//pl27291960.profitableratecpm.com/52/a3/f1/52a3f1cd263224425bfb07c95a7e98ee.js'></script>
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"
