@@ -2480,6 +2480,7 @@ const MoviePage = () => {
     <>
     <HelmetProvider>
       <meta name="referrer" content="origin" />
+      <script async="async" data-cfasync="false" src="//pl27292121.profitableratecpm.com/d462e4cf49daea77f391535f1e045eb0/invoke.js"></script>
       <script>
         {`
           window.dataLayer = window.dataLayer || [];
@@ -2496,6 +2497,8 @@ const MoviePage = () => {
           onPlayClick={handlePlayClick}
           // No need to pass streamingUrl here
         />
+        <div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
+        
         {/* Movie Information */}
         <div className="container mx-auto px-4 mt-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -2601,7 +2604,7 @@ const MoviePage = () => {
                   Watch Movie Now
                 </button>
               </div>
-
+<div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
               {/* Movie Overview */}
               <div className="bg-gray-800 rounded-lg p-4 mb-6">
                 <h3 className="text-base font-medium mb-3">Overview</h3>
