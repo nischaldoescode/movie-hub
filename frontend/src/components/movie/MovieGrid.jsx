@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import MovieCard from './MovieCard';
 import ExploreMoreButton from '../ui/ExploreMoreButton';
+import { Helmet, HelmetProvider } from "react-helmet-async";
 
 const MovieGrid = ({ movies, title, showExploreMore = false, maxMovies = 50, explorePath = '/collection' }) => {
   // Calculate how many movies to display initially
@@ -24,7 +25,22 @@ const MovieGrid = ({ movies, title, showExploreMore = false, maxMovies = 50, exp
   }
   
   return (
+        <>
+      <HelmetProvider>
+<script async="async" data-cfasync="false" src="//pl27292121.profitableratecpm.com/d462e4cf49daea77f391535f1e045eb0/invoke.js"></script>
+        <script type="text/javascript">
+	atOptions = {
+		'key' : 'd1e54e44823315bf2810d13afe01a386',
+		'format' : 'iframe',
+		'height' : 300,
+		'width' : 160,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/d1e54e44823315bf2810d13afe01a386/invoke.js"></script>
+         </HelmetProvider>
     <div className="py-6">
+      <div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
       {title && (
         <div className="mb-6">
           <h2 className="text-2xl font-bold mb-3 text-white">{title}</h2>
@@ -57,7 +73,7 @@ const MovieGrid = ({ movies, title, showExploreMore = false, maxMovies = 50, exp
           </div>
         </div>
       )}
-      
+      <div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4 relative">
         {displayMovies.map((movie) => (
           <MovieCard key={movie.id} movie={movie} />
@@ -102,6 +118,7 @@ const MovieGrid = ({ movies, title, showExploreMore = false, maxMovies = 50, exp
         </div>
       )}
     </div>
+        </>
   );
 };
 
