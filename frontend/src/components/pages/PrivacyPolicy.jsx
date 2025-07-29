@@ -77,6 +77,17 @@ const PrivacyPolicy = () => {
         <link rel="dns-prefetch" href="//fonts.gstatic.com" />
         <link rel="dns-prefetch" href="//res.cloudinary.com" />
         <link rel="dns-prefetch" href="//tmbd.org" />
+        <script type="text/javascript">
+      	atOptions = {
+      		'key' : 'd1e54e44823315bf2810d13afe01a386',
+      		'format' : 'iframe',
+      		'height' : 300,
+      		'width' : 160,
+      		'params' : {}
+      	};
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/d1e54e44823315bf2810d13afe01a386/invoke.js"></script>
+      <script async="async" data-cfasync="false" src="//pl27292121.profitableratecpm.com/d462e4cf49daea77f391535f1e045eb0/invoke.js"></script>
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"></script>
       <script>
         {`
@@ -89,7 +100,7 @@ const PrivacyPolicy = () => {
       </script>
         </HelmetProvider>
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-gray-100 bg-gray-900">
-  <div id="ezoic-pub-ad-placeholder-112"></div>
+<div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
       <h1 className="text-3xl font-bold mb-8 text-purple-400">Movie Den Privacy Policy</h1>
       
       <div className="space-y-8">
