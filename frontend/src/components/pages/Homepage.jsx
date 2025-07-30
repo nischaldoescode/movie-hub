@@ -307,7 +307,6 @@ const HomePage = () => {
             loading={loading}
           />
         )}
-        <div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
       </div>
     </>
   );
