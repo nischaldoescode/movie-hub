@@ -162,7 +162,7 @@ function App() {
             <Route path="*" element={<Notfound />} />
           </Routes>
         </Suspense>
-          <div id="ezoic-pub-ad-placeholder-101"></div>
+          <div id="container-d462e4cf49daea77f391535f1e045eb0"></div>
       </main>
       <Footer />
     </>
