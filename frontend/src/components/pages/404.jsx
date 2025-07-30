@@ -25,7 +25,6 @@ const Notfound = () => {
 		'params' : {}
 	};
 </script>
-<script type="text/javascript" src="//www.highperformanceformat.com/d1e54e44823315bf2810d13afe01a386/invoke.js"></script>
       <script async src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"></script>
       <script>
         {`
@@ -58,8 +57,6 @@ const Notfound = () => {
             Previous Page
           </button>
         </div>
-          <div id="ezoic-pub-ad-placeholder-113"></div>
-        <div id="ezoic-pub-ad-placeholder-118"></div>
       </div>
     </>
   );
