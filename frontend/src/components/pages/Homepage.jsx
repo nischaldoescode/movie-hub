@@ -237,16 +237,6 @@ const HomePage = () => {
           <link rel="dns-prefetch" href="//pl27291960.profitableratecpm.com" />
           <script type='text/javascript' src='//pl27291960.profitableratecpm.com/52/a3/f1/52a3f1cd263224425bfb07c95a7e98ee.js'></script>
           <script async="async" data-cfasync="false" src="//pl27292121.profitableratecpm.com/d462e4cf49daea77f391535f1e045eb0/invoke.js"></script>
-          <script type="text/javascript">
-          	atOptions = {
-          		'key' : 'd1e54e44823315bf2810d13afe01a386',
-          		'format' : 'iframe',
-          		'height' : 300,
-          		'width' : 160,
-          		'params' : {}
-          	};
-      </script>
-      <script type="text/javascript" src="//www.highperformanceformat.com/d1e54e44823315bf2810d13afe01a386/invoke.js"></script>
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-QKRDMZMXVJ"
